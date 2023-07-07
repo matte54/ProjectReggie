@@ -4,3 +4,4 @@ log/
 venv/
 notes
 test.py
+.idea/
