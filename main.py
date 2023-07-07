@@ -48,7 +48,7 @@ class Woodhouse(discord.Client):
 
     async def on_message(self, message):
         if message.channel.type == discord.ChannelType.private:
-            # we don't do anything with DMs yet
+            # we don't do anything with DMs yets
             return
         if message.author.bot:
             # message came from a bot so do nothing
