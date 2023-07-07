@@ -4,5 +4,4 @@ log/
 venv/
 notes
 test.py
-local/
 .ideas.md
