@@ -23,7 +23,7 @@ def remove_emoji(text):
     return result
 
 
-# create and append to file named for usr in server subdir in /log TODO log rotation for statistics?
+# create and append to file named for usr in server subdir in /log and log rotation for statistics?
 def logtofile(server, message, author):
     server = server.lower().replace(" ", "")
     folderpath = f'./log/{server}'
