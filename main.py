@@ -5,17 +5,22 @@ import re
 import os
 import platform
 
-# File imports
+# file imports
 from data.etc import credentials
 from systems.logger import log, debug_on
 from tasks.status import StatusTask
 from systems.mother import Mother
 from systems.serverinfo import Serverdata
+from systems.housekeeper import HouseKeeper
 
-# make an intents file to read from instead to tidy up?
 intents = discord.Intents(messages=True, guilds=True, members=True, emojis=True, message_content=True)
+
 if debug_on():
     log("! - DEBUG IS ON - !")
+
+# startup housekeeping
+HouseKeeper.logrotate() # rotate chat logs if needed (monthly?)
+HouseKeeper.timefiledelete() # delete fishing timefiles
 
 
 class Woodhouse(discord.Client):
@@ -36,6 +41,9 @@ class Woodhouse(discord.Client):
         log(f"Running on: {platform.system()} {platform.release()} ({os.name.upper()})")
         log(f'Logged in as {self.user.name} id {self.user.id} - READY!')
         log(f'--------------------------------')
+
+        # on ready housekeeping here
+        HouseKeeper.gatherids(self)
 
     async def on_disconnect(self):
         log(f'Connection LOST to Discord servers!')

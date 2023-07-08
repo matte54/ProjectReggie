@@ -6,7 +6,7 @@ from systems.logger import log, debug_on
 # and then seperate commands below for the fishing and pokemons? or maybe not?
 
 # commands
-from systems.commands import help, whoami
+from systems.commands import help, whoami, holiday
 
 
 class Mother:
@@ -14,6 +14,10 @@ class Mother:
         self.client = client
         self.commandspath = f'./systems/commands/'
         self.cmdlist = list(map(lambda i: i[: -3], os.listdir("./systems/commands/")))
+        # added this to stop it from adding pycharms cache folders
+        for i in self.cmdlist:
+            if i.startswith("__"):
+                self.cmdlist.remove(i)
         if debug_on():
             for i in self.cmdlist:
                 log(f'[INFO] [{i}] command loaded!')
@@ -29,8 +33,16 @@ class Mother:
             if content == "whoami":
                 x = whoami.Whoami.command(self.client)
                 return x
+            if content == "holiday":
+                x = holiday.Holiday.command()
+                return x
 
 
+        #if content in self.fishcmds:
+        #    pass
+
+        #if content in self.pokemoncmds:
+        #    pass
 
         else:
             if debug_on():
