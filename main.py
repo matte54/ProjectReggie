@@ -22,7 +22,7 @@ class Woodhouse(discord.Client):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.Statustask = None # define task here first cause pycharm thinks so
-        self.cmdhandle = Mother(self)
+        self.mother = Mother(self)
         self.serverinfo = Serverdata()
         self.run(credentials.KEY)
 
@@ -57,12 +57,12 @@ class Woodhouse(discord.Client):
 
         # look for $ commands
         if str(message.content).startswith("$"):
-            msg = self.cmdhandle.cmdhandle(message)
+            msg = self.mother.handle(message)
         else:
             msg = None
-        if msg != None and channel:
+        if msg != None:
             # if the command returns something we need to send it
-            await channel.send(msg)
+            await message.channel.send(msg)
 
         # Rogue´s RE magic to get when someone mentions woodhouse?
         # id and name is for devbot needs to be CHANGED for live.
