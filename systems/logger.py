@@ -2,6 +2,7 @@ import time
 import discord
 import re
 import os
+import json
 from sys import platform
 
 
@@ -10,6 +11,11 @@ from sys import platform
 def debug_on():
     debug = True
     return debug
+
+
+def write_json(file_path, data):
+    with open(file_path, "w") as f:
+        json.dump(data, f, indent=4)
 
 
 def get_timestamp():
