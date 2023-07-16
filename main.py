@@ -10,31 +10,36 @@ from data.etc import credentials
 from systems.logger import log, debug_on
 from tasks.status import StatusTask
 from systems.mother import Mother
-from systems.serverinfo import Serverdata
 from systems.housekeeper import HouseKeeper
 from systems.speaking import rspeak
+from systems.filemanager import VarManager
 
 intents = discord.Intents(messages=True, guilds=True, members=True, emojis=True, message_content=True)
 
 if debug_on():
     log("! - DEBUG IS ON - !")
 
-# startup housekeeping
-HouseKeeper.logrotate() # rotate chat logs if needed (monthly?)
-HouseKeeper.timefiledelete() # delete fishing timefiles
-
 
 class Woodhouse(discord.Client):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.Statustask = None # define task here first cause pycharm thinks so
+
+        # tasks
+        self.statustask = StatusTask()
+
+        # systems
         self.mother = Mother(self)
-        self.serverinfo = Serverdata()
+        self.housekeeper = HouseKeeper()
+        self.varmanger = VarManager()
+
         self.run(credentials.KEY)
 
     # can this somehow be changed, so it only runs one task that controls all of them (when there are multiple)
+    # been sort of looking at the cogs there are some stuff about the tasks system that built can keep an eye
+    # on time and scheduling for background tasks etc. i dunno should probably look more into that before
+    # evovling more complex tasks
     async def setup_hook(self):
-        self.Statustask = self.loop.create_task(StatusTask.status_task(self))
+        self.loop.create_task(self.statustask.status_task(self))
 
     async def on_ready(self):
         log(f"Discord.py API version: {discord.__version__}")
@@ -43,8 +48,13 @@ class Woodhouse(discord.Client):
         log(f'Logged in as {self.user.name} id {self.user.id} - READY!')
         log(f'--------------------------------')
 
-        # on ready housekeeping here
-        HouseKeeper.gatherids(self)
+        # on ready housekeeping
+        self.housekeeper.gatherids(self)
+
+        # testing
+        # test = self.varmanger.read("testvar")
+        # print(test)
+        self.varmanger.write("stuff", ["bananas", "apples"])
 
     async def on_disconnect(self):
         log(f'Connection LOST to Discord servers!')
@@ -69,29 +79,30 @@ class Woodhouse(discord.Client):
             msg = self.mother.handle(message)
         else:
             msg = None
-        if msg != None:
+        if msg is not None:
             # if the command returns something we need to send it
             await message.channel.send(msg)
 
         # Rogue´s RE magic to get when someone mentions woodhouse?
         # id and name is for devbot needs to be CHANGED for live.
-        sentence, count = re.subn('(?:devbot2000|<@795675666401198101>)', '', message.content, flags=re.IGNORECASE)
+        sentence, count = re.subn('devbot2000|<@795675666401198101>', '', message.content, flags=re.IGNORECASE)
         if count:
             sentence.replace('  ', '')
             if not sentence:
                 i = "stop that!"
             else:
                 i, debugstuff = rspeak(sentence)
-            #debugchannel = self.get_channel(1007604139657789470) #debugchannel addition
-            #await debugchannel.send(debugstuff)
+            # debugchannel = self.get_channel(1007604139657789470) #debugchannel addition
+            # await debugchannel.send(debugstuff)
             await message.channel.send(i)
 
-    async def on_guild_emojis_update(guild, before, after):
+    async def on_guild_emojis_update(self, guild, before, after):
         # automatic emoji change posting? Pog
         pass
 
     # async def discord.on_reaction_add(reaction, user)
     # woodhouse posting random reactions when someone else does? sometimes? cud be fun.
+
 
 if __name__ == "__main__":
     woodhouse = Woodhouse(intents=intents)

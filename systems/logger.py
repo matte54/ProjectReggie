@@ -2,7 +2,6 @@ import time
 import discord
 import re
 import os
-import json
 from sys import platform
 
 
@@ -11,11 +10,6 @@ from sys import platform
 def debug_on():
     debug = True
     return debug
-
-
-def write_json(file_path, data):
-    with open(file_path, "w") as f:
-        json.dump(data, f, indent=4)
 
 
 def get_timestamp():
@@ -51,7 +45,7 @@ def logtofile(server, message, author):
 def cleanmessage(message):
     no = re.search(r'^(http|<?https?:\S+)|^\s|^\W|^\d+$|^\d|^\s*$', message)
     if no:
-        if debug_on() is True:
+        if debug_on():
             log(f'[INFO] [{message}] DENIED by cleanMessage')
         return None  # return none if message is flagged by regex
     return message

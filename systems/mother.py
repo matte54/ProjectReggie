@@ -13,7 +13,7 @@ class Mother:
     def __init__(self, client):
         self.client = client
         self.commandspath = f'./systems/commands/'
-        self.cmdlist = list(map(lambda i: i[: -3], os.listdir("./systems/commands/")))
+        self.cmdlist = list(map(lambda e: e[: -3], os.listdir("./systems/commands/")))
         # added this to stop it from adding pycharms cache folders
         for i in self.cmdlist:
             if i.startswith("__"):
@@ -37,13 +37,12 @@ class Mother:
                 x = holiday.Holiday.command()
                 return x
 
-
-        #if content in self.fishcmds:
+        # if content in self.fishcmds:
         #    pass
 
-        #if content in self.pokemoncmds:
+        # if content in self.pokemoncmds:
         #    pass
 
         else:
             if debug_on():
-                log(f'{content} is a INVALID command')
+                log(f'[ERROR] {content} is a INVALID command')
