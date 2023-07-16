@@ -13,6 +13,7 @@ from systems.mother import Mother
 from systems.housekeeper import HouseKeeper
 from systems.speaking import rspeak
 from systems.filemanager import VarManager
+from systems.unitconverter import Converter
 
 intents = discord.Intents(messages=True, guilds=True, members=True, emojis=True, message_content=True)
 
@@ -31,6 +32,7 @@ class Woodhouse(discord.Client):
         self.mother = Mother(self)
         self.housekeeper = HouseKeeper()
         self.varmanger = VarManager()
+        self.unitconverter = Converter()
 
         self.run(credentials.KEY)
 
@@ -51,10 +53,9 @@ class Woodhouse(discord.Client):
         # on ready housekeeping
         self.housekeeper.gatherids(self)
 
-        # testing
+        # testing varmanager (working)
         # test = self.varmanger.read("testvar")
-        # print(test)
-        self.varmanger.write("stuff", ["bananas", "apples"])
+        # self.varmanger.write("stuff", ["bananas", "apples"])
 
     async def on_disconnect(self):
         log(f'Connection LOST to Discord servers!')
@@ -95,6 +96,9 @@ class Woodhouse(discord.Client):
             # debugchannel = self.get_channel(1007604139657789470) #debugchannel addition
             # await debugchannel.send(debugstuff)
             await message.channel.send(i)
+
+        # check for conversions for unitconverter
+        await self.unitconverter.check(message)
 
     async def on_guild_emojis_update(self, guild, before, after):
         # automatic emoji change posting? Pog
