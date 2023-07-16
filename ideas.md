@@ -46,3 +46,10 @@ instead like Falcon 7b with tensorflow. (https://huggingface.co/tiiuae/falcon-7b
 Debugging system expanded, i want to be able to run the bot and have it have as little impact on things as possible
 on the side, like adding "if debugging do not write stuff just test no finalizing" and just print the thing instead
 of acctually doing it
+
+* Fishing 2.0
+Obviously make it better and more logical code wise.
+- Base money value of sold fish on weight base value +/-
+- Add new fish?
+- Query fishname to get WR , money value for a medium?
+- ?
