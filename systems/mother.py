@@ -1,6 +1,9 @@
 import os
 from systems.logger import log, debug_on
 
+# We need to consider making a check to make sure woodhouse is allowed to speak in channels we talk to him in
+# i wrote a check for this in the reflex task but should be part of all places he is speaking for future proofing.
+
 # not quite sure how to write this , trying to someone get it to add commands from the command folder and match
 # to the incoming messages but i have no clue how to proceed.
 # and then seperate commands below for the fishing and pokemons? or maybe not?

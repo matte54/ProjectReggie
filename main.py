@@ -5,15 +5,21 @@ import re
 import os
 import platform
 
-# file imports
+## file imports ##
+# configs
 from data.etc import credentials
+
+# systems
 from systems.logger import log, debug_on
-from tasks.status import StatusTask
 from systems.mother import Mother
 from systems.housekeeper import HouseKeeper
 from systems.speaking import rspeak
 from systems.filemanager import VarManager
 from systems.unitconverter import Converter
+
+# tasks
+from tasks.status import StatusTask
+from tasks.reflex import Reflex
 
 intents = discord.Intents(messages=True, guilds=True, members=True, emojis=True, message_content=True)
 
@@ -27,6 +33,8 @@ class Woodhouse(discord.Client):
 
         # tasks
         self.statustask = StatusTask()
+        self.reflex = Reflex(self)
+
 
         # systems
         self.mother = Mother(self)
@@ -42,6 +50,7 @@ class Woodhouse(discord.Client):
     # evovling more complex tasks
     async def setup_hook(self):
         self.loop.create_task(self.statustask.status_task(self))
+        self.loop.create_task(self.reflex.reflex())
 
     async def on_ready(self):
         log(f"Discord.py API version: {discord.__version__}")

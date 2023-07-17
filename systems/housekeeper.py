@@ -17,6 +17,10 @@ class HouseKeeper:
     def timefiledelete(self):
         pass
 
+    def gather_emojis(self):
+        pass
+        # gather all available emojis and put them in a json file
+
     def gatherids(self, client):
         # get all guilds the bot is currently in and add them to a list
         guild_list = []

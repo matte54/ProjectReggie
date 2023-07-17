@@ -1,4 +1,5 @@
 /data/etc/credentials.py
+/data/redditdata/
 __pycache__/
 log/
 venv/
