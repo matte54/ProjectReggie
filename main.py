@@ -47,7 +47,7 @@ class Woodhouse(discord.Client):
     # can this somehow be changed, so it only runs one task that controls all of them (when there are multiple)
     # been sort of looking at the cogs there are some stuff about the tasks system that built can keep an eye
     # on time and scheduling for background tasks etc. i dunno should probably look more into that before
-    # evovling more complex tasks
+    # evovling more complex taasks
     async def setup_hook(self):
         self.loop.create_task(self.statustask.status_task(self))
         self.loop.create_task(self.reflex.reflex())
