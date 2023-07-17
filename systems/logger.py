@@ -22,6 +22,9 @@ def remove_emoji(text):
     result = re.subn(r'<a?:\w+:\d+>', '', text)[0]
     return result
 
+def emoji_stats():
+    pass
+
 
 # create and append to file named for usr in server subdir in /log and log rotation for statistics?
 def logtofile(server, message, author):
@@ -32,6 +35,7 @@ def logtofile(server, message, author):
     filepath = f'{folderpath}/{author}'
     f = open(filepath, 'a', encoding='utf-8')
     # run through both cleaning function that needs revising
+    # add emoji_stats here?
     message = remove_emoji(message)
     message = cleanmessage(message)
     if message is None:

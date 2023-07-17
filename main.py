@@ -38,7 +38,7 @@ class Woodhouse(discord.Client):
 
         # systems
         self.mother = Mother(self)
-        self.housekeeper = HouseKeeper()
+        self.housekeeper = HouseKeeper(self)
         self.varmanger = VarManager()
         self.unitconverter = Converter()
 
@@ -60,7 +60,8 @@ class Woodhouse(discord.Client):
         log(f'--------------------------------')
 
         # on ready housekeeping
-        self.housekeeper.gatherids(self)
+        self.housekeeper.gatherids()
+        self.housekeeper.gather_emojis()
 
         # testing varmanager (working)
         # test = self.varmanger.read("testvar")

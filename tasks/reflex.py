@@ -1,5 +1,6 @@
 # Background task for woodhouses spontanous actions
 
+import json
 import random
 import asyncio
 import discord
@@ -36,8 +37,8 @@ class Reflex:
             if picked_channel is not None:
                 last_message = await self.find_message(picked_channel) # get the last message in the chosen channel
                 # random a reflex action with weights
-                #k = random.choices(self.numbers, weights=self.random_weights)
-                k = [1]
+                k = random.choices(self.numbers, weights=self.random_weights)
+                #k = [2]
                 # If we random nothing or if theres no channels to do anything in
                 if k[0] == 0 or k is None:
                     log(f'[Reflex] - do nothing')
@@ -51,7 +52,7 @@ class Reflex:
                 if k[0] == 2:
                     log(f'[Reflex] - reaction')
                     self.wait_cycles += 1
-                    self.reaction(picked_channel, last_message)
+                    await self.reaction(picked_channel, last_message)
                 # reply
                 if k[0] == 3:
                     log(f'[Reflex] - reply')
@@ -68,11 +69,12 @@ class Reflex:
                     self.wait_cycles += 2
                     self.recommend(picked_channel)
 
-            # await asyncio.sleep((60 * random.randint(30, 60)) * self.wait_cycles) # use this formula for live
-            await asyncio.sleep(10)
+            await asyncio.sleep((60 * random.randint(30, 60)) * self.wait_cycles) # use this formula for live
+            #await asyncio.sleep(10)
 
     async def channel_history(self, channel_list):
         # check channel history for recent activity to rule out dead channels
+        # not sure this works properly yet
         for i in channel_list:
             number_of_messages = 0
             channel = self.client.get_channel(i)
@@ -122,8 +124,16 @@ class Reflex:
         txt , debugstuff = rspeak(last_message_content)
         await channel.send(txt)
 
-    def reaction(self, picked_channel, last_message):
-        pass
+    async def reaction(self, picked_channel, last_message):
+        # this needs a check to somehow see if a message already has a reaction from woodhouse
+        # nothing happens if it tries to do it again , but should still be worked out.
+        # also add in emojis from the default stuff
+        with open("./local/emojis.json", "r") as f:
+            data = json.load(f)
+        channel = self.client.get_channel(picked_channel)
+        guild_emoji_list = data[str(channel.guild.id)]
+        picked_emoji = random.choice(guild_emoji_list)
+        await last_message.add_reaction(picked_emoji)
 
     def reply(self, picked_channel, last_message):
         pass

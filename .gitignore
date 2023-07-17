@@ -1,6 +1,7 @@
 /data/etc/credentials.py
 /data/redditdata/
 __pycache__/
+local/
 log/
 venv/
 notes
