@@ -7,3 +7,5 @@ venv/
 notes
 test.py
 .idea/
+/data/etc/ids.json
+/data/etc/vars.json

@@ -13,6 +13,7 @@ class HouseKeeper:
         self.timefiledelete()  # delete fishing timefiles
         self.idlist_path = "./data/etc/ids.json"
         self.emojilist_path = "./local/emojis.json"
+        self.default_emojis_path = "./data/etc/default_emojis.txt"
 
     def logrotate(self):
         pass
@@ -21,9 +22,13 @@ class HouseKeeper:
         pass
 
     def gather_emojis(self):
-        # compile a small list of "normal" emoji ids like thumbs up or some simple ones.
-        # gather emoji str names in a list and save the in a guild id key
         data = {}
+        # add in some of the default emojis from the default_emojis file
+        default_emoji_list = []
+        with open(self.default_emojis_path, "r", encoding='UTF-8') as f:
+            default_emoji_list += f.read().splitlines()
+        data["default"] = default_emoji_list
+        # gather emoji str names in a list and save the in a guild id key
         for guild in self.client.guilds:
             emoji_list = []
             emojis = guild.emojis
@@ -59,3 +64,5 @@ class HouseKeeper:
     def write_json(self, filepath, data):
         with open(filepath, "w") as f:
             json.dump(data, f, indent=4)
+        if debug_on():
+            log(f'[Housekeeper] - Wrote {filepath}')

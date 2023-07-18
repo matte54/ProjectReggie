@@ -23,7 +23,7 @@ class Mother:
                 self.cmdlist.remove(i)
         if debug_on():
             for i in self.cmdlist:
-                log(f'[INFO] [{i}] command loaded!')
+                log(f'[Mother] - [{i}] command loaded!')
 
     def handle(self, message):
         content = message.content.replace('$', '')
@@ -48,4 +48,4 @@ class Mother:
 
         else:
             if debug_on():
-                log(f'[ERROR] {content} is a INVALID command')
+                log(f'[ERROR][Mother] - {content} is a INVALID command')

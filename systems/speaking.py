@@ -31,7 +31,7 @@ for i in text:
     data.append((i.split(" / ")))
 
 if debug_on():
-    log(f'[INFO] reddit sentence database has {len(data)} entries.')
+    log(f'[Speaking] - Sentence database has {len(data)} entries.')
 
 
 def rspeak(question):
@@ -53,7 +53,7 @@ def rspeak(question):
         longestword.remove(w2)
     if removed_list:
         if debug_on():
-            log(f'[INFO] deleted words in input sentence: {removed_list}')
+            log(f'[Speaking] - deleted words in input sentence: {removed_list}')
     # Get the longest word
     xa = sorted(longestword, key=len)
     if not xa:
@@ -70,7 +70,7 @@ def rspeak(question):
     # check the next least longestword?
     if not data2:
         if debug_on():
-            log('going to secondary option on input sentence')
+            log('[Speaking] - Going to secondary option on input sentence')
         if "leastlongestword" in locals():
             for l2 in data:
                 a2 = l2[0].split()
@@ -79,11 +79,11 @@ def rspeak(question):
         else:
             return 'I dont know man...', f'```yaml\nERROR: All words in input where filtered out!```'
     if debug_on():
-        log(f'[INFO] reddit database had {len(data2)} matches')
+        log(f'[Speaking] - Database had {len(data2)} matches')
 
     if not data2:
         if debug_on():
-            log(f'[INFO] reddit database had 0 matches')
+            log(f'[Speaking] - Database had 0 matches')
         return 'I dont know man...', f'```yaml\nERROR: No database matches!```'
 
     best = ("", "", 0.00)
@@ -98,7 +98,7 @@ def rspeak(question):
     rpicked = random.choice(bestlist[-5:])
 
     if debug_on():
-        log(f'[INFO] {i} <-{rpicked[2]}-> {rpicked[0]}')
+        log(f'[Speaking] - {i} <-{rpicked[2]}-> {rpicked[0]}')
     sortdebugstuff = [i, rpicked[2], rpicked[0], len(data2), ]
 
     debugstring = f'```yaml\nInput: {i}\n\n{len(data2)} potencial matches...\n{round(rpicked[2] * 100)}% matched with \nDatabase match: {rpicked[0]}\n\nOutput: {rpicked[1]}```'

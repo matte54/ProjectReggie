@@ -1,3 +1,6 @@
+# logger just import log method into file you work with and add a
+# "[System] - " before your log message to easily tell what system the message comes from :)
+
 import time
 import discord
 import re
@@ -50,7 +53,7 @@ def cleanmessage(message):
     no = re.search(r'^(http|<?https?:\S+)|^\s|^\W|^\d+$|^\d|^\s*$', message)
     if no:
         if debug_on():
-            log(f'[INFO] [{message}] DENIED by cleanMessage')
+            log(f'[INFO][Logger] - [{message}] DENIED by cleanMessage')
         return None  # return none if message is flagged by regex
     return message
 

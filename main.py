@@ -16,6 +16,7 @@ from systems.housekeeper import HouseKeeper
 from systems.speaking import rspeak
 from systems.filemanager import VarManager
 from systems.unitconverter import Converter
+from systems.emojihandler import Emojihandler
 
 # tasks
 from tasks.status import StatusTask
@@ -41,6 +42,7 @@ class Woodhouse(discord.Client):
         self.housekeeper = HouseKeeper(self)
         self.varmanger = VarManager()
         self.unitconverter = Converter()
+        self.emojihandler = Emojihandler(self)
 
         self.run(credentials.KEY)
 
