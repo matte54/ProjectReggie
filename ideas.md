@@ -52,4 +52,5 @@ Obviously make it better and more logical code wise.
 - Base money value of sold fish on weight base value +/-
 - Add new fish?
 - Query fishname to get WR , money value for a medium?
-- ?
+- Redesign fish with rareity in mind , seasonal? super rare? colorcoded 
+- Classes stay the same but color code rarities in each class white->yellow->blue->purple ?

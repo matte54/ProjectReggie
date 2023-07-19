@@ -36,7 +36,6 @@ class Woodhouse(discord.Client):
         self.statustask = StatusTask()
         self.reflex = Reflex(self)
 
-
         # systems
         self.mother = Mother(self)
         self.housekeeper = HouseKeeper(self)
@@ -98,7 +97,7 @@ class Woodhouse(discord.Client):
 
         # Rogue´s RE magic to get when someone mentions woodhouse?
         # id and name is for devbot needs to be CHANGED for live.
-        sentence, count = re.subn('devbot2000|<@795675666401198101>', '', message.content, flags=re.IGNORECASE)
+        sentence, count = re.subn(f'{self.user.name}|<@{self.user.id}>', '', message.content, flags=re.IGNORECASE)
         if count:
             sentence.replace('  ', '')
             if not sentence:
