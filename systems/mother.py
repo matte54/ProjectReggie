@@ -1,4 +1,5 @@
 import os
+import asyncio
 from systems.logger import log, debug_on
 
 # We need to consider making a check to make sure woodhouse is allowed to speak in channels we talk to him in
@@ -9,7 +10,7 @@ from systems.logger import log, debug_on
 # and then seperate commands below for the fishing and pokemons? or maybe not?
 
 # commands
-from systems.commands import help, whoami, holiday
+from systems.commands import help, whoami, holiday, remindme
 
 
 class Mother:
@@ -25,19 +26,28 @@ class Mother:
             for i in self.cmdlist:
                 log(f'[Mother] - [{i}] command loaded!')
 
-    def handle(self, message):
-        content = message.content.replace('$', '')
+        #commands
+        self.remindme = remindme.Remindme()
+        self.help = help.Help()
+        self.holiday = holiday.Holiday()
+        self.whoami = whoami.Whoami(self.client)
 
+    async def handle(self, message):
         # there has to be a better way then do the million if statements
-        if content in self.cmdlist:
-            if content == "help":
-                x = help.Help.command(message)
+        content = message.content.replace('$', '')
+        firstword = content.split(' ', 1)[0]
+        if firstword in self.cmdlist:
+            if firstword == "help":
+                x = self.help.command(message)
                 return x
-            if content == "whoami":
-                x = whoami.Whoami.command(self.client)
+            if firstword == "whoami":
+                x = self.whoami.command()
                 return x
-            if content == "holiday":
-                x = holiday.Holiday.command()
+            if firstword == "holiday":
+                x = self.holiday.command()
+                return x
+            if firstword == "remindme":
+                x = await self.remindme.command(message)
                 return x
 
         # if content in self.fishcmds:
@@ -48,4 +58,4 @@ class Mother:
 
         else:
             if debug_on():
-                log(f'[ERROR][Mother] - {content} is a INVALID command')
+                log(f'[ERROR][Mother] - {firstword} is a INVALID command')

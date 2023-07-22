@@ -3,6 +3,8 @@
 from systems.logger import log
 
 class Help:
-    def command(message):
+    def __init__(self):
+        pass
+    def command(self, message):
         print("yay")
         print(message)

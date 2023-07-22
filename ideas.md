@@ -54,3 +54,8 @@ Obviously make it better and more logical code wise.
 - Query fishname to get WR , money value for a medium?
 - Redesign fish with rareity in mind , seasonal? super rare? colorcoded 
 - Classes stay the same but color code rarities in each class white->yellow->blue->purple ?
+
+* remind me
+Remind me system is possible ? could be fun
+command to add reminders to a json file
+a background task to somehow rotate thru and post if reminder hits thonk

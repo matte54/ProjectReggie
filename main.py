@@ -88,7 +88,7 @@ class Woodhouse(discord.Client):
 
         # look for $ commands
         if str(message.content).startswith("$"):
-            msg = self.mother.handle(message)
+            msg = await self.mother.handle(message)
         else:
             msg = None
         if msg is not None:

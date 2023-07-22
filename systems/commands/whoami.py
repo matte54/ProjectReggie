@@ -4,8 +4,11 @@ import platform
 import requests
 import socket
 
+# this system might need to be awaited or maybe just get exceptions for request timing out
 
 class Whoami:
+    def __init__(self, client):
+        self.client = client
     def command(self):
         url = "http://checkip.dyndns.org"
         request = requests.get(url)
@@ -14,7 +17,7 @@ class Whoami:
         my_host = socket.gethostname()
 
         # LUL
-        s = f'Hello i am {self.user.name} a bot by matte54'
+        s = f'Hello i am {self.client.user.name} a bot by matte54'
         y = f"Discord.py API version: {discord.__version__}"
         z = f"Python version: {platform.python_version()}"
         o = f"Running on: {platform.system()} {platform.release()} ({os.name.upper()})"
