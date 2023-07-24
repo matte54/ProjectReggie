@@ -4,12 +4,14 @@ import platform
 import requests
 import socket
 
+
 # this system might need to be awaited or maybe just get exceptions for request timing out
 
 class Whoami:
     def __init__(self, client):
         self.client = client
-    def command(self):
+
+    async def command(self, message):
         url = "http://checkip.dyndns.org"
         request = requests.get(url)
         clean = request.text.split(': ', 1)[1]
@@ -22,7 +24,7 @@ class Whoami:
         z = f"Python version: {platform.python_version()}"
         o = f"Running on: {platform.system()} {platform.release()} ({os.name.upper()})"
         l = f'{my_host} - {my_ip}'
-        _ = "\n"
-        k = s + _ + y + _ + z + _ + o + _ + l
-        x = f'```yaml\n\n{k}```'
-        return x
+        final_output = "\n".join([s, y, z, o, l])
+        x = f'```yaml\n\n{final_output}```'
+
+        await message.channel.send(x)

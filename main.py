@@ -1,11 +1,12 @@
 # module imports
+import asyncio
 import discord
 import discord.ext
 import re
 import os
 import platform
+import random
 
-## file imports ##
 # configs
 from data.etc import credentials
 
@@ -22,7 +23,7 @@ from systems.emojihandler import Emojihandler
 from tasks.status import StatusTask
 from tasks.reflex import Reflex
 
-intents = discord.Intents(messages=True, guilds=True, members=True, emojis=True, message_content=True)
+intents = discord.Intents(messages=True, guilds=True, members=True, emojis=True, message_content=True, reactions=True)
 
 if debug_on():
     log("! - DEBUG IS ON - !")
@@ -69,13 +70,13 @@ class Woodhouse(discord.Client):
         # self.varmanger.write("stuff", ["bananas", "apples"])
 
     async def on_disconnect(self):
-        log(f'Connection LOST to Discord servers!')
+        log(f'Connection LOST!')
 
     async def on_connect(self):
-        log(f'Connection ESTABLISHED to Discord servers!')
+        log(f'Connection ESTABLISHED!')
 
     async def on_resumed(self):
-        log(f'Connection resumed...')
+        log(f'Connection RE-ESTABLISHED!')
 
     async def on_message(self, message):
         if message.channel.type == discord.ChannelType.private:
@@ -84,19 +85,15 @@ class Woodhouse(discord.Client):
         if message.author.bot:
             # message came from a bot so do nothing
             return
-        log(message)
+
+        log(message)  # send the message into the logs for storing
 
         # look for $ commands
         if str(message.content).startswith("$"):
-            msg = await self.mother.handle(message)
-        else:
-            msg = None
-        if msg is not None:
-            # if the command returns something we need to send it
-            await message.channel.send(msg)
+            await self.mother.handle(message)
 
-        # Rogue´s RE magic to get when someone mentions woodhouse?
-        # id and name is for devbot needs to be CHANGED for live.
+        # look for someone mentioning the bots name
+        # the answering and talking works for now but i want to re-write alot of it
         sentence, count = re.subn(f'{self.user.name}|<@{self.user.id}>', '', message.content, flags=re.IGNORECASE)
         if count:
             sentence.replace('  ', '')
@@ -111,12 +108,14 @@ class Woodhouse(discord.Client):
         # check for conversions for unitconverter
         await self.unitconverter.check(message)
 
-    async def on_guild_emojis_update(self, guild, before, after):
-        # automatic emoji change posting? Pog
-        pass
-
-    # async def discord.on_reaction_add(reaction, user)
-    # woodhouse posting random reactions when someone else does? sometimes? cud be fun.
+    async def on_reaction_add(self, reaction, user):
+        # If woodhouse sees someone add a reaction , 25% chance of him adding one to.
+        reacted_channel_id = reaction.message.channel.id
+        if random.random() < 0.25:
+            picked_emoji = self.emojihandler.emojihandler(reacted_channel_id)
+            await reaction.message.add_reaction(picked_emoji)
+            await asyncio.sleep(3)
+            # added a sleep here, rate limits are easily reached if people are spamming reactions.
 
 
 if __name__ == "__main__":
