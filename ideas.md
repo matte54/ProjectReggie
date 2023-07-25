@@ -59,3 +59,8 @@ Obviously make it better and more logical code wise.
 Remind me system is possible ? could be fun
 command to add reminders to a json file
 a background task to somehow rotate thru and post if reminder hits thonk
+
+* Catching disconnection exceptions
+Been looking a lil bit to somehow catch disconnect exceptions, like if discord servers goes down or if i loose internet
+right now the program just sits there and spams exceptions endlessly.
+Ideally we would want to catch this somehow and just put in a wait timer to retry later.

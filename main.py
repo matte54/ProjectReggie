@@ -6,6 +6,7 @@ import re
 import os
 import platform
 import random
+import datetime
 
 # configs
 from data.etc import credentials
@@ -44,7 +45,9 @@ class Woodhouse(discord.Client):
         self.unitconverter = Converter()
         self.emojihandler = Emojihandler(self)
 
-        self.run(credentials.KEY)
+        # testing disconnection handling
+        self.reconnected = False
+        self.last_disconnect = None
 
     # can this somehow be changed, so it only runs one task that controls all of them (when there are multiple)
     # been sort of looking at the cogs there are some stuff about the tasks system that built can keep an eye
@@ -69,14 +72,28 @@ class Woodhouse(discord.Client):
         # test = self.varmanger.read("testvar")
         # self.varmanger.write("stuff", ["bananas", "apples"])
 
+    def run_loop(self):
+        self.run(credentials.KEY)
+
     async def on_disconnect(self):
         log(f'Connection LOST!')
+        if self.reconnected:
+            self.reconnected = False
+            self.last_disconnect = datetime.datetime.utcnow()
 
     async def on_connect(self):
         log(f'Connection ESTABLISHED!')
+        self.reconnected = True
 
     async def on_resumed(self):
         log(f'Connection RE-ESTABLISHED!')
+        log(f'Downtime was {datetime.timedelta(seconds=self.total_downtime())}')
+
+    def total_downtime(self):
+        if self.last_disconnect is None:
+            return 0.0
+
+        return (datetime.datetime.utcnow() - self.last_disconnect).total_seconds()
 
     async def on_message(self, message):
         if message.channel.type == discord.ChannelType.private:
@@ -113,10 +130,29 @@ class Woodhouse(discord.Client):
         reacted_channel_id = reaction.message.channel.id
         if random.random() < 0.25:
             picked_emoji = self.emojihandler.emojihandler(reacted_channel_id)
-            await reaction.message.add_reaction(picked_emoji)
             await asyncio.sleep(3)
             # added a sleep here, rate limits are easily reached if people are spamming reactions.
+            await reaction.message.add_reaction(picked_emoji)
+
+    async def on_guild_emojis_update(self, guild, t1, t2):
+        main_channel = guild.text_channels[0]
+        # This should be dedicated emojichannel if server does not have one skip.
+
+        set_t1 = set(t1)
+        set_t2 = set(t2)
+
+        added_emojis = set_t2 - set_t1
+        removed_emojis = set_t1 - set_t2
+
+        if added_emojis:
+            for emoji in added_emojis:
+                await main_channel.send(f'Emoji {emoji} was added')
+
+        if removed_emojis:
+            for emoji in removed_emojis:
+                await main_channel.send(f'Emoji {emoji} was removed')
 
 
 if __name__ == "__main__":
     woodhouse = Woodhouse(intents=intents)
+    woodhouse.run_loop()
