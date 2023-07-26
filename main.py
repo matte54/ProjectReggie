@@ -67,6 +67,7 @@ class Woodhouse(discord.Client):
         # on ready housekeeping
         self.housekeeper.gatherids()
         self.housekeeper.gather_emojis()
+        await self.housekeeper.cakeday()
 
         # testing varmanager (working)
         # test = self.varmanger.read("testvar")

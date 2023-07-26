@@ -1,8 +1,10 @@
 import json
 import os
+import datetime
 
 from systems.logger import log, debug_on
 from systems.filemanager import VarManager
+from systems.gif_finder import Giphy_find
 
 
 class HouseKeeper:
@@ -14,6 +16,7 @@ class HouseKeeper:
         self.idlist_path = "./data/etc/ids.json"
         self.emojilist_path = "./local/emojis.json"
         self.default_emojis_path = "./data/etc/default_emojis.txt"
+        self.gif_find = Giphy_find()
 
     def logrotate(self):
         pass
@@ -60,6 +63,27 @@ class HouseKeeper:
                     if not e.bot:
                         data[str(e.id)] = e.global_name
             self.write_json(self.idlist_path, data)
+
+    async def cakeday(self):
+        # check cakeday for members
+        today = datetime.datetime.now()
+        # check each guild woodhouse is in
+        for guild in self.client.guilds:
+            member_list = []
+            # find all members in the guild and add them to a list
+            for member in guild.members:
+                if not member.bot:
+                    member_list.append(member)
+            for i in member_list:
+                date = i.joined_at
+                # check if today is the cakeday
+                if date.month == today.month and date.day == today.day:
+                    log(f'[Housekeeper] - Today is {i}s cakeday in {guild}')
+                main_channel = guild.text_channels[0]
+                await main_channel.send(f'Happy Cakeday {i.mention}')
+                gif = self.gif_find.find("cake birthday")
+                if gif:
+                    await main_channel.send(gif)
 
     def write_json(self, filepath, data):
         with open(filepath, "w") as f:
