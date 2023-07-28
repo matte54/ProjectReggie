@@ -79,11 +79,11 @@ class HouseKeeper:
                 # check if today is the cakeday
                 if date.month == today.month and date.day == today.day:
                     log(f'[Housekeeper] - Today is {i}s cakeday in {guild}')
-                main_channel = guild.text_channels[0]
-                await main_channel.send(f'Happy Cakeday {i.mention}')
-                gif = self.gif_find.find("cake birthday")
-                if gif:
-                    await main_channel.send(gif)
+                    main_channel = guild.text_channels[0]
+                    await main_channel.send(f'Happy Cakeday {i.mention}')
+                    gif = self.gif_find.find("cake birthday")
+                    if gif:
+                        await main_channel.send(gif)
 
     def write_json(self, filepath, data):
         with open(filepath, "w") as f:

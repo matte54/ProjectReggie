@@ -32,6 +32,7 @@ Like maybe create a folder for each server instead and then have a log file for 
 Perhaps a independant system for all statistics, like fishing , mons , user chatting etc.
 There shouldt be a reason for it to be dependant on its supporting system it should just read and write stats
 and send them in text form to chat.
+- Use the plotly library to visualize statistics , it has tools to convert charts to images that can be posted and embedded
 
 * Bring over from 1.0
 The only thing worth keeping imo is Fishing and Pokemons the rest seems like a waste of time.
@@ -42,7 +43,7 @@ Improvements to be done in the future to filtering, but for now i think i just c
 The dream is to have the bot run on a machine with a graphics card with cuda cores so it can do language models 
 instead like Falcon 7b with tensorflow. (https://huggingface.co/tiiuae/falcon-7b-instruct)
 
-* debug
+* Debug
 Debugging system expanded, i want to be able to run the bot and have it have as little impact on things as possible
 on the side, like adding "if debugging do not write stuff just test no finalizing" and just print the thing instead
 of acctually doing it
@@ -54,8 +55,9 @@ Obviously make it better and more logical code wise.
 - Query fishname to get WR , money value for a medium?
 - Redesign fish with rareity in mind , seasonal? super rare? colorcoded 
 - Classes stay the same but color code rarities in each class white->yellow->blue->purple ?
+- Have a "none" fish on each class and use the rarity float for catching? and then have the skill up increase your rarity able catching?
 
-* remind me
+* Remind me
 Remind me system is possible ? could be fun
 command to add reminders to a json file
 a background task to somehow rotate thru and post if reminder hits thonk
@@ -64,3 +66,6 @@ a background task to somehow rotate thru and post if reminder hits thonk
 Been looking a lil bit to somehow catch disconnect exceptions, like if discord servers goes down or if i loose internet
 right now the program just sits there and spams exceptions endlessly.
 Ideally we would want to catch this somehow and just put in a wait timer to retry later.
+
+* Emoji system
+- Have woodhouse keep track of emojis that get used to most and have those to be higher chance of usage from him(this will have to be part of a statistics system)
