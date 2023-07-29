@@ -1,0 +1,42 @@
+{
+    "Tin can": {
+        "joke": "This can can!",
+        "min_weight": 0.1,
+        "max_weight": 0.2,
+        "value": 1,
+        "xp": 1,
+        "rarity": 0.05,
+        "unique": false,
+        "id": "fyx18LA"
+    },
+    "Old shoe": {
+        "joke": "Where is the other one?",
+        "min_weight": 0.2,
+        "max_weight": 0.4,
+        "value": 1,
+        "xp": 1,
+        "rarity": 0.08,
+        "unique": false,
+        "id": "fuJzRiE"
+    },
+    "Seaweed": {
+        "joke": "Those fish must be pretty high",
+        "min_weight": 0.1,
+        "max_weight": 0.2,
+        "value": 1,
+        "xp": 1,
+        "rarity": 0.05,
+        "unique": false,
+        "id": "fj9Ala7"
+    },
+    "Magikarp": {
+        "joke": "He casts splash...its super effective!",
+        "min_weight": 0.1,
+        "max_weight": 0.2,
+        "value": 1,
+        "xp": 1,
+        "rarity": 0.1,
+        "unique": false,
+        "id": "fRlIj4C"
+    }
+}

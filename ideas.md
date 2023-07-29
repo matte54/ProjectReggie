@@ -20,10 +20,6 @@ Like removing time files, rotating logs.
 Also keeping a database of UserIDs and there global names, and maybe also serverIDs for future multiserver support?
 Obviously important that this system runs indenpedent of the systmes it supports, there should never be any returns
 
-* Slash commands <----- GIVEN UP ON THIS 
-How do they work i want to implement them for all commands? 
-Opting in for fishing game with an "enable" in the channel to be able to see the game messages and also automaticly give you a profile?
-
 * The Logger
 Self made logger system, works like i want it to for now, i would like to be able to get some sort of statistics out of it
 Like maybe create a folder for each server instead and then have a log file for each person speaking.
@@ -32,16 +28,16 @@ Like maybe create a folder for each server instead and then have a log file for 
 Perhaps a independant system for all statistics, like fishing , mons , user chatting etc.
 There shouldt be a reason for it to be dependant on its supporting system it should just read and write stats
 and send them in text form to chat.
-- Use the plotly library to visualize statistics , it has tools to convert charts to images that can be posted and embedded
+- Use the plotly library to visualize statistics, it has tools to convert charts to images that can be posted and embedded
 
 * Bring over from 1.0
 The only thing worth keeping imo is Fishing and Pokemons the rest seems like a waste of time.
 maaaaaybe the link scraping? might need a doover , but i do enjoy when he posts random images or gifs.
+- Quiz game shouldnt be to hard to just implement straight over, but might need to rework some stuff.
+It would be a shame to leave it even if its not very used, i worked hard on it lol
 
 * Reddit talking
 Improvements to be done in the future to filtering, but for now i think i just carry it over.
-The dream is to have the bot run on a machine with a graphics card with cuda cores so it can do language models 
-instead like Falcon 7b with tensorflow. (https://huggingface.co/tiiuae/falcon-7b-instruct)
 
 * Debug
 Debugging system expanded, i want to be able to run the bot and have it have as little impact on things as possible
@@ -51,11 +47,25 @@ of acctually doing it
 * Fishing 2.0
 Obviously make it better and more logical code wise.
 - Base money value of sold fish on weight base value +/-
-- Add new fish?
+- Add new fish? double it atleast
 - Query fishname to get WR , money value for a medium?
 - Redesign fish with rareity in mind , seasonal? super rare? colorcoded 
-- Classes stay the same but color code rarities in each class white->yellow->blue->purple ?
-- Have a "none" fish on each class and use the rarity float for catching? and then have the skill up increase your rarity able catching?
+- Classes stay the same but color code rarities in each class white->yellow->blue->purple ? colors seems hard to
+implement pass for now
+- No time limit on fishing, but implement the fail chance into the time between your casts, and if you havent casted in 
+a long time(up to a certain point) you will have a higher chance of rarity and or class?
+For example if you cast 1 minute after you last cast you might get a fail chance of 80% , but if you wait 1 hour you
+have the default fail chance, but if you wait 6 hours your might have a 1% fail chance + to have your class roll go up
+1-3 steps and rarity?
+- WR system should include a timestamp and if it was a shiny *see query system?
+- Re-evaluate the old idea of enhancment gear, since buying a new cast now dosent rly make sense so we need something
+to spend money on, maybe buy a lure to give everyone a + something to catch for x time, and other temporary fishing gear?
+Shiny food for extra shiny chance? , better lure for reduced fail chance?, chance to get unique fish?
+- Unique fishes, added a unique bool in the fish database, add fish that are unique , so very low chance to catch,
+unique fishes can only be caught once per season? , extra money? special unique leaderboard?
+- failflares into file (add more) also add 25% chance failflares that includes the lost fish for extra salt.
+- Redesign schools system to be more global and permanent? maybe have something like if sevral class x is caught within
+a time frame, increase the chance of class x being caught again (simulating a school being present)
 
 * Remind me
 Remind me system is possible ? could be fun

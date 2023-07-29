@@ -1,0 +1,12 @@
+{
+    "Pike": {
+        "joke": "Think a swordfish would be up for a duel?",
+        "min_weight": 3.5,
+        "max_weight": 155.0,
+        "value": 6,
+        "xp": 6,
+        "rarity": 0.1,
+        "unique": false,
+        "id": "fDcPFWM"
+    }
+}

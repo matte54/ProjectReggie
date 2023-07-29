@@ -1,0 +1,12 @@
+{
+    "Crucian carp": {
+        "joke": "My skills are sharp!",
+        "min_weight": 0.25,
+        "max_weight": 4.5,
+        "value": 2,
+        "xp": 2,
+        "rarity": 0.1,
+        "unique": false,
+        "id": "flSbtWT"
+    }
+}

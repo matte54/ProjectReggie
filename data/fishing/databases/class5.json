@@ -1,0 +1,12 @@
+{
+    "Carp": {
+        "joke": "If I catch another they can carpool",
+        "min_weight": 0.85,
+        "max_weight": 40.0,
+        "value": 5,
+        "xp": 5,
+        "rarity": 0.1,
+        "unique": false,
+        "id": "fjpYgEW"
+    }
+}
