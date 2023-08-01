@@ -41,7 +41,7 @@ class Woodhouse(discord.Client):
         # systems
         self.mother = Mother(self)
         self.housekeeper = HouseKeeper(self)
-        self.varmanger = VarManager()
+        self.varmanager = VarManager()
         self.unitconverter = Converter()
         self.emojihandler = Emojihandler(self)
 
@@ -69,10 +69,6 @@ class Woodhouse(discord.Client):
         self.housekeeper.gather_emojis()
         await self.housekeeper.cakeday()
 
-        # testing varmanager (working)
-        # test = self.varmanger.read("testvar")
-        # self.varmanger.write("stuff", ["bananas", "apples"])
-
     def run_loop(self):
         self.run(credentials.KEY)
 
@@ -97,6 +93,15 @@ class Woodhouse(discord.Client):
         return (datetime.datetime.utcnow() - self.last_disconnect).total_seconds()
 
     async def on_message(self, message):
+        try:
+            self.prohibited_channels =  self.varmanager.read("black_channels")
+        except ValueError:
+            pass
+        if str(message.channel.id) in self.prohibited_channels:
+            # channel is blacklisted do nothing
+            log(message) # but log?
+            return
+
         if message.channel.type == discord.ChannelType.private:
             # we don't do anything with DMs yet
             return
