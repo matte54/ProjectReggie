@@ -7,9 +7,9 @@ from datetime import datetime
 from systems.logger import log, debug_on
 from systems.speaking import rspeak
 from systems.emojihandler import Emojihandler
+from systems.varmanager import VarManager
 
 # list of channels ids woodhouse cannot reflex in
-prohibited_channels = []
 
 
 class Reflex:
@@ -20,6 +20,8 @@ class Reflex:
         self.guild_list = []
         self.numbers = [0, 1, 2, 3, 4, 5]
         self.random_weights = [10, 9, 8, 4, 4, 2]
+        self.varmanager = VarManager()
+        self.prohibited_channels = []
 
     # main loop
     async def reflex(self):
@@ -27,6 +29,11 @@ class Reflex:
         self.find_guilds()
 
         while True:
+            try:
+                self.prohibited_channels =  self.varmanager.read("black_channels")
+            except ValueError:
+                pass
+
             channel_list = self.find_channel()  # get all channels to work with
             # filter out channels with these functions
             channel_list = await self.wasitme(channel_list)  # remove channels not suitable
@@ -118,7 +125,7 @@ class Reflex:
         for guild in self.guild_list:
             for channel in guild.text_channels:
                 if channel.permissions_for(
-                        guild.get_member(self.client.user.id)).send_messages and channel.id not in prohibited_channels:
+                        guild.get_member(self.client.user.id)).send_messages and str(channel.id) not in self.prohibited_channels:
                     channel_list.append(channel.id)
         return channel_list
 

@@ -7,7 +7,7 @@ from systems.logger import log, debug_on
 
 
 # commands
-from systems.commands import help, whoami, holiday, remindme, cast
+from systems.commands import help, whoami, holiday, remindme, cast, blacklist
 
 
 class Mother:
@@ -19,13 +19,15 @@ class Mother:
         self.holiday = holiday.Holiday()
         self.whoami = whoami.Whoami(self.client)
         self.cast = cast.Cast(self.client)
+        self.blacklist = blacklist.Blacklist()
 
         self.cmdlist = {
             "help": self.help,
             "whoami": self.whoami,
             "holiday": self.holiday,
             "remindme": self.remindme,
-            "cast": self.cast
+            "cast": self.cast,
+            "blacklist": self.blacklist
         }
 
     async def handle(self, message):
