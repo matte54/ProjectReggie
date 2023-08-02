@@ -9,11 +9,13 @@ from systems.gif_finder import Giphy_find
 
 class Help:
     def __init__(self):
-        self.findgif = Giphy_find()
+        pass
 
     async def command(self, message):
-        x = self.findgif.find("")
-        await message.author.send(x)
+        print(message.author.status)
+        print(message.author.desktop_status)
+        print(message.author.mobile_status)
+        print(message.author.web_status)
         #await message.author.send(
         #    "This is how Woodhouse´s commands work Krappa")
 

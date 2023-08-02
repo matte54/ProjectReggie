@@ -23,8 +23,9 @@ from systems.emojihandler import Emojihandler
 # tasks
 from tasks.status import StatusTask
 from tasks.reflex import Reflex
+from tasks.seensaver import SeenSaver
 
-intents = discord.Intents(messages=True, guilds=True, members=True, emojis=True, message_content=True, reactions=True)
+intents = discord.Intents(messages=True, guilds=True, members=True, emojis=True, message_content=True, reactions=True, presences=True)
 
 if debug_on():
     log("! - DEBUG IS ON - !")
@@ -37,6 +38,7 @@ class Woodhouse(discord.Client):
         # tasks
         self.statustask = StatusTask()
         self.reflex = Reflex(self)
+        self.seen = SeenSaver(self)
 
         # systems
         self.mother = Mother(self)
@@ -56,6 +58,7 @@ class Woodhouse(discord.Client):
     async def setup_hook(self):
         self.loop.create_task(self.statustask.status_task(self))
         self.loop.create_task(self.reflex.reflex())
+        self.loop.create_task(self.seen.seen())
 
     async def on_ready(self):
         log(f"Discord.py API version: {discord.__version__}")
@@ -94,7 +97,7 @@ class Woodhouse(discord.Client):
 
     async def on_message(self, message):
         try:
-            self.prohibited_channels =  self.varmanager.read("black_channels")
+            self.prohibited_channels = self.varmanager.read("black_channels")
         except ValueError:
             pass
         if str(message.channel.id) in self.prohibited_channels:
