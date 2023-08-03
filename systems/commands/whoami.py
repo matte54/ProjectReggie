@@ -4,9 +4,6 @@ import platform
 import requests
 import socket
 
-
-# this system might need to be awaited or maybe just get exceptions for request timing out
-
 class Whoami:
     def __init__(self, client):
         self.client = client

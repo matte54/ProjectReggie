@@ -12,16 +12,12 @@ class HouseKeeper:
         self.client = client
         # startup housekeeping
         self.logrotate()  # rotate chat logs if needed (monthly?)
-        self.timefiledelete()  # delete fishing timefiles
         self.idlist_path = "./data/etc/ids.json"
         self.emojilist_path = "./local/emojis.json"
         self.default_emojis_path = "./data/etc/default_emojis.txt"
         self.gif_find = Giphy_find()
 
     def logrotate(self):
-        pass
-
-    def timefiledelete(self):
         pass
 
     def gather_emojis(self):
