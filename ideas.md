@@ -21,14 +21,18 @@ Also keeping a database of UserIDs and there global names, and maybe also server
 Obviously important that this system runs indenpedent of the systmes it supports, there should never be any returns
 
 * The Logger
-Self made logger system, works like i want it to for now, i would like to be able to get some sort of statistics out of it
-Like maybe create a folder for each server instead and then have a log file for each person speaking.
+- Self made logger system, works like i want it to for now, i would like to be able to get some sort of statistics out of it
+like maybe create a folder for each server instead and then have a log file for each person speaking.
+- Messed around with a library called "yake" that can extract keywords from strings, might be able to implement 
+something with with the system i was dreaming of at the start. Use the logging for each user to extract keywords
+so woodhouse basically "learns" what users often talk about, and use urls/gifs/speak accordingly
 
 * Statistics
 Perhaps a independant system for all statistics, like fishing , mons , user chatting etc.
 There shouldt be a reason for it to be dependant on its supporting system it should just read and write stats
 and send them in text form to chat.
 - Use the plotly library to visualize statistics, it has tools to convert charts to images that can be posted and embedded
+
 
 * Bring over from 1.0
 The only thing worth keeping imo is Fishing and Pokemons the rest seems like a waste of time.
@@ -78,4 +82,17 @@ right now the program just sits there and spams exceptions endlessly.
 Ideally we would want to catch this somehow and just put in a wait timer to retry later.
 
 * Emoji system
-- Have woodhouse keep track of emojis that get used to most and have those to be higher chance of usage from him(this will have to be part of a statistics system)
+- Have woodhouse keep track of emojis that get used to most and have those to be higher chance of usage from
+him(this will have to be part of a statistics system)
+
+* Pokemon 2.0
+- Shinys?
+- Make already had pokemons non-catchable(leaving the mon for others) maybe if u $catch a mon and u already have it
+say you already have it and list users with a dex that needs it
+- Fix mon pictures with white backgrounds
+- Maybe categorize the mons like the trading cards do, with basic/stage1-2 for evolves and also common, uncommon and rare?
+And accordingly give mons less/more chances? might be alot of work to build that database into a json file since there
+are so many mons.. but would definitly make it more intresting.
+- Designing a embed to try to mimic a pokemon card for each mon that appears not just picture
+- Pokemon delay, feed a pokemon candy to make it appear again later, if you delay a pokemon and someone catches it
+reward delayer with a random free pokemon not in his dex
