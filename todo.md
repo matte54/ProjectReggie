@@ -32,3 +32,7 @@ Remove item when finished
 * Remindme command
 - Write remind me task to check the database and post (not started)
 
+* Statistics
+- Find a way to limit writes, need to figure out how to have it collect data for each dictionary it needs and write
+only like in 5-10 minute intervals, couldnt figure out how to approach it cause of the diffrent types that will be open
+simultanously when people are chatting. also diffrent servers.

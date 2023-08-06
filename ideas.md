@@ -32,6 +32,8 @@ Perhaps a independant system for all statistics, like fishing , mons , user chat
 There shouldt be a reason for it to be dependant on its supporting system it should just read and write stats
 and send them in text form to chat.
 - Use the plotly library to visualize statistics, it has tools to convert charts to images that can be posted and embedded
+- User seperate statistic json files, put every sentence thru yake (performance?) keywords : value(times)
+emoji value times, other stuff?
 
 
 * Bring over from 1.0

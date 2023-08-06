@@ -19,6 +19,7 @@ from systems.speaking import rspeak
 from systems.varmanager import VarManager
 from systems.unitconverter import Converter
 from systems.emojihandler import Emojihandler
+from systems.statistics import Statistics
 
 # tasks
 from tasks.status import StatusTask
@@ -46,6 +47,7 @@ class Woodhouse(discord.Client):
         self.varmanager = VarManager()
         self.unitconverter = Converter()
         self.emojihandler = Emojihandler(self)
+        self.statistics = Statistics(self)
 
         # testing disconnection handling
         self.reconnected = False
@@ -113,6 +115,7 @@ class Woodhouse(discord.Client):
             return
 
         log(message)  # send the message into the logs for storing
+        self.statistics.input(message) # send message to stats systems
 
         # look for $ commands
         if str(message.content).startswith("$"):

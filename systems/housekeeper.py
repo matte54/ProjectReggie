@@ -20,6 +20,10 @@ class HouseKeeper:
     def logrotate(self):
         pass
 
+    def clear_monthly(self):
+        # Clear monthly stats and post here?
+        pass
+
     def gather_emojis(self):
         data = {}
         # add in some of the default emojis from the default_emojis file
