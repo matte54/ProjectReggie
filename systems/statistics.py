@@ -80,9 +80,21 @@ class Statistics:
         self.user_data["month"]["messages"] += 1
 
     def handle_emojis(self):
-        emoji_list = re.findall(self.emoji_pattern, self.message_str)
-        if not emoji_list:
+        raw_emoji_list = re.findall(self.emoji_pattern, self.message_str)
+        if not raw_emoji_list:
             return  # when there is no emojis detected just staph
+
+        # add this check to make sure the emoji exists on the actual guild (nitro nerds)
+        with open('./local/emojis.json', "r") as f:
+            emoji_data = json.load(f)
+        emoji_list = []
+        for i in raw_emoji_list:
+            if i in emoji_data[self.guild_id]:
+                emoji_list.append(i)
+
+        if not emoji_list:
+            return # another check after cleaning the list
+
         for emoji in emoji_list:
             # add emoji to guild statistics
             if emoji in self.guild_data["alltime"]["emojis"]:
