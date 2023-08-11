@@ -5,8 +5,98 @@
         "max_weight": 155.0,
         "value": 6,
         "xp": 6,
-        "rarity": 0.1,
+        "rarity": 0.3,
         "unique": false,
         "id": "fDcPFWM"
+    },
+    "Stringfish": {
+        "joke": "Five more and I'll have a guitarfish!",
+        "min_weight": 2.5,
+        "max_weight": 120.0,
+        "value": 8,
+        "xp": 6,
+        "rarity": 0.2,
+        "unique": false,
+        "id": "fRiKcDo"
+    },
+    "King salmon": {
+        "joke": "I caught a king salmon! Checkmate!",
+        "min_weight": 4.0,
+        "max_weight": 500.0,
+        "value": 7,
+        "xp": 7,
+        "rarity": 0.8,
+        "unique": false,
+        "id": "f7KGXTy"
+    },
+    "Dorado": {
+        "joke": "I say 'dorado', you say 'doraydo'.",
+        "min_weight": 2.5,
+        "max_weight": 175.0,
+        "value": 6,
+        "xp": 6,
+        "rarity": 0.3,
+        "unique": false,
+        "id": "fxkyOBB"
+    },
+    "Gar": {
+        "joke": "Yar! It's a gar! Har har!",
+        "min_weight": 2.5,
+        "max_weight": 300.0,
+        "value": 6,
+        "xp": 6,
+        "rarity": 0.4,
+        "unique": false,
+        "id": "fixin5m"
+    },
+    "Sea bass": {
+        "joke": "No, wait- it's at least a C+!",
+        "min_weight": 2.0,
+        "max_weight": 128.0,
+        "value": 6,
+        "xp": 6,
+        "rarity": 0.1,
+        "unique": false,
+        "id": "fMRPpd7"
+    },
+    "Olive flounder": {
+        "joke": "That's not the pits!",
+        "min_weight": 2.5,
+        "max_weight": 125.0,
+        "value": 4,
+        "xp": 7,
+        "rarity": 0.15,
+        "unique": false,
+        "id": "fEzD7Q0"
+    },
+    "Giant trevally": {
+        "joke": "Yeah, I'm pretty well-traveled.",
+        "min_weight": 5.0,
+        "max_weight": 280.0,
+        "value": 7,
+        "xp": 7,
+        "rarity": 0.35,
+        "unique": false,
+        "id": "fqg1trF"
+    },
+    "Mahi-mahi": {
+        "joke": "It's all mahine-mahine.",
+        "min_weight": 3.5,
+        "max_weight": 240.0,
+        "value": 6,
+        "xp": 6,
+        "rarity": 0.5,
+        "unique": false,
+        "id": "fbRm6ip"
+    },
+    "Ray": {
+        "joke": "A few more and I'll have a tan!",
+        "min_weight": 4.0,
+        "max_weight": 450.0,
+        "value": 5,
+        "xp": 8,
+        "rarity": 0.7,
+        "unique": false,
+        "id": "fYZOD6g"
     }
 }

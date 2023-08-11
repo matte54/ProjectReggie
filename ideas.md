@@ -72,6 +72,8 @@ unique fishes can only be caught once per season? , extra money? special unique 
 - failflares into file (add more) also add 25% chance failflares that includes the lost fish for extra salt.
 - Redesign schools system to be more global and permanent? maybe have something like if sevral class x is caught within
 a time frame, increase the chance of class x being caught again (simulating a school being present)
+- Include message that you have taken the lead in a competition if u catch a bigger fish
+- Use the NAMEDFLARE for when you have a unique and loose it (easy way to roll for it early)
 
 * Remind me
 Remind me system is possible ? could be fun
@@ -88,10 +90,11 @@ Ideally we would want to catch this somehow and just put in a wait timer to retr
 him(this will have to be part of a statistics system)
 
 * Pokemon 2.0
-- Shinys?
+- Shinys
 - Make already had pokemons non-catchable(leaving the mon for others) maybe if u $catch a mon and u already have it
 say you already have it and list users with a dex that needs it
-- Fix mon pictures with white backgrounds
+- Fix mon pictures with white backgrounds, OR if we limit to newer pokemons editions only we can probably scrape up
+some better pictures to include in an embed in the goal of making them more into cards.
 - Maybe categorize the mons like the trading cards do, with basic/stage1-2 for evolves and also common, uncommon and rare?
 And accordingly give mons less/more chances? might be alot of work to build that database into a json file since there
 are so many mons.. but would definitly make it more intresting.

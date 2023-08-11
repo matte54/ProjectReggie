@@ -5,8 +5,168 @@
         "max_weight": 4.5,
         "value": 2,
         "xp": 2,
-        "rarity": 0.1,
+        "rarity": 0.7,
         "unique": false,
         "id": "flSbtWT"
+    },
+    "Ranchu goldfish": {
+        "joke": "But I prefer balsamicu goldfish!",
+        "min_weight": 0.2,
+        "max_weight": 1.2,
+        "value": 3,
+        "xp": 3,
+        "rarity": 0.2,
+        "unique": false,
+        "id": "f9ZDJGr"
+    },
+    "Crawfish": {
+        "joke": "Or else it's a lobster, and I'm a giant!",
+        "min_weight": 0.25,
+        "max_weight": 2.0,
+        "value": 3,
+        "xp": 3,
+        "rarity": 0.18,
+        "unique": false,
+        "id": "fnkE3Oc"
+    },
+    "Frog": {
+        "joke": "Or it's a new neighbor...and I have some apologizing to do.",
+        "min_weight": 0.1,
+        "max_weight": 1.8,
+        "value": 2,
+        "xp": 3,
+        "rarity": 0.15,
+        "unique": false,
+        "id": "ffBfjys"
+    },
+    "Freshwater goby": {
+        "joke": "Time to go bye-bye!",
+        "min_weight": 0.1,
+        "max_weight": 1.0,
+        "value": 2,
+        "xp": 2,
+        "rarity": 0.12,
+        "unique": false,
+        "id": "fkCE8dr"
+    },
+    "Loach": {
+        "joke": "It's ... looking at me with reproach.",
+        "min_weight": 0.25,
+        "max_weight": 6.6,
+        "value": 3,
+        "xp": 3,
+        "rarity": 0.8,
+        "unique": false,
+        "id": "fBw8eU4"
+    },
+    "Bluegill": {
+        "joke": "Do you think it calls me 'pinklung'?",
+        "min_weight": 0.15,
+        "max_weight": 2.0,
+        "value": 3,
+        "xp": 3,
+        "rarity": 0.4,
+        "unique": false,
+        "id": "f7R2y3P"
+    },
+    "Pond smelt": {
+        "joke": "Whoever smelt it, dealt it!",
+        "min_weight": 0.3,
+        "max_weight": 2.5,
+        "value": 1,
+        "xp": 1,
+        "rarity": 0.08,
+        "unique": false,
+        "id": "fP0t1Xh"
+    },
+    "Mitten crab": {
+        "joke": "One more and I'm ready for winter!",
+        "min_weight": 0.2,
+        "max_weight": 1.0,
+        "value": 2,
+        "xp": 2,
+        "rarity": 0.17,
+        "unique": false,
+        "id": "fgl8ARd"
+    },
+    "Angelfish": {
+        "joke": "That other fish told me to do it!",
+        "min_weight": 0.15,
+        "max_weight": 0.8,
+        "value": 3,
+        "xp": 4,
+        "rarity": 0.05,
+        "unique": false,
+        "id": "fU4pGat"
+    },
+    "Betta": {
+        "joke": "I betta not drop it!",
+        "min_weight": 0.15,
+        "max_weight": 0.8,
+        "value": 3,
+        "xp": 3,
+        "rarity": 0.02,
+        "unique": false,
+        "id": "frGT2qg"
+    },
+    "Piranha": {
+        "joke": "Sure hope it was the only one!",
+        "min_weight": 0.3,
+        "max_weight": 3.2,
+        "value": 2,
+        "xp": 4,
+        "rarity": 0.37,
+        "unique": false,
+        "id": "fOyKEyF"
+    },
+    "Surgeonfish": {
+        "joke": "Scalpel! Forceps! Fish hook!",
+        "min_weight": 0.25,
+        "max_weight": 2.0,
+        "value": 3,
+        "xp": 3,
+        "rarity": 0.29,
+        "unique": false,
+        "id": "fZzWSXz"
+    },
+    "Butterfly fish": {
+        "joke": "Did it change from a caterpillar fish?",
+        "min_weight": 0.25,
+        "max_weight": 1.9,
+        "value": 3,
+        "xp": 3,
+        "rarity": 0.35,
+        "unique": false,
+        "id": "fuq7GTE"
+    },
+    "Anchovy": {
+        "joke": "Stay away from my pizza!",
+        "min_weight": 0.15,
+        "max_weight": 0.5,
+        "value": 1,
+        "xp": 2,
+        "rarity": 0.48,
+        "unique": false,
+        "id": "fngcUwH"
+    },
+    "Horse mackerel": {
+        "joke": "Of course, Mack...er..el.",
+        "min_weight": 0.25,
+        "max_weight": 3.5,
+        "value": 3,
+        "xp": 3,
+        "rarity": 0.6,
+        "unique": false,
+        "id": "fj8336l"
+    },
+    "Barreleye": {
+        "joke": "Like eyeing fish in a barrel!",
+        "min_weight": 0.25,
+        "max_weight": 1.0,
+        "value": 3,
+        "xp": 3,
+        "rarity": 0.5,
+        "unique": false,
+        "id": "f8RHnUX"
     }
 }

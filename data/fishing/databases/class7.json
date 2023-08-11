@@ -5,8 +5,128 @@
         "max_weight": 2440.0,
         "value": 7,
         "xp": 7,
-        "rarity": 0.1,
+        "rarity": 0.5,
         "unique": false,
         "id": "fY2Uy8r"
+    },
+    "Sturgeon": {
+        "joke": "Wonder if it can perform sturgery...",
+        "min_weight": 6.0,
+        "max_weight": 5500.0,
+        "value": 8,
+        "xp": 5,
+        "rarity": 0.87,
+        "unique": false,
+        "id": "f9sWjZC"
+    },
+    "Napoleonfish": {
+        "joke": "It's not as big as it thinks!",
+        "min_weight": 6.0,
+        "max_weight": 4500.0,
+        "value": 5,
+        "xp": 10,
+        "rarity": 0.7,
+        "unique": false,
+        "id": "fOGwSYn"
+    },
+    "Tuna": {
+        "joke": "It's a little off-key!",
+        "min_weight": 6.0,
+        "max_weight": 4600.0,
+        "value": 7,
+        "xp": 7,
+        "rarity": 0.75,
+        "unique": false,
+        "id": "fdmI5sg"
+    },
+    "Blue marlin": {
+        "joke": "Listen to this fish. it's got a point.",
+        "min_weight": 6.0,
+        "max_weight": 5850.0,
+        "value": 8,
+        "xp": 8,
+        "rarity": 0.9,
+        "unique": false,
+        "id": "fV7Zk7H"
+    },
+    "Ocean sunfish": {
+        "joke": "Good thing I'm wearing ocean sunscreen!",
+        "min_weight": 15.0,
+        "max_weight": 5500.0,
+        "value": 3,
+        "xp": 10,
+        "rarity": 0.8,
+        "unique": false,
+        "id": "fh7D4uZ"
+    },
+    "Saw shark": {
+        "joke": "You could call it a sea saw!",
+        "min_weight": 10.0,
+        "max_weight": 2530.0,
+        "value": 4,
+        "xp": 10,
+        "rarity": 0.3,
+        "unique": false,
+        "id": "fDg0qdx"
+    },
+    "Hammerhead shark": {
+        "joke": "I hit the nail on the head!",
+        "min_weight": 8.0,
+        "max_weight": 3300.0,
+        "value": 7,
+        "xp": 7,
+        "rarity": 0.4,
+        "unique": false,
+        "id": "fyoBHYO"
+    },
+    "Great white shark": {
+        "joke": "Watch out for its jaws!",
+        "min_weight": 18.0,
+        "max_weight": 6000.0,
+        "value": 10,
+        "xp": 10,
+        "rarity": 0.92,
+        "unique": false,
+        "id": "ffQdopm"
+    },
+    "Whale shark": {
+        "joke": "I'm tellin' ya, it was thiiiiiiiiiiiiiiiiiiiis big!",
+        "min_weight": 250.0,
+        "max_weight": 6200.0,
+        "value": 15,
+        "xp": 15,
+        "rarity": 0.97,
+        "unique": false,
+        "id": "fJ3cFHE"
+    },
+    "Suckerfish": {
+        "joke": "I thought it was a shark! Oh, wait - now I get it. 'Sucker'...",
+        "min_weight": 8.0,
+        "max_weight": 3450.0,
+        "value": 8,
+        "xp": 8,
+        "rarity": 0.4,
+        "unique": false,
+        "id": "fEKP6S0"
+    },
+    "Oarfish": {
+        "joke": "I hope I catch morefish!",
+        "min_weight": 15.0,
+        "max_weight": 4600.0,
+        "value": 12,
+        "xp": 8,
+        "rarity": 0.7,
+        "unique": false,
+        "id": "f1YkLlG"
+    },
+    "Coelacanth": {
+        "joke": "Think positive! Be a coela-CAN!",
+        "min_weight": 13.0,
+        "max_weight": 5250.0,
+        "value": 5,
+        "xp": 15,
+        "rarity": 0.82,
+        "unique": false,
+        "id": "fqrgPjT"
     }
 }

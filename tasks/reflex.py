@@ -9,6 +9,7 @@ from systems.speaking import rspeak
 from systems.emojihandler import Emojihandler
 from systems.varmanager import VarManager
 
+
 # list of channels ids woodhouse cannot reflex in
 
 
@@ -18,8 +19,8 @@ class Reflex:
         self.emojihandler = Emojihandler(self.client)
         self.wait_cycles = 1
         self.guild_list = []
-        self.numbers = [0, 1, 2, 3, 4, 5]
-        self.random_weights = [10, 9, 8, 4, 4, 2]
+        self.numbers = [0, 1, 2, 3, 4, 5, 6]
+        self.random_weights = [10, 9, 8, 4, 4, 2, 10]
         self.varmanager = VarManager()
         self.prohibited_channels = []
 
@@ -30,7 +31,7 @@ class Reflex:
 
         while True:
             try:
-                self.prohibited_channels =  self.varmanager.read("black_channels")
+                self.prohibited_channels = self.varmanager.read("black_channels")
             except ValueError:
                 pass
 
@@ -45,7 +46,7 @@ class Reflex:
                 picked_channel = random.choice(channel_list)
                 # random a reflex action with weights
                 k = random.choices(self.numbers, weights=self.random_weights)
-                #k = [2] # this is left here to specifiy a choice for debugging
+                # k = [2] # this is left here to specifiy a choice for debugging
                 # If we random nothing or if theres no channels to do anything in
                 if k[0] == 0:
                     log(f'[Reflex] - DO NOTHING - {picked_channel}')
@@ -53,19 +54,22 @@ class Reflex:
                 # talk
                 if k[0] == 1:
                     log(f'[Reflex] - TALK - {picked_channel}')
-                    last_message = await self.find_message(picked_channel, 10)  # get the last message in the chosen channel
+                    last_message = await self.find_message(picked_channel,
+                                                           10)  # get the last message in the chosen channel
                     self.wait_cycles += 1
                     await self.talk(picked_channel, last_message)
                 # reaction
                 if k[0] == 2:
                     log(f'[Reflex] - REACTION - {picked_channel}')
-                    last_message = await self.find_message(picked_channel, 1)  # get the last message in the chosen channel
+                    last_message = await self.find_message(picked_channel,
+                                                           1)  # get the last message in the chosen channel
                     self.wait_cycles += 1
                     await self.reaction(picked_channel, last_message)
                 # reply
                 if k[0] == 3:
                     log(f'[Reflex] - REPLY - {picked_channel}')
-                    last_message = await self.find_message(picked_channel, 1)  # get the last message in the chosen channel
+                    last_message = await self.find_message(picked_channel,
+                                                           1)  # get the last message in the chosen channel
                     self.wait_cycles += 1
                     await self.reply(last_message)
                 # url
@@ -78,6 +82,9 @@ class Reflex:
                     log(f'[Reflex] - RECOMMEND - {picked_channel}')
                     self.wait_cycles += 2
                     self.recommend(picked_channel)
+                # do nothing
+                if k[0] == 6:
+                    log(f'[Reflex] - Waiting...')
 
             # print(f'waiting {(60 * random.randint(30, 40)) * self.wait_cycles} seconds')
             await asyncio.sleep((60 * random.randint(30, 40)) * self.wait_cycles)  # use this formula for live
@@ -125,7 +132,8 @@ class Reflex:
         for guild in self.guild_list:
             for channel in guild.text_channels:
                 if channel.permissions_for(
-                        guild.get_member(self.client.user.id)).send_messages and str(channel.id) not in self.prohibited_channels:
+                        guild.get_member(self.client.user.id)).send_messages and str(
+                    channel.id) not in self.prohibited_channels:
                     channel_list.append(channel.id)
         return channel_list
 

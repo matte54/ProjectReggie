@@ -5,8 +5,128 @@
         "max_weight": 1.5,
         "value": 4,
         "xp": 4,
-        "rarity": 0.1,
+        "rarity": 0.08,
         "unique": false,
         "id": "fXrxdFG"
+    },
+    "Yellow perch": {
+        "joke": "Those yellow birds have to sit somewhere!",
+        "min_weight": 0.3,
+        "max_weight": 4.2,
+        "value": 3,
+        "xp": 4,
+        "rarity": 0.22,
+        "unique": false,
+        "id": "fKTbaVA"
+    },
+    "Tilapia": {
+        "joke": "It makes me happy-a!",
+        "min_weight": 0.25,
+        "max_weight": 2.8,
+        "value": 4,
+        "xp": 3,
+        "rarity": 0.15,
+        "unique": false,
+        "id": "fVth8ST"
+    },
+    "Sweetfish": {
+        "joke": "Hope it's not artificially sweet!",
+        "min_weight": 0.3,
+        "max_weight": 4.2,
+        "value": 4,
+        "xp": 4,
+        "rarity": 0.35,
+        "unique": false,
+        "id": "fq8tH02"
+    },
+    "Cherry salmon": {
+        "joke": "It's the perfect topper for a marlin sundae!",
+        "min_weight": 0.3,
+        "max_weight": 5.5,
+        "value": 7,
+        "xp": 4,
+        "rarity": 0.5,
+        "unique": false,
+        "id": "ffzxntf"
+    },
+    "Char": {
+        "joke": "Now I'm gonna sit on it!",
+        "min_weight": 0.25,
+        "max_weight": 6.0,
+        "value": 4,
+        "xp": 3,
+        "rarity": 0.4,
+        "unique": false,
+        "id": "fJdu3LZ"
+    },
+    "Golden trout": {
+        "joke": "But the real treasure? Friendship.",
+        "min_weight": 0.35,
+        "max_weight": 12.0,
+        "value": 7,
+        "xp": 3,
+        "rarity": 0.75,
+        "unique": false,
+        "id": "fHWWsrL"
+    },
+    "Zebra turkeyfish": {
+        "joke": "Land, air, water-make up your mind!",
+        "min_weight": 0.4,
+        "max_weight": 2.5,
+        "value": 4,
+        "xp": 4,
+        "rarity": 0.25,
+        "unique": false,
+        "id": "fcLJRCU"
+    },
+    "Blowfish": {
+        "joke": "I'm blown away!",
+        "min_weight": 0.3,
+        "max_weight": 2.0,
+        "value": 2,
+        "xp": 2,
+        "rarity": 0.15,
+        "unique": false,
+        "id": "fi0BCoT"
+    },
+    "Puffer fish": {
+        "joke": "I thought you would be tougher, fish!",
+        "min_weight": 0.35,
+        "max_weight": 20.0,
+        "value": 3,
+        "xp": 3,
+        "rarity": 0.9,
+        "unique": false,
+        "id": "fFvLyww"
+    },
+    "Barred knifejaw": {
+        "joke": "They must have a hard time eating!",
+        "min_weight": 0.3,
+        "max_weight": 15.0,
+        "value": 3,
+        "xp": 3,
+        "rarity": 0.8,
+        "unique": false,
+        "id": "fgb03BH"
+    },
+    "Dab": {
+        "joke": "Not bad!",
+        "min_weight": 0.3,
+        "max_weight": 2.5,
+        "value": 4,
+        "xp": 4,
+        "rarity": 0.4,
+        "unique": false,
+        "id": "fKlFebf"
+    },
+    "Squid": {
+        "joke": "Do they... not actually 'bloop'?",
+        "min_weight": 0.45,
+        "max_weight": 5.0,
+        "value": 4,
+        "xp": 5,
+        "rarity": 0.1,
+        "unique": false,
+        "id": "fZPnIB3"
     }
 }

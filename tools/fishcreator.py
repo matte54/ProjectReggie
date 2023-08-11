@@ -67,12 +67,12 @@ def gen_id():
 
 
 x = f'f{str(gen_id())}'
-make_fish("Arapaima",
-          "How did it get here? Arapaiknow!",
-          6.0,
-          2440.0,
-          7,
-          7,
+make_fish("Coelacanth",
+          "Think positive! Be a coela-CAN!",
+          13.0,
+          5250.0,
+          5,
+          15,
           0.1,
           False,
           7,

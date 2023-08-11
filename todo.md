@@ -2,6 +2,8 @@
 Bugs/Problems and or Features , already implemented but needs additional work or fixing
 Remove item when finished
 ###########################################################################################
+* Main
+- Make the on_reaction take the user var into account and use statistics to consider users fav emojis
 
 * Reflex task
 - Implement URL
@@ -10,6 +12,7 @@ Remove item when finished
 
 * Status task
 - Custom activity seems dosent work
+- Look into twitch API for streaming check?
 - More data for variaty
 
 * Speaking system
@@ -19,12 +22,12 @@ Remove item when finished
 * Logger system
 - Build into a class
 - Integrate into user statistics
+- The filter needs re-evaluation to include emoji but reduce spam anyway
 
 * Housekeeper system
 - Log rotation -> logger
 
 * Emojihandler system
-- Implement logic for emoji choice(maybe into statistics to use favored ones) now just completely random
 
 * Help command
 - Write help message explaining woodhouse usage.

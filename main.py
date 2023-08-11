@@ -8,7 +8,7 @@ import platform
 import random
 import datetime
 
-# configs
+# configs + other
 from data.etc import credentials
 
 # systems
@@ -26,7 +26,8 @@ from tasks.status import StatusTask
 from tasks.reflex import Reflex
 from tasks.seensaver import SeenSaver
 
-intents = discord.Intents(messages=True, guilds=True, members=True, emojis=True, message_content=True, reactions=True, presences=True)
+intents = discord.Intents(messages=True, guilds=True, members=True, emojis=True,
+                          message_content=True, reactions=True, presences=True, voice_states=True)
 
 if debug_on():
     log("! - DEBUG IS ON - !")
@@ -35,6 +36,8 @@ if debug_on():
 class Woodhouse(discord.Client):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        self.prohibited_channels = None
 
         # tasks
         self.statustask = StatusTask()
@@ -104,7 +107,7 @@ class Woodhouse(discord.Client):
             pass
         if str(message.channel.id) in self.prohibited_channels:
             # channel is blacklisted do nothing
-            log(message) # but log?
+            log(message)  # but log?
             return
 
         if message.channel.type == discord.ChannelType.private:
@@ -115,7 +118,7 @@ class Woodhouse(discord.Client):
             return
 
         log(message)  # send the message into the logs for storing
-        self.statistics.input(message) # send message to stats systems
+        self.statistics.input(message)  # send message to stats systems
 
         # look for $ commands
         if str(message.content).startswith("$"):
@@ -164,6 +167,9 @@ class Woodhouse(discord.Client):
             for emoji in removed_emojis:
                 await main_channel.send(f'Emoji {emoji} was removed')
 
+    async def on_voice_state_update(self, member, before, after):
+        pass
+        # keep track of time in voice chat later maybe hmm
 
 if __name__ == "__main__":
     woodhouse = Woodhouse(intents=intents)

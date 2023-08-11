@@ -5,7 +5,7 @@
         "max_weight": 0.8,
         "value": 2,
         "xp": 1,
-        "rarity": 0.1,
+        "rarity": 0.15,
         "unique": false,
         "id": "fSfn0kt"
     },
@@ -15,7 +15,7 @@
         "max_weight": 1.0,
         "value": 2,
         "xp": 2,
-        "rarity": 0.1,
+        "rarity": 0.3,
         "unique": false,
         "id": "fg23dWw"
     },
@@ -25,7 +25,7 @@
         "max_weight": 5.0,
         "value": 3,
         "xp": 2,
-        "rarity": 0.1,
+        "rarity": 0.85,
         "unique": false,
         "id": "fPulauq"
     },
@@ -35,7 +35,7 @@
         "max_weight": 2.5,
         "value": 3,
         "xp": 1,
-        "rarity": 0.1,
+        "rarity": 0.25,
         "unique": false,
         "id": "fRcjLYg"
     },
@@ -45,7 +45,7 @@
         "max_weight": 1.0,
         "value": 2,
         "xp": 2,
-        "rarity": 0.1,
+        "rarity": 0.37,
         "unique": false,
         "id": "fBwlLnT"
     },
@@ -55,7 +55,7 @@
         "max_weight": 1.0,
         "value": 1,
         "xp": 1,
-        "rarity": 0.1,
+        "rarity": 0.35,
         "unique": false,
         "id": "fBpl6j3"
     },
@@ -65,7 +65,7 @@
         "max_weight": 0.8,
         "value": 1,
         "xp": 1,
-        "rarity": 0.1,
+        "rarity": 0.12,
         "unique": false,
         "id": "fHHusl4"
     },
@@ -75,7 +75,7 @@
         "max_weight": 1.5,
         "value": 2,
         "xp": 2,
-        "rarity": 0.1,
+        "rarity": 0.18,
         "unique": false,
         "id": "focnEMg"
     },
@@ -85,7 +85,7 @@
         "max_weight": 0.5,
         "value": 1,
         "xp": 1,
-        "rarity": 0.1,
+        "rarity": 0.08,
         "unique": false,
         "id": "fG6TmOj"
     },
@@ -95,7 +95,7 @@
         "max_weight": 2.5,
         "value": 3,
         "xp": 3,
-        "rarity": 0.1,
+        "rarity": 0.5,
         "unique": false,
         "id": "fE3aSfO"
     },
@@ -105,7 +105,7 @@
         "max_weight": 0.4,
         "value": 2,
         "xp": 2,
-        "rarity": 0.1,
+        "rarity": 0.06,
         "unique": false,
         "id": "f3SEvlQ"
     },
@@ -115,7 +115,7 @@
         "max_weight": 3.0,
         "value": 2,
         "xp": 2,
-        "rarity": 0.1,
+        "rarity": 0.7,
         "unique": false,
         "id": "fBeSc3w"
     },
@@ -125,7 +125,7 @@
         "max_weight": 1.5,
         "value": 1,
         "xp": 1,
-        "rarity": 0.1,
+        "rarity": 0.4,
         "unique": false,
         "id": "fAzoSVc"
     }

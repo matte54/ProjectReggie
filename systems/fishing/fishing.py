@@ -2,6 +2,8 @@ import datetime
 import random
 import json
 import os
+import re
+from discord import Embed
 
 from systems.logger import debug_on, log
 from data.fishing.flare import FLARE, NAMEDFLARE
@@ -13,8 +15,15 @@ class Fishing:
         self.user_profile_path = None
         self.user_profile = None
         self.user_id = None
+        self.user_name = None
         self.message = None
+        self.channel = None
         self.caught_fish = None
+        self.user_bucket = None
+        # special modifiers
+        self.isShiny = False
+        self.isUnique = False
+        self.isDing = 0
         # set these modifiers to use to enhance to de-hance casts
         self.fail_rate_modifier = 0.0  # negative numbers increase chance(max pos/neg is 5)
         self.class_modifier = 0
@@ -30,29 +39,44 @@ class Fishing:
     async def cast(self, message):
         self.message = message
         self.user_id = message.author.id  # int
+        self.user_name = message.author
+        self.channel = message.channel
         self.user_profile, self.user_profile_path = self.get_profile(self.user_id)  # return profile dict and path(str)
 
-        if await self.spam_check():  # check if casted within a minute
-            return
+        if not debug_on():  # only run spam check and time limits if debug is off
+            if await self.spam_check():  # check if casted within a minute
+                return
 
-        # fail check
-        self.between_casts()  # lower or raise failchance based on time since last
-        if await self.failed():
-            if debug_on():
-                log(f'[Fishing] - User failed cast')
-            return
+            # fail check
+            self.between_casts()  # lower or raise failchance based on time since last
+            if await self.failed():
+                if debug_on():
+                    log(f'[Fishing] - User failed cast')
+                return
         # so when we reached this far we are guaranteed a fish so now for the rolls
         # trying to build a rolling function that can take all modifiers in consideration
         # and also future modifiers , so figureing out something here is key
 
-        self.rolls()  # do all the rolling and randoming to picka a fish
-        self.handle_bucket()  # add fish to bucket
+        self.rolls()  # do all the rolling and randoming to pick a fish
+        returnvalue, pb = self.handle_bucket()  # add fish to bucket returns value of sold fish , if new returns None
+        if isinstance(returnvalue, int):
+            self.handle_money(returnvalue)
+
+        self.handle_profile()  # do profile stuff
+
+        finished_embed = self.fishing_embed(self.user_name, self.caught_fish["name"], self.caught_fish["joke"],
+                                            self.caught_fish["class"], self.caught_fish["weight"],
+                                            self.caught_fish["worth"],
+                                            self.caught_fish["xp_worth"], self.isShiny, self.caught_fish["category"],
+                                            self.isDing, old_pb=pb)
+
+        self.write_json(f"{self.profile_dir}{self.user_id}.json", self.user_profile)
+
+        await self.channel.send(embed=finished_embed)
 
     def rolls(self):
         now = datetime.datetime.now()
         self.user_profile["last"] = str(now.isoformat())  # update the last cast time
-        self.write_json(f"{self.profile_dir}{self.user_id}.json",
-                        self.user_profile)  # this should probably be moved to the end of the capture process
 
         # class pick
         chosen_class = random.choices(self.fish_databases, weights=WEIGHTS["default"])
@@ -63,19 +87,54 @@ class Fishing:
 
         with open(f'{self.database_dir}{final_item}', "r") as f:
             data = json.load(f)
-        # random a fish (this needs the rarity modifier implementation)
-        fish = random.choice(list(data))
+
+        # testing randoming fish based of rarity value (Not sure how to determain that this works properly)
+        weighted_items = []
+        for fish in data:
+            weighted_items.append((fish, 'rarity'))
+        weights = []
+        for fish, key in weighted_items:
+            weight = data[fish][key]
+            weights.append(int(weight * 100))
+        fish, key = random.choices(weighted_items, weights=weights, k=1)[0]
+
         self.caught_fish = data[fish]  # get dictionary with all data regarding caught fish
-        self.caught_fish["name"] = fish  # add in the fish name, just to have everything in the same dict
+        self.caught_fish["name"] = fish
+
+        # simple shiny system for now
+        # this should probably mark the fish in the bucket later not sure if going with astrix thing again
+        if random.randint(1, 100) > 95:
+            self.isShiny = True
+            self.caught_fish["min_weight"] *= 2  # double the min weight
+            self.caught_fish["max_weight"] *= random.randint(2, 5)  # max weight times 2-5 :/
+            self.handle_money(50)
+
         # get fish weight with triangular random to weight towards the middle
         half_weight = (self.caught_fish["min_weight"] + self.caught_fish["max_weight"]) / 2
         fish_weight = round(
             random.triangular(self.caught_fish["min_weight"], self.caught_fish["max_weight"], half_weight), 2)
-        weightCategory = self.weight_category(self.caught_fish["min_weight"], self.caught_fish["max_weight"],
-                                              fish_weight)
-        # add in the stuff into the fish dict for easy keeping
+        weightCategory, category_number = self.weight_category(self.caught_fish["min_weight"],
+                                                               self.caught_fish["max_weight"],
+                                                               fish_weight)
+        self.caught_fish["class"] = re.findall("\d+", str(chosen_class))[0]  # class str to an int
+
         self.caught_fish["weight"] = fish_weight
         self.caught_fish["category"] = weightCategory
+
+        # roll value/xp
+        # this adjusts the xp/money value of the fish +/- 3 depending on size for now
+        self.caught_fish["worth"] = self.caught_fish["value"]
+        self.caught_fish["xp_worth"] = self.caught_fish["xp"]
+        if category_number <= 3:
+            self.caught_fish["worth"] -= random.randint(1, 3)
+            if self.caught_fish["worth"] < 0:
+                self.caught_fish["worth"] = 0
+            self.caught_fish["xp_worth"] -= random.randint(1, 3)
+            if self.caught_fish["xp_worth"] < 0:
+                self.caught_fish["xp_worth"] = 0
+        else:
+            self.caught_fish["worth"] += random.randint(1, 3)
+            self.caught_fish["xp_worth"] += random.randint(1, 3)
 
     def between_casts(self):
         time_difference = datetime.datetime.now() - datetime.datetime.fromisoformat(self.user_profile["last"])
@@ -143,7 +202,18 @@ class Fishing:
             return data, f"{self.profile_dir}{user_id}.json"
 
     def handle_profile(self):
-        pass
+        if self.user_profile["xp"] + self.caught_fish["xp_worth"] >= self.user_profile["xpCap"]:
+            diffrence = (self.user_profile["xp"] + self.caught_fish["xp_worth"]) - self.user_profile["xpCap"]
+            self.user_profile["level"] += 1
+            self.user_profile["xp"] = diffrence
+            self.user_profile["xpCap"] = (10 + self.user_profile["level"])
+            self.isDing = self.user_profile["level"]
+        else:
+            self.user_profile["xp"] += self.caught_fish["xp_worth"]
+
+    def handle_money(self, money):
+        # print(f'Giving {self.user_name} {money} money')
+        self.user_profile["money"] += money
 
     def handle_bucket(self):
         now = datetime.datetime.now()
@@ -158,16 +228,29 @@ class Fishing:
                         "time": str(now.isoformat())
                     }
             }
+            self.user_bucket = data
             self.write_json(f"{self.bucket_dir}{self.user_id}.json", data)
         else:
             # add fish to existing bucket
             with open(f"{self.bucket_dir}{self.user_id}.json", "r") as f:
                 data = json.load(f)
+            self.user_bucket = data
 
-            if self.caught_fish["name"] in data:
-                print("User already have this fish")
-                # do stuff selling etc
-                return
+            if self.caught_fish["name"] in data:  # if user already has the fish
+                old_pb = data[self.caught_fish["name"]]["weight"]
+                if self.caught_fish["weight"] > data[self.caught_fish["name"]]["weight"]:  # if the dupe is larger
+                    data[self.caught_fish["name"]]["weight"] = self.caught_fish["weight"]
+                    data[self.caught_fish["name"]]["worth"] = self.caught_fish["value"]
+                    data[self.caught_fish["name"]]["unique"] = self.caught_fish["unique"]
+                    data[self.caught_fish["name"]]["time"] = str(now.isoformat())
+
+                    self.write_json(f"{self.bucket_dir}{self.user_id}.json", data)
+
+                    return self.user_bucket[self.caught_fish["name"]][
+                               "worth"], old_pb  # return the value of the old fish for selling, and pb
+
+                return self.caught_fish["worth"], old_pb  # return value of the new fish for selling, and pb
+
             data[self.caught_fish["name"]] = {}
             data[self.caught_fish["name"]]["weight"] = self.caught_fish["weight"]
             data[self.caught_fish["name"]]["worth"] = self.caught_fish["value"]
@@ -175,6 +258,8 @@ class Fishing:
             data[self.caught_fish["name"]]["time"] = str(now.isoformat())
 
             self.write_json(f"{self.bucket_dir}{self.user_id}.json", data)
+
+            return None, 0.0
 
     def weight_category(self, w_l, w_h, w):
         # this weight category is directly imported from 1.0
@@ -191,7 +276,40 @@ class Fishing:
             if y > w:
                 o = y
                 break
-        return sizes[x]
+        return sizes[x], x
+
+    # this is directly copied from 1.0 for now
+    # should probably redo this to read directly from the caught fish dict instead of feeding a thousand paramaters
+    def fishing_embed(self, username, fish, joke, fish_class, weight, value, xp, shiny, weight_c, ding, old_pb=0.0,
+                      old_wr=0.0,
+                      dethroned=""):
+
+        embed = Embed()
+        embed.title = f"{username} caught a {weight_c} {fish}!"
+        embed.description = f"*{joke}*\n**class {fish_class}**"
+        embed.colour = 0x99ff
+        # embed.add_field(name="Class", value=f"**{fish_class}**", inline=True)
+        embed.add_field(name="Weight", value=f"**{weight}**", inline=True)
+        embed.add_field(name="Xp", value=f"**{xp}**", inline=True)
+        embed.add_field(name="Bells", value=f"**{value}**", inline=True)
+        if old_pb == 0.0:
+            embed.add_field(name="New fish type!", value="Great addition to your bucket!")
+        elif weight > old_pb:
+            embed.add_field(name="NEW RECORD! Selling old...", value=f"*Your previous one was only {old_pb} lbs*")
+        else:
+            embed.add_field(name=f"Selling {fish}...", value=f"You already have one at {old_pb} lbs!")
+        if old_wr == 0.0 and dethroned == "":
+            embed.add_field(name="NEW WORLD RECORD!", value=f"*You caught the first {fish}!*")
+        elif weight > old_wr and dethroned != "":
+            embed.add_field(name="NEW WORLD RECORD!", value=f"*Previous record was {old_wr} lbs by {dethroned}*")
+        if shiny:
+            embed.add_field(name="!", value=f"SHINY!")
+        if ding != 0:
+            embed.add_field(name="DING!", value=f"{username} is now level {ding}!")
+        fishWithoutSpaces = fish.replace(" ", "")
+        icon_url = f"http://thedarkzone.se:8080/fishicons/{fishWithoutSpaces}.png"
+        embed.set_thumbnail(url=icon_url)
+        return embed
 
     def write_json(self, filepath, data):
         with open(filepath, "w") as f:
