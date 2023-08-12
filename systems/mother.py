@@ -7,7 +7,7 @@ from systems.logger import log, debug_on
 
 
 # commands
-from systems.commands import help, whoami, holiday, remindme, cast, blacklist, seen
+from systems.commands import help, whoami, holiday, remindme, cast, blacklist, seen, eee, roll
 
 
 class Mother:
@@ -21,6 +21,8 @@ class Mother:
         self.cast = cast.Cast(self.client)
         self.blacklist = blacklist.Blacklist()
         self.seen = seen.Seen(self.client)
+        self.eee = eee.Eee()
+        self.roll = roll.Roll()
 
         self.cmdlist = {
             "help": self.help,
@@ -29,7 +31,9 @@ class Mother:
             "remindme": self.remindme,
             "cast": self.cast,
             "blacklist": self.blacklist,
-            "seen": self.seen
+            "seen": self.seen,
+            "eee": self.eee,
+            "roll": self.roll
         }
 
     async def handle(self, message):

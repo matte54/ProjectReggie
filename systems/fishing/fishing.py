@@ -210,6 +210,7 @@ class Fishing:
             self.isDing = self.user_profile["level"]
         else:
             self.user_profile["xp"] += self.caught_fish["xp_worth"]
+            self.isDing = 0
 
     def handle_money(self, money):
         # print(f'Giving {self.user_name} {money} money')
