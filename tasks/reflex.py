@@ -84,9 +84,9 @@ class Reflex:
                     self.recommend(picked_channel)
                 # do nothing
                 if k[0] == 6:
+                    self.wait_cycles += 1
                     log(f'[Reflex] - Waiting...')
 
-            # print(f'waiting {(60 * random.randint(30, 40)) * self.wait_cycles} seconds')
             await asyncio.sleep((60 * random.randint(30, 40)) * self.wait_cycles)  # use this formula for live
             # await asyncio.sleep(10)
 

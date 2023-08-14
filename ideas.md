@@ -101,3 +101,12 @@ are so many mons.. but would definitly make it more intresting.
 - Designing a embed to try to mimic a pokemon card for each mon that appears not just picture
 - Pokemon delay, feed a pokemon candy to make it appear again later, if you delay a pokemon and someone catches it
 reward delayer with a random free pokemon not in his dex
+
+* New game idea "Random DND" dungeonmaster light?
+- Random DND monster can appear in the chat, anyone who wants to can roll for attacking
+- anyone who participates gets a dnd profile and gathers money/xp/loot 
+- If u attack the monster you are available to be attacked at that point.
+- players can pick class/race after that?
+- no healing allowed, if u get attacked you always take damage cause rolling saves isent rly feasable
+- player death removes the profile and players need to make a new char next monster
+- ???

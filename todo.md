@@ -9,6 +9,8 @@ Remove item when finished
 - Implement URL
 - Implement Recommendation?
 - Add holiday command for reflex?
+- implement a chance to just reply with something someone said from the log (needs a emoji check for guild compatibility)
+- also needs a chance to just post an emoji (seems more human)
 
 * Status task
 - Custom activity seems dosent work
@@ -20,7 +22,6 @@ Remove item when finished
 - Build into a class
 
 * Logger system
-- Build into a class
 - Integrate into user statistics
 - The filter needs re-evaluation to include emoji but reduce spam anyway
 

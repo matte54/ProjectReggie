@@ -20,13 +20,9 @@ def get_timestamp():
     return i
 
 
-# rogue magic
 def remove_emoji(text):
     result = re.subn(r'<a?:\w+:\d+>', '', text)[0]
     return result
-
-def emoji_stats():
-    pass
 
 
 # create and append to file named for usr in server subdir in /log and log rotation for statistics?
@@ -38,8 +34,7 @@ def logtofile(server, message, author):
     filepath = f'{folderpath}/{author}'
     f = open(filepath, 'a', encoding='utf-8')
     # run through both cleaning function that needs revising
-    # add emoji_stats here?
-    message = remove_emoji(message)
+    # message = remove_emoji(message)
     message = cleanmessage(message)
     if message is None:
         f.close()
@@ -49,8 +44,10 @@ def logtofile(server, message, author):
 
 
 # this and remove emoji needs to revised to include emojis for statistics stuff.
+# this is the old pattern r'^(http|<?https?:\S+)|^\s|^\W|^\d+$|^\d|^\s*$'
+# trying out this new one
 def cleanmessage(message):
-    no = re.search(r'^(http|<?https?:\S+)|^\s|^\W|^\d+$|^\d|^\s*$', message)
+    no = re.search(r'^(https?://\S+)|^\s*|^\W|^\d+$', message)
     if no:
         if debug_on():
             log(f'[INFO][Logger] - [{message}] DENIED by cleanMessage')
