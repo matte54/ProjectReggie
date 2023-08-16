@@ -31,7 +31,7 @@ def logtofile(server, message, author):
     folderpath = f'./log/{server}'
     if not os.path.exists(folderpath):
         os.makedirs(folderpath)
-    filepath = f'{folderpath}/{author}'
+    filepath = f'{folderpath}/{author}.log'
     f = open(filepath, 'a', encoding='utf-8')
     # run through both cleaning function that needs revising
     # message = remove_emoji(message)
@@ -47,7 +47,7 @@ def logtofile(server, message, author):
 # this is the old pattern r'^(http|<?https?:\S+)|^\s|^\W|^\d+$|^\d|^\s*$'
 # trying out this new one
 def cleanmessage(message):
-    no = re.search(r'^(https?://\S+)|^\s*|^\W|^\d+$', message)
+    no = re.search(r'^(https?://\S+)|^\W|^\d+$', message)
     if no:
         if debug_on():
             log(f'[INFO][Logger] - [{message}] DENIED by cleanMessage')

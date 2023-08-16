@@ -110,3 +110,5 @@ reward delayer with a random free pokemon not in his dex
 - no healing allowed, if u get attacked you always take damage cause rolling saves isent rly feasable
 - player death removes the profile and players need to make a new char next monster
 - ???
+
+* Achivements?! :O

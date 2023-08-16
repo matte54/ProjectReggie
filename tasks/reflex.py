@@ -2,6 +2,7 @@
 
 import asyncio
 import random
+import os
 from datetime import datetime
 
 from systems.logger import log, debug_on
@@ -28,7 +29,6 @@ class Reflex:
     async def reflex(self):
         await self.client.wait_until_ready()
         self.find_guilds()
-
         while True:
             try:
                 self.prohibited_channels = self.varmanager.read("black_channels")
@@ -46,7 +46,7 @@ class Reflex:
                 picked_channel = random.choice(channel_list)
                 # random a reflex action with weights
                 k = random.choices(self.numbers, weights=self.random_weights)
-                # k = [2] # this is left here to specifiy a choice for debugging
+                # k = [1] # this is left here to specifiy a choice for debugging
                 # If we random nothing or if theres no channels to do anything in
                 if k[0] == 0:
                     log(f'[Reflex] - DO NOTHING - {picked_channel}')
@@ -108,6 +108,20 @@ class Reflex:
                 refined_list.append(i)
         return refined_list
 
+    def check_logs(self):
+        # checks log folder and picks something someone said and returns it if nothing found returns None
+        line = ""
+        matching_files = []
+        for root, _, files in os.walk("./log"):
+            for file in files:
+                if file.endswith("log"):
+                    matching_files.append(os.path.join(root, file))
+        if matching_files:
+            logfile = random.choice(matching_files)
+            with open(logfile, 'r', encoding='utf-8') as f:
+                line = random.choice(f.readlines())
+        return line
+
     async def wasitme(self, channel_list):
         # this only works if we make a new list, dosent like if i remove things from the list when i loop
         # check all channels if Woodhouse was the last person to say something, if so remove the channel
@@ -156,7 +170,12 @@ class Reflex:
         last_message = random.choice(last_message)
         channel = self.client.get_channel(picked_channel)
         last_message_content = last_message.content
-        txt, debugstuff = rspeak(last_message_content)
+        if random.uniform(0.0, 1.0) < 0.25:
+            txt = self.check_logs()
+            if not txt:
+                txt, debugstuff = rspeak(last_message_content)
+        else:
+            txt, debugstuff = rspeak(last_message_content)
         await channel.send(txt)
 
     async def reaction(self, picked_channel, last_message):
@@ -172,7 +191,12 @@ class Reflex:
     async def reply(self, last_message):
         # replies on last message sent in selected channel
         last_message_content = last_message.content
-        txt, debugstuff = rspeak(last_message_content)
+        if random.uniform(0.0, 1.0) < 0.25:
+            txt = self.check_logs()
+            if not txt:
+                txt, debugstuff = rspeak(last_message_content)
+        else:
+            txt, debugstuff = rspeak(last_message_content)
         await last_message.reply(txt)
 
     def url(self, picked_channel):
