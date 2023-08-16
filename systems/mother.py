@@ -7,7 +7,7 @@ from systems.logger import log, debug_on
 
 
 # commands
-from systems.commands import help, whoami, holiday, remindme, cast, blacklist, seen, eee, roll
+from systems.commands import help, whoami, holiday, remindme, cast, blacklist, seen, eee, roll, event
 
 
 class Mother:
@@ -15,6 +15,7 @@ class Mother:
         self.client = client
         # commands
         self.remindme = remindme.Remindme()
+        self.event = event.Event()
         self.help = help.Help()
         self.holiday = holiday.Holiday()
         self.whoami = whoami.Whoami(self.client)
@@ -29,6 +30,7 @@ class Mother:
             "whoami": self.whoami,
             "holiday": self.holiday,
             "remindme": self.remindme,
+            "event": self.event,
             "cast": self.cast,
             "blacklist": self.blacklist,
             "seen": self.seen,
