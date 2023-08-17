@@ -12,7 +12,6 @@ class Event_handler:
         self.path = "./local/events.json"
         self.last_timestamp = None
         self.events_dict = None
-        self.current_date = datetime.date.today()
 
     def has_file_changed(self):
         current_timestamp = os.path.getmtime(self.path)
@@ -36,16 +35,17 @@ class Event_handler:
             if self.has_file_changed():  # if the file has been updated since last loop, reload it.
                 with open(self.path, "r") as f:
                     self.events_dict = json.load(f)
+                self.last_timestamp = os.path.getmtime(self.path)
 
             temp_list = []
             for key in self.events_dict:
                 event_date = datetime.date.fromisoformat(self.events_dict[key]["date"])
-                if event_date == self.current_date:
+                if event_date == datetime.date.today():
                     log(f'[Event Handler] - Event id {key} is today.')
                     channel = self.client.get_channel(self.events_dict[key]["channel"])
                     await channel.send(f'```yaml\n\n* EVENT TODAY *\n {self.events_dict[key]["msg"]}```')
                     temp_list.append(key)
-                if event_date < self.current_date:
+                if event_date < datetime.date.today():
                     # somehow this date has passed and is still in here, delete
                     log(f'[Event Handler] - Error: Event id {key} is in the database but has passed, deleting.')
                     temp_list.append(key)
