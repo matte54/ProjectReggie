@@ -25,6 +25,7 @@ from systems.statistics import Statistics
 from tasks.status import StatusTask
 from tasks.reflex import Reflex
 from tasks.seensaver import SeenSaver
+from tasks.event_handler import Event_handler
 
 intents = discord.Intents(messages=True, guilds=True, members=True, emojis=True,
                           message_content=True, reactions=True, presences=True, voice_states=True)
@@ -43,6 +44,7 @@ class Woodhouse(discord.Client):
         self.statustask = StatusTask()
         self.reflex = Reflex(self)
         self.seen = SeenSaver(self)
+        self.event_handler = Event_handler(self)
 
         # systems
         self.mother = Mother(self)
@@ -64,6 +66,7 @@ class Woodhouse(discord.Client):
         self.loop.create_task(self.statustask.status_task(self))
         self.loop.create_task(self.reflex.reflex())
         self.loop.create_task(self.seen.seen())
+        self.loop.create_task(self.event_handler.track_events())
 
     async def on_ready(self):
         log(f"Discord.py API version: {discord.__version__}")

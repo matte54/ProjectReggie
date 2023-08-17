@@ -48,7 +48,7 @@ class Event:
             return
         self.event_date = dates[0]
         self.event_msg = self.msg
-        self.event_channel = str(message.channel.id)
+        self.event_channel = message.channel.id
 
         self.make_event()
         self.write_json(self.events_path, self.events_dict)
