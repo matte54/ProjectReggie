@@ -104,7 +104,7 @@ class Reflex:
             if debug_on():
                 log(f'[Reflex] - {i} has {number_of_messages} message(s) recently')
             # if channel has no messages today remove it from the list.
-            if not number_of_messages < 1:
+            if number_of_messages:
                 refined_list.append(i)
         return refined_list
 
