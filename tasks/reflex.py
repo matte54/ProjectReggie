@@ -30,10 +30,10 @@ class Reflex:
         await self.client.wait_until_ready()
         self.find_guilds()
         while True:
-            try:
+            if self.varmanager.read("black_channels"):
                 self.prohibited_channels = self.varmanager.read("black_channels")
-            except ValueError:
-                pass
+            else:
+                self.prohibited_channels = []
 
             channel_list = self.find_channel()  # get all channels to work with
             # filter out channels with these functions

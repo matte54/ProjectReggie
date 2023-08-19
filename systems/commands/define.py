@@ -2,8 +2,6 @@ import requests
 from systems.logger import debug_on, log
 
 
-# x = f'```yaml\n\n{final_output}```'
-
 class Define:
     def __init__(self):
         self.freedict_json = None
@@ -45,7 +43,9 @@ class Define:
             formatted_lists = '\n'.join(['\n'.join(f"{item:2}" for item in sublist) for sublist in main_list])
 
             freedict_yaml_response = f'```yaml\n\n' \
-                                     f'{self.freedict_json["word"]} - {phonetics}\n' \
+                                     f'{self.freedict_json["word"].capitalize()} - {phonetics}\n' \
                                      f'{formatted_lists}' \
                                      f'```'
             await message.channel.send(freedict_yaml_response)
+        else:
+            await message.channel.send(f'```yaml\n\nError, definintions can only be done on single english words```')

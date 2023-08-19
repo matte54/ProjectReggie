@@ -104,10 +104,10 @@ class Woodhouse(discord.Client):
         return (datetime.datetime.utcnow() - self.last_disconnect).total_seconds()
 
     async def on_message(self, message):
-        try:
+        if self.varmanager.read("black_channels"):
             self.prohibited_channels = self.varmanager.read("black_channels")
-        except ValueError:
-            pass
+        else:
+            self.prohibited_channels = []
         if str(message.channel.id) in self.prohibited_channels:
             # channel is blacklisted do nothing
             log(message)  # but log?

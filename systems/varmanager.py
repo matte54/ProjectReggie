@@ -27,7 +27,8 @@ class VarManager:
             return data[varname]
         else:
             log(f'[ERROR] {varname} does not exist in vars.json')
-            raise ValueError(f'{varname} does not exist in vars.json')
+            return None
+            # raise ValueError(f'{varname} does not exist in vars.json')
 
     def write_json(self, filepath, data):
         with open(filepath, "w") as f:

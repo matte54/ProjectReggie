@@ -58,6 +58,9 @@ class Fishing:
         # and also future modifiers , so figureing out something here is key
 
         self.rolls()  # do all the rolling and randoming to pick a fish
+        # stats
+        wr, holder = self.wr_check() # check or create the world record stat
+
         returnvalue, pb = self.handle_bucket()  # add fish to bucket returns value of sold fish , if new returns None
         if isinstance(returnvalue, int):
             self.handle_money(returnvalue)
@@ -68,7 +71,7 @@ class Fishing:
                                             self.caught_fish["class"], self.caught_fish["weight"],
                                             self.caught_fish["worth"],
                                             self.caught_fish["xp_worth"], self.isShiny, self.caught_fish["category"],
-                                            self.isDing, old_pb=pb)
+                                            self.isDing, old_pb=pb, old_wr=wr, dethroned=holder)
 
         self.write_json(f"{self.profile_dir}{self.user_id}.json", self.user_profile)
 
@@ -103,6 +106,7 @@ class Fishing:
 
         # simple shiny system for now
         # this should probably mark the fish in the bucket later not sure if going with astrix thing again
+        self.isShiny = False # reset the shiny status or it will carry over to the next cast
         if random.randint(1, 100) > 95:
             self.isShiny = True
             self.caught_fish["min_weight"] *= 2  # double the min weight
@@ -231,6 +235,8 @@ class Fishing:
             }
             self.user_bucket = data
             self.write_json(f"{self.bucket_dir}{self.user_id}.json", data)
+
+            return None, 0.0
         else:
             # add fish to existing bucket
             with open(f"{self.bucket_dir}{self.user_id}.json", "r") as f:
@@ -261,6 +267,36 @@ class Fishing:
             self.write_json(f"{self.bucket_dir}{self.user_id}.json", data)
 
             return None, 0.0
+
+    def wr_check(self):
+        # if theres no wr file create it
+        if not os.path.isfile(f"./local/fishing/wr.json"):
+            wrs = {}
+            self.write_json("./local/fishing/wr.json", wrs)
+        # open wr file
+        with open(f"./local/fishing/wr.json", "r") as f:
+            wr_data = json.load(f)
+        if self.caught_fish["name"] in wr_data:
+            old_wr = wr_data[self.caught_fish["name"]]["weight"]
+            old_wr_holder = wr_data[self.caught_fish["name"]]["holder"]
+            # if wr fish
+            if self.caught_fish["weight"] > wr_data[self.caught_fish["name"]]["weight"]:
+                wr_data[self.caught_fish["name"]]["weight"] = self.caught_fish["weight"]
+                wr_data[self.caught_fish["name"]]["holder"] = str(self.user_name)
+                wr_data[self.caught_fish["name"]]["time"] = str(datetime.datetime.now().isoformat())
+                self.write_json("./local/fishing/wr.json", wr_data)
+
+            return old_wr, old_wr_holder
+        else:
+            # fish is not on wr file
+            wr_data[self.caught_fish["name"]] = {}
+            wr_data[self.caught_fish["name"]]["weight"] = self.caught_fish["weight"]
+            wr_data[self.caught_fish["name"]]["holder"] = str(self.user_name)
+            wr_data[self.caught_fish["name"]]["time"] = str(datetime.datetime.now().isoformat())
+            self.write_json("./local/fishing/wr.json", wr_data)
+
+            return 0.0, ""
+
 
     def weight_category(self, w_l, w_h, w):
         # this weight category is directly imported from 1.0
@@ -301,7 +337,7 @@ class Fishing:
             embed.add_field(name=f"Selling {fish}...", value=f"You already have one at {old_pb} lbs!")
         if old_wr == 0.0 and dethroned == "":
             embed.add_field(name="NEW WORLD RECORD!", value=f"*You caught the first {fish}!*")
-        elif weight > old_wr and dethroned != "":
+        elif self.caught_fish["weight"] > old_wr and dethroned != "":
             embed.add_field(name="NEW WORLD RECORD!", value=f"*Previous record was {old_wr} lbs by {dethroned}*")
         if shiny:
             embed.add_field(name="!", value=f"SHINY!")

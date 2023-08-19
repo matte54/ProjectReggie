@@ -18,16 +18,19 @@ class Blacklist:
                 if wordlist[1] == "add":
                     channelid = wordlist[2][2:][:-1]
                     if len(channelid) > 17:
-                        try:
+                        if self.varmanager.read("black_channels"):
                             x = self.varmanager.read("black_channels")
                             if channelid not in x:
                                 log(f'[Blacklist] - blacklisting {channelid}')
+                                await message.add_reaction("👍")
                                 x.append(channelid)
                                 self.varmanager.write("black_channels", x)
                             else:
                                 log(f'[Blacklist] - {channelid} already blacklisted')
-                        except ValueError:
+                        else:
                             self.varmanager.write("black_channels", [channelid])  # if var dosent exist on file add new
+                            log(f'[Blacklist] - blacklisting {channelid}')
+                            await message.add_reaction("👍")
                     else:
                         log(f'[Blacklist] - {channelid} is not a valid channelid')
 
@@ -39,6 +42,7 @@ class Blacklist:
                             if channelid in x:
                                 x.remove(channelid)
                                 self.varmanager.write("black_channels", x)
+                                await message.add_reaction("👍")
                                 log(f'[Blacklist] - Removing {channelid} from blacklist')
                             else:
                                 log(f'[Blacklist] - {channelid} is not blacklisted')
