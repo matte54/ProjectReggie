@@ -6,7 +6,7 @@ import re
 from discord import Embed
 
 from systems.logger import debug_on, log
-from data.fishing.flare import FLARE, NAMEDFLARE
+from data.fishing.flare import FLARE
 from data.fishing.weights import WEIGHTS
 
 
@@ -210,7 +210,7 @@ class Fishing:
             diffrence = (self.user_profile["xp"] + self.caught_fish["xp_worth"]) - self.user_profile["xpCap"]
             self.user_profile["level"] += 1
             self.user_profile["xp"] = diffrence
-            self.user_profile["xpCap"] = (10 + self.user_profile["level"])
+            self.user_profile["xpCap"] += (10 + self.user_profile["level"])
             self.isDing = self.user_profile["level"]
         else:
             self.user_profile["xp"] += self.caught_fish["xp_worth"]

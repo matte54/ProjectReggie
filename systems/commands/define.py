@@ -22,7 +22,10 @@ class Define:
             self.freedict_json = self.freedict_response.json()[0]
             # check if theres phoentics
             if self.freedict_json["phonetics"]:
-                phonetics = self.freedict_json["phonetics"][0]["text"]
+                try:
+                    phonetics = self.freedict_json["phonetics"][0]["text"]
+                except KeyError:
+                    phonetics = ""
             else:
                 phonetics = ""
 

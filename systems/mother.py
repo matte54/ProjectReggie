@@ -8,6 +8,7 @@ from systems.logger import log, debug_on
 
 # commands
 from systems.commands import help, whoami, holiday, remindme, cast, blacklist, seen, eee, roll, event, define, fishing
+from systems.commands import bucket
 
 
 class Mother:
@@ -26,6 +27,7 @@ class Mother:
         self.roll = roll.Roll()
         self.define = define.Define()
         self.fishing = fishing.Fishing()
+        self.bucket = bucket.Bucket()
 
         self.cmdlist = {
             "help": self.help,
@@ -39,7 +41,8 @@ class Mother:
             "eee": self.eee,
             "roll": self.roll,
             "define": self.define,
-            "fishing": self.fishing
+            "fishing": self.fishing,
+            "bucket": self.bucket
         }
 
     async def handle(self, message):

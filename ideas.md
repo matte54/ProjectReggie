@@ -73,7 +73,8 @@ unique fishes can only be caught once per season? , extra money? special unique 
 - Redesign schools system to be more global and permanent? maybe have something like if sevral class x is caught within
 a time frame, increase the chance of class x being caught again (simulating a school being present)
 - Include message that you have taken the lead in a competition if u catch a bigger fish
-- Use the NAMEDFLARE for when you have a unique and loose it (easy way to roll for it early)
+
+- Unique fish = Nemo, Jaws, Qwerty, Dory
 
 * Remind me
 Remind me system is possible ? could be fun
@@ -104,7 +105,7 @@ reward delayer with a random free pokemon not in his dex
 
 * New game idea "Random DND" dungeonmaster light?
 - Random DND monster can appear in the chat, anyone who wants to can roll for attacking
-- anyone who participates gets a dnd profile and gathers money/xp/loot 
+- anyone who participates gets a dnd profile and gathers money/xp/loot
 - If u attack the monster you are available to be attacked at that point.
 - players can pick class/race after that?
 - no healing allowed, if u get attacked you always take damage cause rolling saves isent rly feasable
@@ -112,3 +113,6 @@ reward delayer with a random free pokemon not in his dex
 - ???
 
 * Achivements?! :O
+
+* Events 
+- Add $events upcoming to show maybe the next 3 upcoming events?

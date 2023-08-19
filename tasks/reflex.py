@@ -9,6 +9,7 @@ from systems.logger import log, debug_on
 from systems.speaking import rspeak
 from systems.emojihandler import Emojihandler
 from systems.varmanager import VarManager
+from systems.gif_finder import Giphy_find
 
 
 # list of channels ids woodhouse cannot reflex in
@@ -23,6 +24,7 @@ class Reflex:
         self.numbers = [0, 1, 2, 3, 4, 5, 6]
         self.random_weights = [10, 9, 8, 4, 4, 2, 10]
         self.varmanager = VarManager()
+        self.gif_finder = Giphy_find()
         self.prohibited_channels = []
 
     # main loop
@@ -46,7 +48,7 @@ class Reflex:
                 picked_channel = random.choice(channel_list)
                 # random a reflex action with weights
                 k = random.choices(self.numbers, weights=self.random_weights)
-                # k = [1] # this is left here to specifiy a choice for debugging
+                # k = [4] # this is left here to specifiy a choice for debugging
                 # If we random nothing or if theres no channels to do anything in
                 if k[0] == 0:
                     log(f'[Reflex] - DO NOTHING - {picked_channel}')
@@ -76,7 +78,7 @@ class Reflex:
                 if k[0] == 4:
                     log(f'[Reflex] - URL - {picked_channel}')
                     self.wait_cycles += 2
-                    self.url(picked_channel)
+                    await self.url(picked_channel)
                 # recommend
                 if k[0] == 5:
                     log(f'[Reflex] - RECOMMEND - {picked_channel}')
@@ -199,8 +201,13 @@ class Reflex:
             txt, debugstuff = rspeak(last_message_content)
         await last_message.reply(txt)
 
-    def url(self, picked_channel):
-        pass
+    async def url(self, picked_channel):
+        # for now this just uses the giphy trending stuff
+        # scraper should be implemented here at some point
+        channel = self.client.get_channel(picked_channel)
+        gif = self.gif_finder.find("")
+        if gif:
+            await channel.send(gif)
 
     def recommend(self, picked_channel):
         pass
