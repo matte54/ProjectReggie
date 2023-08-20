@@ -76,7 +76,7 @@ class Fishbase:
 
     def create_embed(self):
         self.embed = None
-        self.embed = discord.Embed(title=f'{self.query}', description=f'This fish likes to swim')
+        self.embed = discord.Embed(title=f'{self.query}', description=f'{self.fish["fact"]}')
         self.embed.set_author(name="Fish Encylopedia")
         self.embed.add_field(name=f'Class {self.fish_class}',
                              value=f'Average size\n{self.fish["min_weight"] + self.fish["max_weight"] / 2} lbs')
@@ -85,7 +85,7 @@ class Fishbase:
                                  inline=True)
         else:
             self.embed.add_field(name="", value=f'', inline=True)
-        self.embed.add_field(name="Rarity", value=f"4%", inline=True) # statistics later
+        self.embed.add_field(name="Rarity", value=f'{self.fish["rarity"] * 100}%', inline=True) # this isent quite right but will do for now
         if self.fish["unique"]:
             self.embed.add_field(name="Unique", value="Yes", inline=True)
         else:
@@ -97,4 +97,4 @@ class Fishbase:
             self.embed.add_field(name="Holders", value=f'{holder_list}')
         else:
             self.embed.add_field(name="Holders", value=f"None")
-        self.embed.set_thumbnail(url=f'http://thedarkzone.se:8080/fishicons/{self.query.lower().replace(" ", "")}.png') # this aint working for some reason dansgame
+        self.embed.set_thumbnail(url=f'http://thedarkzone.se:8080/fishicons/{self.query.capitalize().replace(" ", "")}.png')

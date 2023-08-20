@@ -32,7 +32,7 @@ class SeenSaver:
                             data[str(member.id)] = now.isoformat()
 
             self.write_json(self.filepath, data)
-            await asyncio.sleep(300)
+            await asyncio.sleep(120)
 
     def write_json(self, filepath, data):
         with open(filepath, "w") as f:

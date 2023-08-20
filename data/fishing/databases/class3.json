@@ -7,7 +7,8 @@
         "xp": 2,
         "rarity": 0.7,
         "unique": false,
-        "id": "flSbtWT"
+        "id": "flSbtWT",
+        "fact": "(Carassius carassius) is a barbel-less European relative of the goldfish. The common carp was introduced to North America as a sport fish and food fish during the middle of the 19th century"
     },
     "Ranchu goldfish": {
         "joke": "But I prefer balsamicu goldfish!",
@@ -17,7 +18,8 @@
         "xp": 3,
         "rarity": 0.2,
         "unique": false,
-        "id": "f9ZDJGr"
+        "id": "f9ZDJGr",
+        "fact": "The Ranchu (also Maruko) is a hooded variety of goldfish native to China. It is referred to as the king of goldfish by the Japanese. Maruko more commonly refers to the egg-fish goldfish"
     },
     "Crawfish": {
         "joke": "Or else it's a lobster, and I'm a giant!",
@@ -27,7 +29,8 @@
         "xp": 3,
         "rarity": 0.18,
         "unique": false,
-        "id": "fnkE3Oc"
+        "id": "fnkE3Oc",
+        "fact": "Also called crayfish or crawdad, any of numerous crustaceans (order Decapoda, phylum Arthropoda) constituting the families Astacidae (Northern Hemisphere), Parastacidae, and Austroastracidae (Southern Hemisphere). They are closely related to the lobster"
     },
     "Frog": {
         "joke": "Or it's a new neighbor...and I have some apologizing to do.",
@@ -37,7 +40,8 @@
         "xp": 3,
         "rarity": 0.15,
         "unique": false,
-        "id": "ffBfjys"
+        "id": "ffBfjys",
+        "fact": "Any of various tailless amphibians belonging to the order Anura. The term may be limited to any member of the family Ranidae (true frogs), but more broadly the name frog is often used to distinguish the smooth-skinned, leaping anurans from squat, warty, hopping ones, which are called toads"
     },
     "Freshwater goby": {
         "joke": "Time to go bye-bye!",
@@ -47,7 +51,8 @@
         "xp": 2,
         "rarity": 0.12,
         "unique": false,
-        "id": "fkCE8dr"
+        "id": "fkCE8dr",
+        "fact": "Gobies are carnivorous, usually small in size, and found throughout the world. Especially abundant in the tropics, they are primarily marine in habit. Most species are bottom-dwellers and have a weak suction cup formed by the fusion of their pelvic fins"
     },
     "Loach": {
         "joke": "It's ... looking at me with reproach.",
@@ -57,7 +62,8 @@
         "xp": 3,
         "rarity": 0.8,
         "unique": false,
-        "id": "fBw8eU4"
+        "id": "fBw8eU4",
+        "fact": "Small, generally elongated freshwater fishes of the family Cobitidae. More than 200 species are known. Most are native to central and southern Asia"
     },
     "Bluegill": {
         "joke": "Do you think it calls me 'pinklung'?",
@@ -67,7 +73,8 @@
         "xp": 3,
         "rarity": 0.4,
         "unique": false,
-        "id": "f7R2y3P"
+        "id": "f7R2y3P",
+        "fact": "Popular game fish in the sunfish family, Centrarchidae (order Perciformes). It is one of the best-known sunfishes throughout its original range in the freshwater habitats of the central and southern United States"
     },
     "Pond smelt": {
         "joke": "Whoever smelt it, dealt it!",
@@ -77,7 +84,8 @@
         "xp": 1,
         "rarity": 0.08,
         "unique": false,
-        "id": "fP0t1Xh"
+        "id": "fP0t1Xh",
+        "fact": "Any of certain silvery, chiefly marine food fishes, family Osmeridae, closely related to salmon and trout and found in cold northern waters. Smelts, like trout, have a small, adipose (fleshy) fin"
     },
     "Mitten crab": {
         "joke": "One more and I'm ready for winter!",
@@ -87,7 +95,8 @@
         "xp": 2,
         "rarity": 0.17,
         "unique": false,
-        "id": "fgl8ARd"
+        "id": "fgl8ARd",
+        "fact": "Also known as the Shanghai hairy crab, is a medium-sized burrowing crab that is named for its furry claws, which resemble mittens. It is native to rivers, estuaries and other coastal habitats of East Asia"
     },
     "Angelfish": {
         "joke": "That other fish told me to do it!",
@@ -97,7 +106,8 @@
         "xp": 4,
         "rarity": 0.05,
         "unique": false,
-        "id": "fU4pGat"
+        "id": "fU4pGat",
+        "fact": "A small genus of freshwater fish from the family Cichlidae known to most aquarists as angelfish. All Pterophyllum species originate from the Amazon Basin, Orinoco Basin and various rivers in the Guiana Shield in tropical South America"
     },
     "Betta": {
         "joke": "I betta not drop it!",
@@ -107,7 +117,8 @@
         "xp": 3,
         "rarity": 0.02,
         "unique": false,
-        "id": "frGT2qg"
+        "id": "frGT2qg",
+        "fact": "A large genus of small, active, often colorful, freshwater ray-finned fishes, in the gourami family (Osphronemidae). The best known Betta species is B. splendens, commonly known as the Siamese fighting fish and often kept as an aquarium pet"
     },
     "Piranha": {
         "joke": "Sure hope it was the only one!",
@@ -117,7 +128,8 @@
         "xp": 4,
         "rarity": 0.37,
         "unique": false,
-        "id": "fOyKEyF"
+        "id": "fOyKEyF",
+        "fact": "Freshwater fish in the family Serrasalmidae, or within the tetra family, Characidae in order Characiformes. These fish inhabit South American rivers, Although often described as extremely predatory and mainly feeding on fish"
     },
     "Surgeonfish": {
         "joke": "Scalpel! Forceps! Fish hook!",
@@ -127,7 +139,8 @@
         "xp": 3,
         "rarity": 0.29,
         "unique": false,
-        "id": "fZzWSXz"
+        "id": "fZzWSXz",
+        "fact": "A popular fish in marine aquaria, it is the only member of the genus Paracanthurus. A number of common names are attributed to the species, including regal tang, palette surgeonfish, blue tang"
     },
     "Butterfly fish": {
         "joke": "Did it change from a caterpillar fish?",
@@ -137,7 +150,8 @@
         "xp": 3,
         "rarity": 0.35,
         "unique": false,
-        "id": "fuq7GTE"
+        "id": "fuq7GTE",
+        "fact": "A group of conspicuous tropical marine fish of the family Chaetodontidae, the bannerfish and coralfish are also included in this group. Found mostly on the reefs of the Atlantic, Indian, and Pacific Oceans"
     },
     "Anchovy": {
         "joke": "Stay away from my pizza!",
@@ -147,7 +161,8 @@
         "xp": 2,
         "rarity": 0.48,
         "unique": false,
-        "id": "fngcUwH"
+        "id": "fngcUwH",
+        "fact": "A small, common forage fish of the family Engraulidae. Most species are found in marine waters, but several will enter brackish water, and some in South America are restricted to fresh water"
     },
     "Horse mackerel": {
         "joke": "Of course, Mack...er..el.",
@@ -157,7 +172,8 @@
         "xp": 3,
         "rarity": 0.6,
         "unique": false,
-        "id": "fj8336l"
+        "id": "fj8336l",
+        "fact": "Or common scad, is a species of jack mackerel in the family Carangidae, which includes the jacks, pompanos and trevallies. It is found in the eastern Atlantic Ocean off Europe and Africa and into the south-eastern Indian Ocean"
     },
     "Barreleye": {
         "joke": "Like eyeing fish in a barrel!",
@@ -167,6 +183,7 @@
         "xp": 3,
         "rarity": 0.5,
         "unique": false,
-        "id": "f8RHnUX"
+        "id": "f8RHnUX",
+        "fact": "Also known as spook fish (a name also applied to several species of chimaera), are small deep-sea argentiniform fish comprising the family Opisthoproctidae found in tropical-to-temperate waters of the Atlantic, Pacific, and Indian Oceans"
     }
 }

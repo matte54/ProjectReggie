@@ -7,7 +7,8 @@
         "xp": 1,
         "rarity": 0.3,
         "unique": false,
-        "id": "fyx18LA"
+        "id": "fyx18LA",
+        "fact": "Usually contains soda or beer, native to the factories of north america. Never rusts"
     },
     "Old shoe": {
         "joke": "Where is the other one?",
@@ -17,7 +18,8 @@
         "xp": 1,
         "rarity": 0.1,
         "unique": false,
-        "id": "fuJzRiE"
+        "id": "fuJzRiE",
+        "fact": "Boots are made for walkin."
     },
     "Seaweed": {
         "joke": "Those fish must be pretty high",
@@ -27,7 +29,8 @@
         "xp": 1,
         "rarity": 0.2,
         "unique": false,
-        "id": "fj9Ala7"
+        "id": "fj9Ala7",
+        "fact": "Any of the red, green, or brown marine algae that grow along seashores. Seaweeds are generally anchored to the sea bottom or other solid structures by rootlike holdfasts"
     },
     "Magikarp": {
         "joke": "He casts splash...its super effective!",
@@ -37,6 +40,7 @@
         "xp": 1,
         "rarity": 0.5,
         "unique": false,
-        "id": "fRlIj4C"
+        "id": "fRlIj4C",
+        "fact": "Found in many bodies of water, such as lakes, rivers, and ponds. However, due to its weak swimming ability, it usually lives downstream of the water's flow."
     }
 }

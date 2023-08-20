@@ -43,16 +43,15 @@ class Fishing:
         self.channel = message.channel
         self.user_profile, self.user_profile_path = self.get_profile(self.user_id)  # return profile dict and path(str)
 
-        if not debug_on():  # only run spam check and time limits if debug is off
-            if await self.spam_check():  # check if casted within a minute
-                return
+        if await self.spam_check():  # check if casted within a minute
+            return
 
-            # fail check
-            self.between_casts()  # lower or raise failchance based on time since last
-            if await self.failed():
-                if debug_on():
-                    log(f'[Fishing] - User failed cast')
-                return
+        # fail check
+        self.between_casts()  # lower or raise failchance based on time since last
+        if await self.failed():
+            if debug_on():
+                log(f'[Fishing] - User failed cast')
+            return
         # so when we reached this far we are guaranteed a fish so now for the rolls
         # trying to build a rolling function that can take all modifiers in consideration
         # and also future modifiers , so figureing out something here is key

@@ -7,7 +7,8 @@
         "xp": 1,
         "rarity": 0.15,
         "unique": false,
-        "id": "fSfn0kt"
+        "id": "fSfn0kt",
+        "fact": "Carplike fish of the family Cyprinidae noted for their unusual manner of breeding. Native to clear, stony streams of central and southern Europe"
     },
     "Pale chub": {
         "joke": "That name seems a bit judgy...",
@@ -17,7 +18,8 @@
         "xp": 2,
         "rarity": 0.3,
         "unique": false,
-        "id": "fg23dWw"
+        "id": "fg23dWw",
+        "fact": "Member of the carp family, Cyprinidae, common in Europe and North America. Chubs are good bait fish, and large specimens are caught for sport or food"
     },
     "Goldfish": {
         "joke": "It's worth its weight in fish!",
@@ -27,7 +29,8 @@
         "xp": 2,
         "rarity": 0.85,
         "unique": false,
-        "id": "fPulauq"
+        "id": "fPulauq",
+        "fact": "Ornamental aquarium and pond fish of the carp family (Cyprinidae) native to East Asia but introduced into many other areas"
     },
     "Pop-eyed goldfish": {
         "joke": "It looks so...surprised!",
@@ -37,7 +40,8 @@
         "xp": 1,
         "rarity": 0.25,
         "unique": false,
-        "id": "fRcjLYg"
+        "id": "fRcjLYg",
+        "fact": "Pop eye, also sometimes known as exophthalmia isn’t strictly a disease in and of itself, but rather, it is the result of another underlying issue or infection"
     },
     "Killifish": {
         "joke": "The streams are safe again.",
@@ -47,7 +51,8 @@
         "xp": 2,
         "rarity": 0.37,
         "unique": false,
-        "id": "fBwlLnT"
+        "id": "fBwlLnT",
+        "fact": "Also called egg-laying topminnow, any of a few hundred species of usually elongated fishes of the family Cyprinodontidae (order Atheriniformes), found worldwide, especially in the tropics of Africa and the New World"
     },
     "Tadpole": {
         "joke": "I'm sure it will grow on me.",
@@ -57,7 +62,8 @@
         "xp": 1,
         "rarity": 0.35,
         "unique": false,
-        "id": "fBpl6j3"
+        "id": "fBpl6j3",
+        "fact": "Also called polliwog, aquatic larval stage of frogs and toads. Compared with the larvae of salamanders, tadpoles have short oval bodies with broad tails, small mouths, and no external gills"
     },
     "Guppy": {
         "joke": "Welcome to the team, newbie!",
@@ -67,7 +73,8 @@
         "xp": 1,
         "rarity": 0.12,
         "unique": false,
-        "id": "fHHusl4"
+        "id": "fHHusl4",
+        "fact": "Colourful, live-bearing freshwater fish of the family Poeciliidae, popular as a pet in home aquariums. The guppy is hardy, energetic, easily kept, and prolific"
     },
     "Nibble fish": {
         "joke": "Come to think of it, I could use a bite!",
@@ -77,7 +84,8 @@
         "xp": 2,
         "rarity": 0.18,
         "unique": false,
-        "id": "focnEMg"
+        "id": "focnEMg",
+        "fact": "Also known as the doctor fish or red garra, is a species of cyprinid that is native to a wide range of freshwater habitats in subtropical parts of Western Asia"
     },
     "Neon tetra": {
         "joke": "Wasn't hard to track.",
@@ -87,7 +95,8 @@
         "xp": 1,
         "rarity": 0.08,
         "unique": false,
-        "id": "fG6TmOj"
+        "id": "fG6TmOj",
+        "fact": "Freshwater fish of the characin family (family Characidae) of order Characiformes. The type species of its genus, it is native to blackwater and clearwater streams in the Amazon basin of South America"
     },
     "Rainbowfish": {
         "joke": "Where's my pot of goldfish?",
@@ -97,7 +106,8 @@
         "xp": 3,
         "rarity": 0.5,
         "unique": false,
-        "id": "fE3aSfO"
+        "id": "fE3aSfO",
+        "fact": "Small, colourful freshwater fishes belonging to the family Melanotaeniidae, found in northern and eastern Australia, New Guinea (including islands in Cenderawasih Bay and Raja Ampat Islands in Indonesia), Sulawesi and Madagascar"
     },
     "Sea butterfly": {
         "joke": "Try not to confuse it for a sea moth!",
@@ -107,7 +117,8 @@
         "xp": 2,
         "rarity": 0.06,
         "unique": false,
-        "id": "f3SEvlQ"
+        "id": "f3SEvlQ",
+        "fact": "Also called pteropod, small marine gastropods of the subclass Opisthobranchia (phylum Mollusca) characterized by a foot modified to form a pair of winglike flaps (parapodia) that are used for swimming. They live at or near the sea surface"
     },
     "Sea horse": {
         "joke": "But...where's its sea jockey?",
@@ -117,7 +128,8 @@
         "xp": 2,
         "rarity": 0.7,
         "unique": false,
-        "id": "fBeSc3w"
+        "id": "fBeSc3w",
+        "fact": "Any of about 50 species of marine fishes allied to pipefishes in the family Syngnathidae (order Gasterosteiformes). Seahorses are found in shallow coastal waters. Their habitats include coral reefs, mangroves, sea grass beds, and estuaries"
     },
     "Clown fish": {
         "joke": "How many can fit in a carfish?",
@@ -127,6 +139,7 @@
         "xp": 1,
         "rarity": 0.4,
         "unique": false,
-        "id": "fAzoSVc"
+        "id": "fAzoSVc",
+        "fact": "Also called clown anemone fish, species of anemone fish best known for its striking orange and white coloration and its mutualism with certain species of sea anemones. The common clown fish is found on coral reefs in the tropical Pacific and Indian oceans"
     }
 }
