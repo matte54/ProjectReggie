@@ -1,0 +1,65 @@
+---- Woodhouse 2.0 ----
+Made by Matte54 with lots of help from Rogueeffect <3 (2023)
+
+** Commands **
+$blacklist add/rm <channel_id> (can be autocompleted with #name)
+- Prevents the bot from ever doing anything in that channel including accepting commands.
+
+$define <word>
+- Looks up a single word in the free dictionary and gives you basic information
+
+$eee
+- lul
+
+$event yyyy-mm-dd <msg>
+- Stores an event at a date and will trigger that msg in the channel it was created at the date.
+$event up
+- Lists 3 earliest upcoming events.
+
+$help
+- This command dummy
+
+$holiday
+- Returns a silly/not silly holiday for the current date
+
+$remindme 2weeks 3days 30hours 5minutes <msg> (only 1 time increment is required)
+- similar to events but will remind you after said timer is expired
+(NOT 100% FUNCTIONAL AT THE MOMENT)
+
+$roll <int>D<int>
+- rolls x amount of x sided dices i.e 2d20
+
+$seen @user
+- Tells you last time Woodhouse saw the user
+
+$whoami
+- About section for the bot (technical information)
+
+
+** Fishing game **
+OBS w.i.p.
+$fishing on/off
+- Turns fishing on/off for that channel
+all automatic fishing game messages will only post in that channel
+also fishing commands will only be accepted in those channels
+
+$cast
+- casts your line to catch a fish
+
+$bucket
+- lists your profile and 10 largest fish
+
+$fishbase <fishname>
+- Returns fish encylopedia about the fish and other stats
+
+
+** Pokémon game **
+- Not functional
+
+** Automatic functions **
+- Will talk jibberish and do random automated things beware.
+- Converts imperial to metric (most common units)
+- Tracks users server cakedays
+
+** Other **
+- stuff

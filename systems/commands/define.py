@@ -10,7 +10,7 @@ class Define:
 
     async def command(self, message):
         self.query = message.content.replace("$define ", "")
-
+        log(f'[Define] - {message.author} word: {self.query}')
         # run free dictionary query
         freedict_url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{self.query}"
         try:

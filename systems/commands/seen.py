@@ -1,11 +1,13 @@
 import re
 import json
+from systems.logger import log
 
 class Seen:
     def __init__(self, client):
         self.client = client
 
     async def command(self, message):
+        log(f'[Seen] - {message.author} - {message.content}')
         matches = re.findall(r'<@(\d+)>', message.content)
         if matches:
             guild = message.guild

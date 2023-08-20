@@ -29,12 +29,14 @@ class Event:
     async def command(self, message):
         self.msg = message.content.replace('$event ', '')
         if self.msg == "up":
+            log(f'[Event] - {message.author} is listing upcoming events')
             sorted_entries = sorted(self.events_dict.items(), key=lambda item: item[1]['date'])
             event_str = "-- Upcoming events --\n"
             for item, sorted_date in sorted_entries:
                 event_str += f'{sorted_date["date"]}: {sorted_date["msg"]}\n'
             await message.channel.send(f'```yaml\n\n{event_str}```')
             return
+        log(f'[Event] - {message.author} is creating {self.msg}')
         dates = re.findall(self.pattern, self.msg)
         if not dates or len(dates) > 1:
             await message.channel.send("Syntax error, date needs to be yyyy-mm-dd")

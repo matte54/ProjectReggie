@@ -4,11 +4,14 @@ import platform
 import requests
 import socket
 
+from systems.logger import log
+
 class Whoami:
     def __init__(self, client):
         self.client = client
 
     async def command(self, message):
+        log(f'[Whoami] - {message.author} About woodhouse')
         url = "http://checkip.dyndns.org"
         request = requests.get(url)
         clean = request.text.split(': ', 1)[1]

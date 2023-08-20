@@ -2,6 +2,7 @@
 
 import random
 import re
+from systems.logger import log
 
 class Roll:
     def __init__(self):
@@ -11,6 +12,7 @@ class Roll:
 
 
     async def command(self, message):
+        log(f'[Roll] - {message.author} - Rolls dice(s)')
         matches = re.findall(self.pattern, message.content)
         if len(matches) == 1:
             self.dice = matches[0]

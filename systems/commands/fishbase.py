@@ -24,6 +24,7 @@ class Fishbase:
 
     async def command(self, message):
         self.query = message.content.replace("$fishbase ", "").capitalize()
+        log(f'[Fishbase] - {message.author} quries {self.query}')
         self.fish = self.find_fish_data()
         if not self.fish:
             await message.channel.send(f'```yaml\n\nThere is no fish by that name in the database```')
