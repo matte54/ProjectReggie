@@ -28,6 +28,13 @@ class Event:
 
     async def command(self, message):
         self.msg = message.content.replace('$event ', '')
+        if self.msg == "up":
+            sorted_entries = sorted(self.events_dict.items(), key=lambda item: item[1]['date'])
+            event_str = "-- Upcoming events --\n"
+            for item, sorted_date in sorted_entries:
+                event_str += f'{sorted_date["date"]}: {sorted_date["msg"]}\n'
+            await message.channel.send(f'```yaml\n\n{event_str}```')
+            return
         dates = re.findall(self.pattern, self.msg)
         if not dates or len(dates) > 1:
             await message.channel.send("Syntax error, date needs to be yyyy-mm-dd")
@@ -41,7 +48,7 @@ class Event:
         if event_date < current_date:
             await message.channel.send("This date has already passed you dummy")
             return
-        self.msg = self.msg.replace(dates[0], "") # self.msg should now only be the message
+        self.msg = self.msg.replace(dates[0], "")  # self.msg should now only be the message
 
         if len(self.msg) < 1 or len(self.msg) > 80:
             await message.channel.send("Syntax error, the event needs a message to display (less then 150 chars)")
@@ -58,7 +65,6 @@ class Event:
     def write_json(self, filepath, data):
         with open(filepath, "w") as f:
             json.dump(data, f, indent=4)
-
 
     def create_file(self):
         # make json if none exists

@@ -37,3 +37,7 @@ Remove item when finished
 - Find a way to limit writes, need to figure out how to have it collect data for each dictionary it needs and write
 only like in 5-10 minute intervals, couldnt figure out how to approach it cause of the diffrent types that will be open
 simultanously when people are chatting. also diffrent servers.
+
+* Fishing
+- Creating a short description key on each fish in the database for the fishbase query
+- Created the fish query "fishbase" works but needs some work and some bugfixes
