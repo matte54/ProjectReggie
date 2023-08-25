@@ -114,5 +114,7 @@ reward delayer with a random free pokemon not in his dex
 
 * Achivements?! :O
 
-* Events 
-- Add $events upcoming to show maybe the next 3 upcoming events?
+* $news on/off 
+- To turn on logging for that channel and every 4000 characters use openai to write a fictive news article about
+what has been said. lul
+

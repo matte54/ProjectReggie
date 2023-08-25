@@ -20,6 +20,7 @@ from systems.varmanager import VarManager
 from systems.unitconverter import Converter
 from systems.emojihandler import Emojihandler
 from systems.statistics import Statistics
+from systems.newsday import Newsday
 
 # tasks
 from tasks.status import StatusTask
@@ -48,6 +49,7 @@ class Woodhouse(discord.Client):
 
         # systems
         self.mother = Mother(self)
+        self.newsday = Newsday(self)
         self.housekeeper = HouseKeeper(self)
         self.varmanager = VarManager()
         self.unitconverter = Converter()
@@ -120,6 +122,7 @@ class Woodhouse(discord.Client):
             # message came from a bot so do nothing
             return
 
+        self.newsday.newsdaylog(message) # log for newsday
         log(message)  # send the message into the logs for storing
         self.statistics.input(message)  # send message to stats systems
 

@@ -58,7 +58,7 @@ $fishbase <fishname>
 
 ** Automatic functions **
 - Will talk jibberish and do random automated things beware.
-- Converts imperial to metric (most common units)
+- Converts imperial to metric and vise versa (most common units)
 - Tracks users server cakedays
 
 ** Other **
