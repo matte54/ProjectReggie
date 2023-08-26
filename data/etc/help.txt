@@ -37,7 +37,7 @@ $whoami
 
 
 ** Fishing game **
-OBS w.i.p.
+OBS w.i.p
 $fishing on/off
 - Turns fishing on/off for that channel
 all automatic fishing game messages will only post in that channel
