@@ -37,5 +37,6 @@ simultanously when people are chatting. also diffrent servers.
 
 * Fishing
 - Created the fish query "fishbase" works but needs some work and some bugfixes
-- Figure out a way to display the rarity value in the embed, my idea with colors white-green-blue-yellow-orange-red
-wasent really possible it seems i dunno, ideas?
+- rogue is doing colors green-blue-yellow-orange-red with images? need to go thru all rarities in database again
+so he can start
+- Add cash prize for fishoff winner
