@@ -27,9 +27,6 @@ Remove item when finished
 
 * Emojihandler system
 
-* Help command
-- Write help message explaining woodhouse usage.
-
 * Remindme command
 - Write remind me task to check the database and post (not started)
 
@@ -39,5 +36,6 @@ only like in 5-10 minute intervals, couldnt figure out how to approach it cause 
 simultanously when people are chatting. also diffrent servers.
 
 * Fishing
-- Creating a short description key on each fish in the database for the fishbase query
 - Created the fish query "fishbase" works but needs some work and some bugfixes
+- Figure out a way to display the rarity value in the embed, my idea with colors white-green-blue-yellow-orange-red
+wasent really possible it seems i dunno, ideas?

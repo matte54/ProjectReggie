@@ -24,7 +24,5 @@ class Newsday:
                 if (character_count + len(message.content)) >= 4000:
                     print("File is 4000 characters")
 
-
-
                 with open(filepath, "a", encoding='utf-8') as f:
                     f.write(f'{message.author} - {message.content}\n')

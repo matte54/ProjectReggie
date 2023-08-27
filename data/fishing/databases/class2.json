@@ -41,7 +41,7 @@
         "rarity": 0.25,
         "unique": false,
         "id": "fRcjLYg",
-        "fact": "Pop eye, also sometimes known as exophthalmia isn’t strictly a disease in and of itself, but rather, it is the result of another underlying issue or infection"
+        "fact": "Pop eye, also sometimes known as exophthalmia isn\u00e2\u20ac\u2122t strictly a disease in and of itself, but rather, it is the result of another underlying issue or infection"
     },
     "Killifish": {
         "joke": "The streams are safe again.",
@@ -141,5 +141,16 @@
         "unique": false,
         "id": "fAzoSVc",
         "fact": "Also called clown anemone fish, species of anemone fish best known for its striking orange and white coloration and its mutualism with certain species of sea anemones. The common clown fish is found on coral reefs in the tropical Pacific and Indian oceans"
+    },
+    "Nemo": {
+        "joke": "You found him!",
+        "min_weight": 0.2,
+        "max_weight": 0.5,
+        "value": 25,
+        "xp": 25,
+        "rarity": 1.0,
+        "unique": true,
+        "id": "fVQFKxG",
+        "fact": "Nemo, the adventurous clownfish protagonist of the movie Finding Nemo, has a smaller right fin due to a lucky fin incident during his early days."
     }
 }

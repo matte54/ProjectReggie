@@ -128,5 +128,27 @@
         "rarity": 0.82,
         "unique": false,
         "id": "fqrgPjT"
+    },
+    "Jaws": {
+        "joke": "We are gonna need a bigger boat...",
+        "min_weight": 3500,
+        "max_weight": 6100,
+        "value": 50,
+        "xp": 50,
+        "rarity": 1.0,
+        "unique": true,
+        "id": "fPDhOsr",
+        "fact": "Ahoy there, Bruce, the terror of the deep, with jaws that strike fear into the heart of the sea!"
+    },
+    "Moby dick": {
+        "joke": "It is not down on any map, true places never are.",
+        "min_weight": 3500,
+        "max_weight": 6500,
+        "value": 50,
+        "xp": 50,
+        "rarity": 1.0,
+        "unique": true,
+        "id": "fBaV2XA",
+        "fact": "In the shadowed depths of the ocean, Moby Dick, the pale leviathan, embodies Captain Ahabs relentless vendetta and the enigmatic enigmas that lie shrouded within the heart of nature."
     }
 }

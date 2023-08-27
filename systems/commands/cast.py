@@ -14,7 +14,6 @@ class Cast:
         if self.varmanager.read("fishing_channels"):
             fishing_channels = self.varmanager.read("fishing_channels")
             if message.channel.id in fishing_channels:
-                log(f'[Fishing] - {message.author} Casting...')
                 await self.fishing.cast(message)
 
 

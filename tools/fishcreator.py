@@ -8,7 +8,7 @@ import random
 # name=str, joke=str, min_weight=float, max_weight=float, value=int, xp=int, rarity=float(0-1), unique=bool, group=int(class 1-7)
 
 
-def make_fish(name, joke, min_weight, max_weight, value, xp, rarity, unique, group, id):
+def make_fish(name, joke, min_weight, max_weight, value, xp, rarity, unique, group, id, fact):
     if os.path.isfile(f'./class{group}.json'):
         with open(f'./class{group}.json', "r") as f:
             data = json.load(f)
@@ -26,6 +26,7 @@ def make_fish(name, joke, min_weight, max_weight, value, xp, rarity, unique, gro
         data[name]["rarity"] = rarity
         data[name]["unique"] = unique
         data[name]["id"] = id
+        data[name]["fact"] = fact
 
         write_json(f'./class{group}.json', data)
 
@@ -40,7 +41,8 @@ def make_fish(name, joke, min_weight, max_weight, value, xp, rarity, unique, gro
                     "xp": xp,
                     "rarity": rarity,
                     "unique": unique,
-                    "id": id
+                    "id": id,
+                    "fact": fact
                 }
         }
         write_json(f'./class{group}.json', fish)
@@ -67,16 +69,17 @@ def gen_id():
 
 
 x = f'f{str(gen_id())}'
-make_fish("Coelacanth",
-          "Think positive! Be a coela-CAN!",
-          13.0,
-          5250.0,
-          5,
-          15,
-          0.1,
-          False,
+make_fish("Moby dick",
+          "It is not down on any map, true places never are.",
+          3500,
+          6500,
+          50,
+          50,
+          0.9,
+          True,
           7,
-          x)
+          x,
+          'In the shadowed depths of the ocean, Moby Dick, the pale leviathan, embodies Captain Ahabs relentless vendetta and the enigmatic enigmas that lie shrouded within the heart of nature.')
 
 
-# name=str, joke=str, min_weight=float, max_weight=float, value=int, xp=int, rarity=float(0-1), unique=bool, group=int(class 1-7)
+# name=str, joke=str, min_weight=float, max_weight=float, value=int, xp=int, rarity=float(0-1), unique=bool, group=int(class 1-7, id=pregenerated, fact=str)

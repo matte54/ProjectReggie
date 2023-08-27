@@ -49,7 +49,7 @@ class Woodhouse(discord.Client):
 
         # systems
         self.mother = Mother(self)
-        self.newsday = Newsday(self)
+        #self.newsday = Newsday(self) # put on hold for now
         self.housekeeper = HouseKeeper(self)
         self.varmanager = VarManager()
         self.unitconverter = Converter()
@@ -122,7 +122,7 @@ class Woodhouse(discord.Client):
             # message came from a bot so do nothing
             return
 
-        self.newsday.newsdaylog(message) # log for newsday
+        # self.newsday.newsdaylog(message) # log for newsday
         log(message)  # send the message into the logs for storing
         self.statistics.input(message)  # send message to stats systems
 

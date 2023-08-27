@@ -49,8 +49,8 @@ def logtofile(server, message, author):
 def cleanmessage(message):
     no = re.search(r'^(https?://\S+)|^\W|^\d+$', message)
     if no:
-        if debug_on():
-            log(f'[INFO][Logger] - [{message}] DENIED by cleanMessage')
+        #if debug_on():
+        #    log(f'[INFO][Logger] - [{message}] DENIED by cleanMessage')
         return None  # return none if message is flagged by regex
     return message
 
