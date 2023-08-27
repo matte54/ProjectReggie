@@ -20,7 +20,10 @@ from systems.varmanager import VarManager
 from systems.unitconverter import Converter
 from systems.emojihandler import Emojihandler
 from systems.statistics import Statistics
-from systems.newsday import Newsday
+# from systems.newsday import Newsday
+
+# fishing stuff
+from systems.fishing.fishoffhandler import Fishoffhandler
 
 # tasks
 from tasks.status import StatusTask
@@ -49,12 +52,15 @@ class Woodhouse(discord.Client):
 
         # systems
         self.mother = Mother(self)
-        #self.newsday = Newsday(self) # put on hold for now
+        # self.newsday = Newsday(self) # put on hold for now
         self.housekeeper = HouseKeeper(self)
         self.varmanager = VarManager()
         self.unitconverter = Converter()
         self.emojihandler = Emojihandler(self)
         self.statistics = Statistics(self)
+
+        # fishing
+        self.fishoffhandler = Fishoffhandler(self)
 
         # testing disconnection handling
         self.reconnected = False
@@ -81,6 +87,9 @@ class Woodhouse(discord.Client):
         self.housekeeper.gatherids()
         self.housekeeper.gather_emojis()
         await self.housekeeper.cakeday()
+
+        # on ready fishing stuff
+        await self.fishoffhandler.check_date()  # do the check for fishing season rotate
 
     def run_loop(self):
         self.run(credentials.KEY)
@@ -176,6 +185,7 @@ class Woodhouse(discord.Client):
     async def on_voice_state_update(self, member, before, after):
         pass
         # keep track of time in voice chat later maybe hmm
+
 
 if __name__ == "__main__":
     woodhouse = Woodhouse(intents=intents)

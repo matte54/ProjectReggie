@@ -10,7 +10,7 @@ from data.fishing.flare import FLARE
 from data.fishing.weights import WEIGHTS
 
 # Modifiers to tweak
-SHINYCHANCE = 99 # rolls 1-100 needs to be equals to or greater then the number for shiny
+SHINYCHANCE = 99  # rolls 1-100 needs to be equals to or greater then the number for shiny
 
 
 class Fishing:
@@ -47,15 +47,15 @@ class Fishing:
         self.channel = message.channel
         self.user_profile, self.user_profile_path = self.get_profile(self.user_id)  # return profile dict and path(str)
 
-        #if await self.spam_check():  # check if casted within a minute
-        #    return
+        if await self.spam_check():  # check if casted within a minute
+            return
 
         # fail check
-        #self.between_casts()  # lower or raise failchance based on time since last
-        #if await self.failed():
-        #    if debug_on():
-        #        log(f'[Fishing] - User failed cast')
-        #    return
+        self.between_casts()  # lower or raise failchance based on time since last
+        if await self.failed():
+            if debug_on():
+                log(f'[Fishing] - User failed cast')
+            return
         # so when we reached this far we are guaranteed a fish so now for the rolls
         # trying to build a rolling function that can take all modifiers in consideration
         # and also future modifiers , so figureing out something here is key
@@ -68,7 +68,7 @@ class Fishing:
         if isinstance(returnvalue, int):
             self.handle_money(returnvalue)
 
-        self.fishoff_lead_taken = self.fishoff_handler() # stuff for fishoff returns True if the fish is the leader
+        self.fishoff_lead_taken = self.fishoff_handler()  # stuff for fishoff returns True if the fish is the leader
 
         self.handle_profile()  # do profile stuff
 
@@ -115,7 +115,7 @@ class Fishing:
                 ucheck = self.unique_checks(fish)
                 if ucheck:
                     log(f'[Fishing] - User got unique fish {fish}')
-                    self.handle_money(50) # give the user 50 money for the catch
+                    self.handle_money(50)  # give the user 50 money for the catch
                     self.isUnique = True
                     decided_fish = True
             else:
@@ -159,7 +159,9 @@ class Fishing:
         else:
             self.caught_fish["worth"] += random.randint(1, 3)
             self.caught_fish["xp_worth"] += random.randint(1, 3)
-        log(f"[Fishing] - {self.user_name} caught a {'shiny ' if self.isShiny else ''}{self.caught_fish['weight']}lbs {self.caught_fish['name']}")
+        log(f"[Fishing] - {self.user_name} caught a {'shiny ' if self.isShiny else ''}"
+            f"{self.caught_fish['weight']}lbs {self.caught_fish['name']}")
+
     def between_casts(self):
         time_difference = datetime.datetime.now() - datetime.datetime.fromisoformat(self.user_profile["last"])
         # linear interpolation for lower chance (pretty proud of dis LUL)
@@ -230,7 +232,8 @@ class Fishing:
                 "xpCap": 10,
                 "level": 1,
                 "gear": [],
-                "last": ""
+                "last": "",
+                "wins": 0
             }
             log(f'[Fishing] - {self.message.author} has no fishing profile, creating...')
             self.write_json(f"{self.profile_dir}{user_id}.json", data)
@@ -434,5 +437,5 @@ class Fishing:
     def write_json(self, filepath, data):
         with open(filepath, "w") as f:
             json.dump(data, f, indent=4)
-        #if debug_on():
+        # if debug_on():
         #    log(f'[Fishing] - Wrote {filepath}')

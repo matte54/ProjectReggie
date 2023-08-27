@@ -12,7 +12,6 @@ lxml==4.9.3
 multidict==6.0.4
 pip==21.3.1
 requests==2.31.0
-setuptools==60.2.0
 urllib3==2.0.3
-wheel==0.37.1
 yarl==1.9.2
+yake~=0.4.8

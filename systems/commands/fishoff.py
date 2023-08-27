@@ -37,7 +37,7 @@ class Fishoff:
                         placenumber += 1
                     await message.channel.send(f'```yaml\n\n{fishoff_str}```')
                 else:
-                    await message.channel.send(f'```yaml\n\nNo fishing data on this user```')
+                    await message.channel.send(f'```yaml\n\nNo fish caught yet```')
 
     def get_user_name(self, user_id):
         if os.path.exists(f'./data/etc/ids.json'):
