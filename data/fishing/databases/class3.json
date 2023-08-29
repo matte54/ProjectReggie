@@ -38,7 +38,7 @@
         "max_weight": 1.8,
         "value": 2,
         "xp": 3,
-        "rarity": 0.15,
+        "rarity": 0.09,
         "unique": false,
         "id": "ffBfjys",
         "fact": "Any of various tailless amphibians belonging to the order Anura. The term may be limited to any member of the family Ranidae (true frogs), but more broadly the name frog is often used to distinguish the smooth-skinned, leaping anurans from squat, warty, hopping ones, which are called toads"
@@ -49,7 +49,7 @@
         "max_weight": 1.0,
         "value": 2,
         "xp": 2,
-        "rarity": 0.12,
+        "rarity": 0.08,
         "unique": false,
         "id": "fkCE8dr",
         "fact": "Gobies are carnivorous, usually small in size, and found throughout the world. Especially abundant in the tropics, they are primarily marine in habit. Most species are bottom-dwellers and have a weak suction cup formed by the fusion of their pelvic fins"
@@ -115,7 +115,7 @@
         "max_weight": 0.8,
         "value": 3,
         "xp": 3,
-        "rarity": 0.02,
+        "rarity": 0.12,
         "unique": false,
         "id": "frGT2qg",
         "fact": "A large genus of small, active, often colorful, freshwater ray-finned fishes, in the gourami family (Osphronemidae). The best known Betta species is B. splendens, commonly known as the Siamese fighting fish and often kept as an aquarium pet"
@@ -185,5 +185,82 @@
         "unique": false,
         "id": "f8RHnUX",
         "fact": "Also known as spook fish (a name also applied to several species of chimaera), are small deep-sea argentiniform fish comprising the family Opisthoproctidae found in tropical-to-temperate waters of the Atlantic, Pacific, and Indian Oceans"
+    },
+    "Qwerty": {
+        "joke": "Move him to a god damn window!",
+        "min_weight": 0.15,
+        "max_weight": 1.0,
+        "value": 50,
+        "xp": 50,
+        "rarity": 1.0,
+        "unique": true,
+        "id": "fKpVG9l",
+        "fact": "My entire lifes been spent in this thing, my whole worlds on your side table. I look around. Same sh*t, different day."
+    },
+    "Ribbon eel": {
+        "joke": "I caught a ribbon eel! Can it tie itself into a bow?",
+        "min_weight": 0.75,
+        "max_weight": 4.0,
+        "value": 2,
+        "xp": 3,
+        "rarity": 0.68,
+        "unique": false,
+        "id": "f6taRXe",
+        "fact": "Also known as the leaf-nosed moray eel or bernis eel, found in lagoons and reefs in the Indo-Pacific ocean."
+    },
+    "Umbrella octopus": {
+        "joke": "I got an umbrella octopus! Too bad I'm already soaked.",
+        "min_weight": 1.12,
+        "max_weight": 3.32,
+        "value": 4,
+        "xp": 4,
+        "rarity": 0.82,
+        "unique": false,
+        "id": "fkVcrlD",
+        "fact": "Also known as the flapjack octopus. They have fins above their eyes, similar to those found on some species of squid."
+    },
+    "Dungeness crab": {
+        "joke": "I got a Dungeness crab! Dun dun duuuun...geness.",
+        "min_weight": 1.2,
+        "max_weight": 2.8,
+        "value": 4,
+        "xp": 1,
+        "rarity": 0.24,
+        "unique": false,
+        "id": "fjasy3p",
+        "fact": "A species of crab inhabiting eelgrass beds and water bottoms along the west coast of North America. The carapace and is a popular seafood."
+    },
+    "Spiny lobster": {
+        "joke": "I got a spiny lobster! It's got a lot of backbone!",
+        "min_weight": 1.8,
+        "max_weight": 3.2,
+        "value": 2,
+        "xp": 3,
+        "rarity": 0.44,
+        "unique": false,
+        "id": "fpx0wSR",
+        "fact": "The California spiny lobster (Panulirus interruptus) is a species of spiny lobster found in the eastern Pacific Ocean from Monterey Bay, California, to the Gulf of Tehuantepec, Mexico."
+    },
+    "Venus flower basket": {
+        "joke": "I got a Venus flower basket! Why was she picking flowers here?",
+        "min_weight": 2.21,
+        "max_weight": 6.15,
+        "value": 1,
+        "xp": 4,
+        "rarity": 0.92,
+        "unique": false,
+        "id": "f7o2T08",
+        "fact": "A glass sponge in the phylum Porifera. It is a marine sponge found in the deep waters of the Pacific ocean, usually at depths below 500 meters."
+    },
+    "Klaus": {
+        "joke": "Straddle mein bowl!",
+        "min_weight": 1.8,
+        "max_weight": 28.0,
+        "value": 50,
+        "xp": 50,
+        "rarity": 1.0,
+        "unique": true,
+        "id": "frrJycg",
+        "fact": "Zat guy is a douche, yes? You understand douche? Yes?"
     }
 }

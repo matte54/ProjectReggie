@@ -6,6 +6,7 @@ import re
 from discord import Embed
 
 from systems.logger import debug_on, log
+from systems.fishing.fishstats import Fishstat
 from data.fishing.flare import FLARE
 from data.fishing.weights import WEIGHTS
 
@@ -34,6 +35,8 @@ class Fishing:
         self.rarity_modifier = 0.0
         # constant stuff
         self.client = client
+        self.fish_stats = Fishstat()
+
         self.profile_dir = "./local/fishing/profiles/"
         self.database_dir = "./data/fishing/databases/"
         self.bucket_dir = "./local/fishing/buckets/"
@@ -49,19 +52,18 @@ class Fishing:
 
         if await self.spam_check():  # check if casted within a minute
             return
-
         # fail check
         self.between_casts()  # lower or raise failchance based on time since last
         if await self.failed():
-            if debug_on():
-                log(f'[Fishing] - User failed cast')
+            self.fish_stats.stat_this(self.user_id, None, True, self.isShiny)
             return
+
         # so when we reached this far we are guaranteed a fish so now for the rolls
-        # trying to build a rolling function that can take all modifiers in consideration
-        # and also future modifiers , so figureing out something here is key
 
         self.rolls()  # do all the rolling and randoming to pick a fish
         # stats
+        self.fish_stats.stat_this(self.user_id, self.caught_fish, False, self.isShiny)
+
         wr, holder = self.wr_check()  # check or create the world record stat
 
         returnvalue, pb = self.handle_bucket()  # add fish to bucket returns value of sold fish , if new returns None
@@ -91,7 +93,7 @@ class Fishing:
         chosen_class = random.choices(self.fish_databases, weights=WEIGHTS["default"])
         # this aint pretty but it gets u the correct file with the modifier
         index_of_item = self.fish_databases.index(chosen_class[0])
-        index_of_item = index_of_item + self.class_modifier
+        index_of_item = round(index_of_item + self.class_modifier)
         final_item = self.fish_databases[index_of_item]
 
         with open(f'{self.database_dir}{final_item}', "r") as f:
@@ -106,12 +108,15 @@ class Fishing:
                 weighted_items.append((fish, 'rarity'))
             weights = []
             for fish, key in weighted_items:
-                weight = data[fish][key]
-                weights.append(int(weight * 100))
+                rarity_value = data[fish][key]
+                weight = 1 / rarity_value
+                weights.append(weight)
             fish, key = random.choices(weighted_items, weights=weights, k=1)[0]
             self.caught_fish = data[fish]  # get dictionary with all data regarding caught fish
             # unique checks here
             if self.caught_fish["unique"]:
+                # if random.randint(1, 100) > 60:
+                #    continue  # unique rate is still to high on 1.0 so put this here MAYBE?
                 ucheck = self.unique_checks(fish)
                 if ucheck:
                     log(f'[Fishing] - User got unique fish {fish}')
@@ -207,7 +212,7 @@ class Fishing:
         # print(f'fail roll was {roll} and it needs to be bigger then {5 + self.fail_rate_modifier}')
         if roll < (5 + self.fail_rate_modifier):
             await self.message.channel.send(
-                f'```yaml\n{self.message.author} casts their line but {random.choice(FLARE)}```')
+                f'```yaml\n{self.message.author} casts their line but FAILS!\n{random.choice(FLARE)}```')
             # add last cast time in
             now = datetime.datetime.now()
             self.user_profile["last"] = str(now.isoformat())  # update the last cast time

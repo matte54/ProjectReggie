@@ -5,7 +5,7 @@
         "max_weight": 0.2,
         "value": 1,
         "xp": 1,
-        "rarity": 0.3,
+        "rarity": 0.16,
         "unique": false,
         "id": "fyx18LA",
         "fact": "Usually contains soda or beer, native to the factories of north america. Never rusts"
@@ -16,7 +16,7 @@
         "max_weight": 0.4,
         "value": 1,
         "xp": 1,
-        "rarity": 0.1,
+        "rarity": 0.12,
         "unique": false,
         "id": "fuJzRiE",
         "fact": "Boots are made for walkin."
@@ -27,7 +27,7 @@
         "max_weight": 0.2,
         "value": 1,
         "xp": 1,
-        "rarity": 0.2,
+        "rarity": 0.23,
         "unique": false,
         "id": "fj9Ala7",
         "fact": "Any of the red, green, or brown marine algae that grow along seashores. Seaweeds are generally anchored to the sea bottom or other solid structures by rootlike holdfasts"
@@ -38,9 +38,152 @@
         "max_weight": 0.2,
         "value": 1,
         "xp": 1,
-        "rarity": 0.5,
+        "rarity": 0.52,
         "unique": false,
         "id": "fRlIj4C",
         "fact": "Found in many bodies of water, such as lakes, rivers, and ponds. However, due to its weak swimming ability, it usually lives downstream of the water's flow."
+    },
+    "Sea grapes": {
+        "joke": "I got some sea grapes! See? Grapes!",
+        "min_weight": 0.15,
+        "max_weight": 0.38,
+        "value": 1,
+        "xp": 1,
+        "rarity": 0.61,
+        "unique": false,
+        "id": "fS195DB",
+        "fact": "A species of flowering plant in the buckwheat family, Polygonaceae, that is native to coastal beaches throughout tropical America and the Caribbean."
+    },
+    "Sea star": {
+        "joke": "I got a sea star! Maybe it'll give me an autograph!",
+        "min_weight": 0.1,
+        "max_weight": 0.8,
+        "value": 1,
+        "xp": 2,
+        "rarity": 0.62,
+        "unique": false,
+        "id": "fw8vwRM",
+        "fact": "Starfish or sea stars are star-shaped also known as asteroids due to being in the class Asteroidea. About 1,900 species of starfish live on the seabed in all the worlds oceans"
+    },
+    "Patrick star": {
+        "joke": "I'm so loyal, I haven't bathed in weeks!",
+        "min_weight": 1.0,
+        "max_weight": 2.0,
+        "value": 25,
+        "xp": 25,
+        "rarity": 1.0,
+        "unique": true,
+        "id": "fk3t7Hh",
+        "fact": "Knowledge can never replace friendship. I prefer to be an idiot!"
+    },
+    "Sea urchin": {
+        "joke": "I got a sea urchin! Wasn't even 'earchin for it.",
+        "min_weight": 0.5,
+        "max_weight": 2.5,
+        "value": 2,
+        "xp": 3,
+        "rarity": 0.8,
+        "unique": false,
+        "id": "f3ABJp5",
+        "fact": "About 950 species of sea urchin are distributed on the seabeds of every ocean and inhabit every depth zone from the intertidal seashore down to 5,000 meters"
+    },
+    "Slate pencil urchin": {
+        "joke": "I got a slate pencil urchin! Its handwriting is gorgeous.",
+        "min_weight": 0.8,
+        "max_weight": 3.8,
+        "value": 3,
+        "xp": 2,
+        "rarity": 0.69,
+        "unique": false,
+        "id": "ftSOZJ5",
+        "fact": "Heterocentrotus mamillatus, commonly known as the slate pencil urchin, red slate pencil urchin, or red pencil urchin, is a species of tropical sea urchin from the Indo-Pacific region."
+    },
+    "Moon jellyfish": {
+        "joke": "I got a moon jellyfish! Now to find a sun peanutbutterfish.",
+        "min_weight": 0.8,
+        "max_weight": 1.5,
+        "value": 1,
+        "xp": 2,
+        "rarity": 0.82,
+        "unique": false,
+        "id": "fuElAR1",
+        "fact": "All species in the genus are very similar, and it is difficult to identify Aurelia medusae without genetic sampling most of what follows applies equally to all species of the genus."
+    },
+    "Sea slug": {
+        "joke": "I got a sea slug! It's kinda salty about that.",
+        "min_weight": 0.2,
+        "max_weight": 0.45,
+        "value": 1,
+        "xp": 1,
+        "rarity": 0.32,
+        "unique": false,
+        "id": "fN28kUV",
+        "fact": "They are noted for their often extraordinary colours and striking forms. Currently, about 3,000 valid species of nudibranchs are known."
+    },
+    "Pearl oyster": {
+        "joke": "I got a pearl oyster! Aw, shucks. Don't clam up now!",
+        "min_weight": 0.18,
+        "max_weight": 0.32,
+        "value": 2,
+        "xp": 1,
+        "rarity": 0.18,
+        "unique": false,
+        "id": "fLb11em",
+        "fact": "A species of marine bivalve mollusk in the family Pteriidae, the pearl oysters. It is native to shallow waters in the Indo-Pacific region and is used in the culture of pearls."
+    },
+    "Mussel": {
+        "joke": "I got a mussel! It's been working out",
+        "min_weight": 0.02,
+        "max_weight": 0.73,
+        "value": 0,
+        "xp": 1,
+        "rarity": 0.18,
+        "unique": false,
+        "id": "feFkfmm",
+        "fact": "Species in the order Mytilida are found worldwide, but they are more abundant in colder seas, where they often form uninterrupted beds on rocky shores in the intertidal zone and the shallow subtidal."
+    },
+    "Oyster": {
+        "joke": "I got an oyster! It's a little shellfish.",
+        "min_weight": 0.04,
+        "max_weight": 0.34,
+        "value": 2,
+        "xp": 0,
+        "rarity": 0.14,
+        "unique": false,
+        "id": "fnUvDjX",
+        "fact": "a number of different families of salt-water bivalve molluscs that live in marine or brackish habitats. In some species, the valves are highly calcified, and many are somewhat irregular in shape."
+    },
+    "Whelk": {
+        "joke": "I got a whelk! Happy snails to ya.",
+        "min_weight": 0.12,
+        "max_weight": 0.37,
+        "value": 1,
+        "xp": 0,
+        "rarity": 0.25,
+        "unique": false,
+        "id": "fOXbrEZ",
+        "fact": "Whelks are any of several carnivorous sea snail species with a swirling, tapered shell. Many are eaten by humans, such as the common whelk of the North Atlantic."
+    },
+    "Turban shell": {
+        "joke": "I got a turban shell! Its totally TURB...ular!",
+        "min_weight": 0.12,
+        "max_weight": 0.24,
+        "value": 0,
+        "xp": 0,
+        "rarity": 0.12,
+        "unique": false,
+        "id": "ftjmkXp",
+        "fact": "Turbo cornutus, common name the horned turban, is a species of sea snail, marine gastropod mollusk in the family Turbinidae."
+    },
+    "Son of crimsonfish": {
+        "joke": "Sonuva...",
+        "min_weight": 0.15,
+        "max_weight": 2.64,
+        "value": 1,
+        "xp": 3,
+        "rarity": 0.98,
+        "unique": false,
+        "id": "frBlraf",
+        "fact": "He hatched in the warm summer water, and followed in the footsteps of his father."
     }
 }

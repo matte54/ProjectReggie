@@ -7,7 +7,8 @@
         "xp": 5,
         "rarity": 0.3,
         "unique": false,
-        "id": "fjpYgEW"
+        "id": "fjpYgEW",
+        "fact": ""
     },
     "Koi": {
         "joke": "I don't know why it's so shy... or such a bad speller...",
@@ -17,7 +18,8 @@
         "xp": 5,
         "rarity": 0.6,
         "unique": false,
-        "id": "f2d4t8t"
+        "id": "f2d4t8t",
+        "fact": ""
     },
     "Soft-shelled turtle": {
         "joke": "I should take a shellfie!",
@@ -27,7 +29,8 @@
         "xp": 3,
         "rarity": 0.7,
         "unique": false,
-        "id": "fvJwvPQ"
+        "id": "fvJwvPQ",
+        "fact": ""
     },
     "Snapping turtle": {
         "joke": "How can it snap without fingers?",
@@ -37,7 +40,8 @@
         "xp": 5,
         "rarity": 0.2,
         "unique": false,
-        "id": "fOpPfP5"
+        "id": "fOpPfP5",
+        "fact": ""
     },
     "Catfish": {
         "joke": "I'm more of a dogfish person...",
@@ -45,9 +49,10 @@
         "max_weight": 200.0,
         "value": 2,
         "xp": 6,
-        "rarity": 0.9,
+        "rarity": 0.5,
         "unique": false,
-        "id": "fcHjQyV"
+        "id": "fcHjQyV",
+        "fact": ""
     },
     "Giant snakehead": {
         "joke": "Um...but I asked for a medium?",
@@ -55,9 +60,10 @@
         "max_weight": 50.0,
         "value": 5,
         "xp": 5,
-        "rarity": 0.3,
+        "rarity": 0.7,
         "unique": false,
-        "id": "fs3JR7u"
+        "id": "fs3JR7u",
+        "fact": ""
     },
     "Black bass": {
         "joke": "The most metal of all fish!",
@@ -67,7 +73,8 @@
         "xp": 4,
         "rarity": 0.1,
         "unique": false,
-        "id": "fFeXVSj"
+        "id": "fFeXVSj",
+        "fact": ""
     },
     "Salmon": {
         "joke": "It's all upstream from here!",
@@ -77,7 +84,8 @@
         "xp": 5,
         "rarity": 0.4,
         "unique": false,
-        "id": "f8AmhPz"
+        "id": "f8AmhPz",
+        "fact": ""
     },
     "Arowana": {
         "joke": "I'd make a joke, but I don't 'wana.",
@@ -87,7 +95,8 @@
         "xp": 5,
         "rarity": 0.1,
         "unique": false,
-        "id": "f1D1zvi"
+        "id": "f1D1zvi",
+        "fact": ""
     },
     "Saddled bichir": {
         "joke": "And me without my tiny riding crop...",
@@ -97,7 +106,8 @@
         "xp": 5,
         "rarity": 0.05,
         "unique": false,
-        "id": "fAXibTm"
+        "id": "fAXibTm",
+        "fact": ""
     },
     "Red snapper": {
         "joke": "It looks pretty dapper!",
@@ -107,7 +117,8 @@
         "xp": 5,
         "rarity": 0.25,
         "unique": false,
-        "id": "f4xBlum"
+        "id": "f4xBlum",
+        "fact": ""
     },
     "Football fish": {
         "joke": "Some countries call it a soccer fish!",
@@ -117,6 +128,62 @@
         "xp": 6,
         "rarity": 0.15,
         "unique": false,
-        "id": "fTpUFZW"
+        "id": "fTpUFZW",
+        "fact": ""
+    },
+    "Moray eel": {
+        "joke": "I caught a moray eel! When you're in love, that's a moray!",
+        "min_weight": 10.0,
+        "max_weight": 65.0,
+        "value": 5,
+        "xp": 7,
+        "rarity": 0.85,
+        "unique": false,
+        "id": "fg5n7N3",
+        "fact": "It inhabits coral reefs or lagoons and could be found in tropical and subtropical in and around the Pacific. The species is diurnal, which means it is more active in the daytime than the nighttime."
+    },
+    "Vampire squid": {
+        "joke": "I got a vampire squid! A lot was at stake.",
+        "min_weight": 18.8,
+        "max_weight": 71.0,
+        "value": 2,
+        "xp": 10,
+        "rarity": 0.9,
+        "unique": false,
+        "id": "fGGcOFk",
+        "fact": "(vampire squid from hell) is a small cephalopod found throughout temperate and tropical oceans in extreme deep sea conditions. The vampire squid uses its bioluminescent organs and its unique oxygen metabolism to thrive in the parts of the ocean with the lowest concentrations of oxygen."
+    },
+    "Red king crab": {
+        "joke": "I caught a red king crab! Its royally flushed.",
+        "min_weight": 8.8,
+        "max_weight": 18.2,
+        "value": 3,
+        "xp": 3,
+        "rarity": 0.86,
+        "unique": false,
+        "id": "fwwflQk",
+        "fact": "Also called Kamchatka crab or Alaskan king crab, is a species of king crab native to cold waters in the North Pacific Ocean and adjacent seas."
+    },
+    "Giant isopod": {
+        "joke": "GAAAAH! I got a giant isopod! Its the crustodian of the sea.",
+        "min_weight": 5.28,
+        "max_weight": 15.15,
+        "value": 1,
+        "xp": 10,
+        "rarity": 0.84,
+        "unique": false,
+        "id": "f9X6IZA",
+        "fact": "A species of aquatic crustacean, of the order Isopoda. It is a member of the giant isopods (Bathynomus), and as such it is related\u2014albeit distantly\u2014to shrimps and crabs."
+    },
+    "Legend": {
+        "joke": "Legend has it there's a mark 2",
+        "min_weight": 25.0,
+        "max_weight": 100.0,
+        "value": 12,
+        "xp": 10,
+        "rarity": 0.99,
+        "unique": false,
+        "id": "fiRnPAk",
+        "fact": "The Legend is a Fish that can be caught during Spring in The Mountain lake during rainy weather."
     }
 }

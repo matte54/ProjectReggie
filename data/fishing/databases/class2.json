@@ -152,5 +152,49 @@
         "unique": true,
         "id": "fVQFKxG",
         "fact": "Nemo, the adventurous clownfish protagonist of the movie Finding Nemo, has a smaller right fin due to a lucky fin incident during his early days."
+    },
+    "Sea anemone": {
+        "joke": "I got a sea anemone! The enemy of my anemone is my afrenome!",
+        "min_weight": 2.8,
+        "max_weight": 4.2,
+        "value": 3,
+        "xp": 3,
+        "rarity": 0.76,
+        "unique": false,
+        "id": "fZtTAPT",
+        "fact": "Because of their colourful appearance, they are named after the Anemone, a terrestrial flowering plant. Sea anemones are related to corals, jellyfish, tube-dwelling anemones, and Hydra."
+    },
+    "Scallop": {
+        "joke": "I got a scallop! It otter be savored.",
+        "min_weight": 0.24,
+        "max_weight": 0.74,
+        "value": 1,
+        "xp": 1,
+        "rarity": 0.16,
+        "unique": false,
+        "id": "fu9EW5M",
+        "fact": "Scallops are a cosmopolitan family of bivalves found in all of the worlds oceans, although never in fresh water."
+    },
+    "Gazami crab": {
+        "joke": "I got a gazami crab! What a gripping find!",
+        "min_weight": 0.5,
+        "max_weight": 2.2,
+        "value": 2,
+        "xp": 1,
+        "rarity": 0.28,
+        "unique": false,
+        "id": "f8ushho",
+        "fact": "Also known as the Asian blue crab or horse crab, is the most widely fished species of crab in the world. It is found off the coasts of East Asia"
+    },
+    "Mantis shrimp": {
+        "joke": "I got a mantis shrimp! Shrimply amazing!",
+        "min_weight": 0.8,
+        "max_weight": 2.0,
+        "value": 10,
+        "xp": 10,
+        "rarity": 0.91,
+        "unique": false,
+        "id": "fJcaRzU",
+        "fact": "A species of mantis shrimp found in the western Pacific. It is widely harvested in Japan and eaten as sushi. Like other members of its order it has a powerful spear, which it uses to hunt invertebrates and small fish."
     }
 }

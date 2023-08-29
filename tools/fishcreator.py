@@ -69,17 +69,17 @@ def gen_id():
 
 
 x = f'f{str(gen_id())}'
-make_fish("Moby dick",
-          "It is not down on any map, true places never are.",
-          3500,
-          6500,
+make_fish("Streetshark ripster",
+          "Jawsome!",
+          200.0,
+          450.0,
           50,
           50,
-          0.9,
+          1.0,
           True,
-          7,
+          6,
           x,
-          'In the shadowed depths of the ocean, Moby Dick, the pale leviathan, embodies Captain Ahabs relentless vendetta and the enigmatic enigmas that lie shrouded within the heart of nature.')
+          'Half man , half shark!')
 
 
 # name=str, joke=str, min_weight=float, max_weight=float, value=int, xp=int, rarity=float(0-1), unique=bool, group=int(class 1-7, id=pregenerated, fact=str)

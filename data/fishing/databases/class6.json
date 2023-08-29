@@ -7,7 +7,8 @@
         "xp": 6,
         "rarity": 0.3,
         "unique": false,
-        "id": "fDcPFWM"
+        "id": "fDcPFWM",
+        "fact": ""
     },
     "Stringfish": {
         "joke": "Five more and I'll have a guitarfish!",
@@ -17,7 +18,8 @@
         "xp": 6,
         "rarity": 0.2,
         "unique": false,
-        "id": "fRiKcDo"
+        "id": "fRiKcDo",
+        "fact": ""
     },
     "King salmon": {
         "joke": "I caught a king salmon! Checkmate!",
@@ -27,7 +29,8 @@
         "xp": 7,
         "rarity": 0.8,
         "unique": false,
-        "id": "f7KGXTy"
+        "id": "f7KGXTy",
+        "fact": ""
     },
     "Dorado": {
         "joke": "I say 'dorado', you say 'doraydo'.",
@@ -37,7 +40,8 @@
         "xp": 6,
         "rarity": 0.3,
         "unique": false,
-        "id": "fxkyOBB"
+        "id": "fxkyOBB",
+        "fact": ""
     },
     "Gar": {
         "joke": "Yar! It's a gar! Har har!",
@@ -47,7 +51,8 @@
         "xp": 6,
         "rarity": 0.4,
         "unique": false,
-        "id": "fixin5m"
+        "id": "fixin5m",
+        "fact": ""
     },
     "Sea bass": {
         "joke": "No, wait- it's at least a C+!",
@@ -57,7 +62,8 @@
         "xp": 6,
         "rarity": 0.1,
         "unique": false,
-        "id": "fMRPpd7"
+        "id": "fMRPpd7",
+        "fact": ""
     },
     "Olive flounder": {
         "joke": "That's not the pits!",
@@ -67,7 +73,8 @@
         "xp": 7,
         "rarity": 0.15,
         "unique": false,
-        "id": "fEzD7Q0"
+        "id": "fEzD7Q0",
+        "fact": ""
     },
     "Giant trevally": {
         "joke": "Yeah, I'm pretty well-traveled.",
@@ -77,7 +84,8 @@
         "xp": 7,
         "rarity": 0.35,
         "unique": false,
-        "id": "fqg1trF"
+        "id": "fqg1trF",
+        "fact": ""
     },
     "Mahi-mahi": {
         "joke": "It's all mahine-mahine.",
@@ -87,7 +95,8 @@
         "xp": 6,
         "rarity": 0.5,
         "unique": false,
-        "id": "fbRm6ip"
+        "id": "fbRm6ip",
+        "fact": ""
     },
     "Ray": {
         "joke": "A few more and I'll have a tan!",
@@ -97,6 +106,106 @@
         "xp": 8,
         "rarity": 0.7,
         "unique": false,
-        "id": "fYZOD6g"
+        "id": "fYZOD6g",
+        "fact": ""
+    },
+    "Sea cucumber": {
+        "joke": "I got a sea cucumber! It's a bit cumbersome...",
+        "min_weight": 4.0,
+        "max_weight": 250.0,
+        "value": 10,
+        "xp": 6,
+        "rarity": 0.48,
+        "unique": false,
+        "id": "fpi1WFo",
+        "fact": "They are marine animals with a leathery skin and an elongated body containing a single, branched gonad. Sea cucumbers are found on the sea floor worldwide."
+    },
+    "Gigas giant clam": {
+        "joke": "I got a gigas giant clam! Its kind of a big deal.",
+        "min_weight": 248.0,
+        "max_weight": 540.0,
+        "value": 5,
+        "xp": 10,
+        "rarity": 0.82,
+        "unique": false,
+        "id": "fBnLUT8",
+        "fact": "The giant clams are the members of the clam genus Tridacna that are the largest living bivalve mollusks. There are actually several species of giant clams in the genus Tridacna."
+    },
+    "Spider crab": {
+        "joke": "I got a spider crab! Water bugs can rest easy.",
+        "min_weight": 74.8,
+        "max_weight": 480.5,
+        "value": 5,
+        "xp": 5,
+        "rarity": 0.86,
+        "unique": false,
+        "id": "fGS2y7D",
+        "fact": "The Japanese spider crab (Macrocheira kaempferi) is a species of marine crab that lives in the waters around Japan. It has the largest known leg-span of any arthropod."
+    },
+    "Flarefin koi": {
+        "joke": "Flareon the fish version.",
+        "min_weight": 200.0,
+        "max_weight": 512.3,
+        "value": 10,
+        "xp": 7,
+        "rarity": 0.95,
+        "unique": false,
+        "id": "fRhqwbk",
+        "fact": "Flarefin Koi are only caught in lava, the Lavaproof Fishing Hook, Hotline Fishing Hook, or any pole using Underworld Critters as bait must be used to catch them."
+    },
+    "Blobfish": {
+        "joke": "This odd creature floats above the ocean floor, consuming any edible material in its path.",
+        "min_weight": 300.0,
+        "max_weight": 523.0,
+        "value": 5,
+        "xp": 7,
+        "rarity": 0.96,
+        "unique": false,
+        "id": "fznPckv",
+        "fact": "The Blobfish is a fish that can be caught in the submarine ride at the Night Market."
+    },
+    "Crimsonfish": {
+        "joke": "Lives deep in the ocean but likes to lay its eggs in the warm summer water.",
+        "min_weight": 420.0,
+        "max_weight": 720.0,
+        "value": 9,
+        "xp": 5,
+        "rarity": 0.71,
+        "unique": false,
+        "id": "fXN5h6b",
+        "fact": "The Crimsonfish is a fish that can be caught in the ocean at The Beach during Summer. It is one of the five Legendary Fish."
+    },
+    "Anglerfish": {
+        "joke": "Whos angling who?",
+        "min_weight": 90.0,
+        "max_weight": 345.0,
+        "value": 5,
+        "xp": 5,
+        "rarity": 0.77,
+        "unique": false,
+        "id": "f12JmPP",
+        "fact": "They are bony fish named for their characteristic mode of predation, in which a modified luminescent fin ray (the esca or illicium) acts as a lure for other fish."
+    },
+    "Ms angler": {
+        "joke": "Sonuva...",
+        "min_weight": 5.1,
+        "max_weight": 90.2,
+        "value": 15,
+        "xp": 1,
+        "rarity": 0.99,
+        "unique": false,
+        "id": "fo4Buj1",
+        "fact": "Ms. Angler can be found in the river in Pelican Town north of JojaMart."
+    },
+    "Streetshark ripster": {
+        "joke": "Jawsome!",
+        "min_weight": 200.0,
+        "max_weight": 450.0,
+        "value": 50,
+        "xp": 50,
+        "rarity": 1.0,
+        "unique": true,
+        "id": "fiTre7T",
+        "fact": "Half man , half shark!"
     }
 }

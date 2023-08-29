@@ -7,7 +7,8 @@
         "xp": 4,
         "rarity": 0.08,
         "unique": false,
-        "id": "fXrxdFG"
+        "id": "fXrxdFG",
+        "fact": ""
     },
     "Yellow perch": {
         "joke": "Those yellow birds have to sit somewhere!",
@@ -17,7 +18,8 @@
         "xp": 4,
         "rarity": 0.22,
         "unique": false,
-        "id": "fKTbaVA"
+        "id": "fKTbaVA",
+        "fact": ""
     },
     "Tilapia": {
         "joke": "It makes me happy-a!",
@@ -27,7 +29,8 @@
         "xp": 3,
         "rarity": 0.15,
         "unique": false,
-        "id": "fVth8ST"
+        "id": "fVth8ST",
+        "fact": ""
     },
     "Sweetfish": {
         "joke": "Hope it's not artificially sweet!",
@@ -37,7 +40,8 @@
         "xp": 4,
         "rarity": 0.35,
         "unique": false,
-        "id": "fq8tH02"
+        "id": "fq8tH02",
+        "fact": ""
     },
     "Cherry salmon": {
         "joke": "It's the perfect topper for a marlin sundae!",
@@ -47,7 +51,8 @@
         "xp": 4,
         "rarity": 0.5,
         "unique": false,
-        "id": "ffzxntf"
+        "id": "ffzxntf",
+        "fact": ""
     },
     "Char": {
         "joke": "Now I'm gonna sit on it!",
@@ -57,7 +62,8 @@
         "xp": 3,
         "rarity": 0.4,
         "unique": false,
-        "id": "fJdu3LZ"
+        "id": "fJdu3LZ",
+        "fact": ""
     },
     "Golden trout": {
         "joke": "But the real treasure? Friendship.",
@@ -67,7 +73,8 @@
         "xp": 3,
         "rarity": 0.75,
         "unique": false,
-        "id": "fHWWsrL"
+        "id": "fHWWsrL",
+        "fact": ""
     },
     "Zebra turkeyfish": {
         "joke": "Land, air, water-make up your mind!",
@@ -77,7 +84,8 @@
         "xp": 4,
         "rarity": 0.25,
         "unique": false,
-        "id": "fcLJRCU"
+        "id": "fcLJRCU",
+        "fact": ""
     },
     "Blowfish": {
         "joke": "I'm blown away!",
@@ -87,7 +95,8 @@
         "xp": 2,
         "rarity": 0.15,
         "unique": false,
-        "id": "fi0BCoT"
+        "id": "fi0BCoT",
+        "fact": ""
     },
     "Puffer fish": {
         "joke": "I thought you would be tougher, fish!",
@@ -97,7 +106,8 @@
         "xp": 3,
         "rarity": 0.9,
         "unique": false,
-        "id": "fFvLyww"
+        "id": "fFvLyww",
+        "fact": ""
     },
     "Barred knifejaw": {
         "joke": "They must have a hard time eating!",
@@ -107,7 +117,8 @@
         "xp": 3,
         "rarity": 0.8,
         "unique": false,
-        "id": "fgb03BH"
+        "id": "fgb03BH",
+        "fact": ""
     },
     "Dab": {
         "joke": "Not bad!",
@@ -117,7 +128,8 @@
         "xp": 4,
         "rarity": 0.4,
         "unique": false,
-        "id": "fKlFebf"
+        "id": "fKlFebf",
+        "fact": ""
     },
     "Squid": {
         "joke": "Do they... not actually 'bloop'?",
@@ -127,6 +139,84 @@
         "xp": 5,
         "rarity": 0.1,
         "unique": false,
-        "id": "fZPnIB3"
+        "id": "fZPnIB3",
+        "fact": ""
+    },
+    "Sea pig": {
+        "joke": "I got a sea pig! What's next? Air pigs?",
+        "min_weight": 3.5,
+        "max_weight": 25.0,
+        "value": 12,
+        "xp": 1,
+        "rarity": 0.71,
+        "unique": false,
+        "id": "fcUKuZJ",
+        "fact": "A species of sea cucumber that lives in the deep sea. It was first described by Hjalmar Theel, a Swedish scientist."
+    },
+    "Octopus": {
+        "joke": "I got an octopus! It can give four hugs at once!",
+        "min_weight": 28.0,
+        "max_weight": 40.0,
+        "value": 2,
+        "xp": 4,
+        "rarity": 0.42,
+        "unique": false,
+        "id": "fwhRkmO",
+        "fact": "An octopus is a soft-bodied, eight-limbed mollusc of the order Octopoda."
+    },
+    "Snow crab": {
+        "joke": "I got a snow crab! Its giving me the cold shoulder.",
+        "min_weight": 1.4,
+        "max_weight": 3.8,
+        "value": 2,
+        "xp": 1,
+        "rarity": 0.21,
+        "unique": false,
+        "id": "fTOPBrz",
+        "fact": "Also known as opilio crab or opies, is a predominantly epifaunal crustacean native to shelf depths in the northwest Atlantic Ocean and north Pacific Ocean."
+    },
+    "Lobster": {
+        "joke": "I got a lobster! Lobjective complete.",
+        "min_weight": 2.23,
+        "max_weight": 5.25,
+        "value": 5,
+        "xp": 1,
+        "rarity": 0.34,
+        "unique": false,
+        "id": "f85j9Kz",
+        "fact": "Also known as Atlantic lobster, Canadian lobster, true lobster, northern lobster, Canadian Reds, or Maine lobster."
+    },
+    "Mutant carp": {
+        "joke": "I think it has 3 eyes...",
+        "min_weight": 166.5,
+        "max_weight": 266.2,
+        "value": 5,
+        "xp": 5,
+        "rarity": 0.98,
+        "unique": false,
+        "id": "fbrv4nK",
+        "fact": "The Mutant Carp is a fish that can be caught in The Sewers during all seasons."
+    },
+    "Glacierfish jr": {
+        "joke": "Soo cool bruh!",
+        "min_weight": 35.6,
+        "max_weight": 68.9,
+        "value": 3,
+        "xp": 10,
+        "rarity": 0.93,
+        "unique": false,
+        "id": "fEd377G",
+        "fact": "The original Glacierfish had a son..."
+    },
+    "Flounder": {
+        "joke": "Ah well first, ahh, this shark chased us yeah yeah! And we tried to but we couldnt and then grr and and we whoa!",
+        "min_weight": 17.0,
+        "max_weight": 31.0,
+        "value": 50,
+        "xp": 50,
+        "rarity": 1.0,
+        "unique": true,
+        "id": "fiseP4j",
+        "fact": "Ariels best friend, despite the name he is not a flounder."
     }
 }
