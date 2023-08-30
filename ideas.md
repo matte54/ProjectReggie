@@ -102,6 +102,8 @@ are so many mons.. but would definitly make it more intresting.
 - Designing a embed to try to mimic a pokemon card for each mon that appears not just picture
 - Pokemon delay, feed a pokemon candy to make it appear again later, if you delay a pokemon and someone catches it
 reward delayer with a random free pokemon not in his dex
+- Have users chose 1 pokemon that "fights" with them when catching and gets XP?
+- On pokemon level up gain stats increase of 1/50 the base stat value + 1/100 combined individual value and effort value
 
 * New game idea "Random DND" dungeonmaster light?
 - Random DND monster can appear in the chat, anyone who wants to can roll for attacking

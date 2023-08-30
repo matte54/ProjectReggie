@@ -19,7 +19,7 @@ from systems.speaking import rspeak
 from systems.varmanager import VarManager
 from systems.unitconverter import Converter
 from systems.emojihandler import Emojihandler
-from systems.statistics import Statistics
+from systems.statistics import Statistics, Reactionstats
 # from systems.newsday import Newsday
 
 # fishing stuff
@@ -58,6 +58,7 @@ class Woodhouse(discord.Client):
         self.unitconverter = Converter()
         self.emojihandler = Emojihandler(self)
         self.statistics = Statistics(self)
+        self.reactionstats = Reactionstats(self)
 
         # fishing
         self.fishoffhandler = Fishoffhandler(self)
@@ -156,6 +157,9 @@ class Woodhouse(discord.Client):
         await self.unitconverter.check(message)
 
     async def on_reaction_add(self, reaction, user):
+        if user.bot:
+            return
+        self.reactionstats.handle_reactions(reaction, user)
         # If woodhouse sees someone add a reaction , 25% chance of him adding one to.
         reacted_channel_id = reaction.message.channel.id
         if random.random() < 0.25:

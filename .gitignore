@@ -1,6 +1,5 @@
 /data/etc/credentials.py
 /data/etc/giphy_key.py
-/data/etc/openai_key.py
 /data/redditdata/
 __pycache__/
 local/

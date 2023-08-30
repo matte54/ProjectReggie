@@ -142,3 +142,59 @@ class Statistics:
     def write_json(self, filepath, data):
         with open(filepath, "w") as f:
             json.dump(data, f, indent=4)
+
+
+class Reactionstats:
+    def __init__(self, client):
+        self.client = client
+        self.stats_user_path = "./local/statistics/user/"
+        self.user_data = None
+        self.stats_guild_path = "./local/statistics/guild/"
+        self.guild_data = None
+        self.guild_id = None
+        self.user_id = None
+
+    def handle_reactions(self, emoji, user):
+        self.guild_id = str(user.guild.id)
+        self.user_id = str(user.id)
+        emoji = str(emoji)
+
+        with open(f'{self.stats_guild_path}{self.guild_id}.json', "r") as f:
+            self.guild_data = json.load(f)
+        with open(f'{self.stats_user_path}{self.user_id}.json', "r") as f:
+            self.user_data = json.load(f)
+
+        # add this check to make sure the emoji exists on the actual guild (nitro nerds)
+        with open('./local/emojis.json', "r") as f:
+            emoji_data = json.load(f)
+
+        if emoji in emoji_data[self.guild_id]:
+
+            # add emoji to guild statistics
+            if emoji in self.guild_data["alltime"]["emojis"]:
+                self.guild_data["alltime"]["emojis"][emoji] += 1
+            else:
+                self.guild_data["alltime"]["emojis"][emoji] = 1
+
+            if emoji in self.guild_data["month"]["emojis"]:
+                self.guild_data["month"]["emojis"][emoji] += 1
+            else:
+                self.guild_data["month"]["emojis"][emoji] = 1
+
+            # add emoji to users statistics
+            if emoji in self.user_data["alltime"]["emojis"]:
+                self.user_data["alltime"]["emojis"][emoji] += 1
+            else:
+                self.user_data["alltime"]["emojis"][emoji] = 1
+
+            if emoji in self.user_data["month"]["emojis"]:
+                self.user_data["month"]["emojis"][emoji] += 1
+            else:
+                self.user_data["month"]["emojis"][emoji] = 1
+
+            self.write_json(f'{self.stats_guild_path}{self.guild_id}.json', self.guild_data)
+            self.write_json(f'{self.stats_user_path}{self.user_id}.json', self.user_data)
+
+    def write_json(self, filepath, data):
+        with open(filepath, "w") as f:
+            json.dump(data, f, indent=4)

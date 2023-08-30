@@ -1,0 +1,19 @@
+{
+    "Bulbasaur": {
+        "n_id": 1,
+        "type": [
+            5,
+            6
+        ],
+        "rarity": 0,
+        "stage": 0,
+        "hp": 40,
+        "attack": 49,
+        "defense": 49,
+        "sp_atk": 65,
+        "sp_def": 65,
+        "speed": 45,
+        "xp": 64,
+        "rate": 3
+    }
+}

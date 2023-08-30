@@ -33,7 +33,7 @@ class Fishoffhandler:
 
     async def check_date(self):
         self.now = datetime.datetime.now()
-        if self.now.day == 1:  # changed for debugging
+        if self.now.day == 1:
             with open(self.fishoff_history_file, 'r', encoding='utf-8') as f:
                 last_entry = f.readline().strip()
                 if last_entry.startswith(self.current_month):
