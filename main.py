@@ -15,7 +15,7 @@ from data.etc import credentials
 from systems.logger import log, debug_on
 from systems.mother import Mother
 from systems.housekeeper import HouseKeeper
-from systems.speaking import rspeak
+from systems.speaking import Speaking
 from systems.varmanager import VarManager
 from systems.unitconverter import Converter
 from systems.emojihandler import Emojihandler
@@ -59,6 +59,7 @@ class Woodhouse(discord.Client):
         self.emojihandler = Emojihandler(self)
         self.statistics = Statistics(self)
         self.reactionstats = Reactionstats(self)
+        self.speaking = Speaking()
 
         # fishing
         self.fishoffhandler = Fishoffhandler(self)
@@ -148,7 +149,7 @@ class Woodhouse(discord.Client):
             if not sentence:
                 i = "stop that!"
             else:
-                i, debugstuff = rspeak(sentence)
+                i = self.speaking.process_input(sentence)
             # debugchannel = self.get_channel(1007604139657789470) #debugchannel addition
             # await debugchannel.send(debugstuff)
             await message.channel.send(i)

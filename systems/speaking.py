@@ -1,106 +1,86 @@
 import os
-import random
+import re
+import time
 from difflib import SequenceMatcher
-from systems.logger import log, debug_on
 
-# this is directly converted from 1.0 so should probably be re-evaluated.
+from systems.logger import log
 
-
-# sentence filtering stuff
-nopeChars = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
-avoidwordlist = []
-avoidpath = "./data/etc/avoidwords.txt"
-with open(avoidpath, 'r', encoding='UTF-8') as avoidfile:
-    avoidtext = avoidfile.read().splitlines()
-for w in avoidtext:
-    avoidwordlist.append(w.lower())
-
-# load data from reddit
-texte = ""
-logfolderpath = "./data/redditdata/"
-for path, dirs, files in os.walk(logfolderpath):
-    pass
-for e in files:
-    with open(f'./data/redditdata/{e}', 'r', encoding='UTF-8') as f:
-        texte += f.read()
-
-text = texte.splitlines()
-
-data = []
-for i in text:
-    data.append((i.split(" / ")))
-
-if debug_on():
-    log(f'[Speaking] - Sentence database has {len(data)} entries.')
+MATCH_LIMITER = 25000
 
 
-def rspeak(question):
-    data2 = []
-    i = question.lower()
-    # check for illeagal chars
-    for ele in i:
-        if ele in nopeChars:
-            i = i.replace(ele, '')
+class Speaking:
+    def __init__(self):
+        self.data_path = "./data/redditdata/"
+        self.avoidlist = []
+        self.filter_pattern = r'[!()\[\]{};:\'"\\,<>./?@#$%^&*_~]'
+        self.user_entry = None
+        self.keywords = None
 
-    longestword = i.split()
-    # word filtering
-    removed_list = []
-    for wordsx in longestword:
-        if wordsx in avoidwordlist:
-            removed_list.append(wordsx)
-    # remove words in separate loop
-    for w2 in removed_list:
-        longestword.remove(w2)
-    if removed_list:
-        if debug_on():
-            log(f'[Speaking] - deleted words in input sentence: {removed_list}')
-    # Get the longest word
-    xa = sorted(longestword, key=len)
-    if not xa:
-        return f'All those words are ill-eagle...', f'```yaml\nERROR: All words in input where filtered out!```'
-    longestword1 = xa[-1]
-    if len(xa) >= 2:
-        leastlongestword = xa[-2]
+        # run this when intiating
+        self.filter()
 
-    for l in data:
-        a = l[0].split()
-        if longestword1 in a:
-            data2.append(l)
+    def filter(self):
+        path = "./data/etc/avoidwords.txt"
+        with open(path, 'r', encoding='UTF-8') as f:
+            text = f.read().splitlines()
+        for word in text:
+            self.avoidlist.append(word.lower())
 
-    # check the next least longestword?
-    if not data2:
-        if debug_on():
-            log('[Speaking] - Going to secondary option on input sentence')
-        if "leastlongestword" in locals():
-            for l2 in data:
-                a2 = l2[0].split()
-                if leastlongestword in a2:
-                    data2.append(l2)
+    def data_generator(self):
+        files = os.listdir(self.data_path)
+        generatorloops = 0
+        generator_matches = 0
+        self.keywords = sorted(self.user_entry.split(), key=len, reverse=True)[:2]  # get longest words
+        for file in files:
+            with open(os.path.join(self.data_path, file), 'r', encoding='UTF-8') as f:
+                for line in f:
+                    generatorloops += 1
+                    parts = line.strip().split(" / ")
+                    if any(keyword in parts[0] for keyword in self.keywords):
+                        generator_matches += 1
+                        if generator_matches > MATCH_LIMITER:
+                            break
+                        yield tuple(parts)
+        log(f'[Speaking] - Loops: {generatorloops}, Matches: {generator_matches}')
+
+    def process_data(self):
+        start_time = time.time()
+        best = ("", "", 0.00)
+        bestlist = []
+
+        data_generator = self.data_generator()
+
+        for entry in data_generator:
+            x = round(SequenceMatcher(a=self.user_entry, b=entry[0]).ratio(), 2)
+            if best[2] < x:
+                best = (entry[0], entry[1], x)
+                bestlist.append(best)
+
+        log(f'[Speaking] - Processing time was {(time.time() - start_time)}')
+
+        bestlist.sort(key=lambda y: y[2], reverse=True)
+
+        if bestlist:
+            rpicked = bestlist[0]  # trying just to pick the best and see how repetetive it gets...
+            # rpicked = random.choice(bestlist[-5:])
+            log(f'[Speaking] - {self.user_entry} <-{rpicked[2]}-> {rpicked[0]}')
+
+            self.user_entry = None  # reset this variables after done
+            self.keywords = None
+            return rpicked[1]
         else:
-            return 'I dont know man...', f'```yaml\nERROR: All words in input where filtered out!```'
-    if debug_on():
-        log(f'[Speaking] - Database had {len(data2)} matches')
+            print("No matches!")
+            self.user_entry = None  # reset this variables after done
+            self.keywords = None
+            return "Uhhh...no"
 
-    if not data2:
-        if debug_on():
-            log(f'[Speaking] - Database had 0 matches')
-        return 'I dont know man...', f'```yaml\nERROR: No database matches!```'
+    def process_input(self, entry):
+        self.user_entry = entry.lower()
+        self.user_entry = re.sub(self.filter_pattern, "", self.user_entry)  # remove ill-eagle characters
+        # check list of ill-eagle words
+        for word in self.user_entry.split():
+            if word in self.avoidlist:
+                self.user_entry = self.user_entry.replace(word, "")
+        self.user_entry = re.sub(r'\s+', ' ', self.user_entry)  # remove double spaces if any
 
-    best = ("", "", 0.00)
-    bestlist = []
-    for l in data2:
-        s = l[0]
-        x = round(SequenceMatcher(a=i, b=s).ratio(), 2)
-        if best[2] < x:
-            best = (l[0], l[1], x)
-            bestlist.append(best)
-    bestlist.sort(key=lambda y: y[2])
-    rpicked = random.choice(bestlist[-5:])
-
-    if debug_on():
-        log(f'[Speaking] - {i} <-{rpicked[2]}-> {rpicked[0]}')
-    sortdebugstuff = [i, rpicked[2], rpicked[0], len(data2), ]
-
-    debugstring = f'```yaml\nInput: {i}\n\n{len(data2)} potencial matches...\n{round(rpicked[2] * 100)}% matched with \nDatabase match: {rpicked[0]}\n\nOutput: {rpicked[1]}```'
-
-    return rpicked[1], debugstring
+        return self.process_data()

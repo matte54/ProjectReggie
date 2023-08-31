@@ -40,3 +40,6 @@ simultanously when people are chatting. also diffrent servers.
 - rogue is doing colors green-blue-yellow-orange-red with images? need to go thru all rarities in database again
 so he can start
 - Add cash prize for fishoff winner
+
+* Event command
+- Fix the "UP" so it only lists event for that channel

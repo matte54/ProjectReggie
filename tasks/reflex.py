@@ -6,7 +6,7 @@ import os
 from datetime import datetime
 
 from systems.logger import log, debug_on
-from systems.speaking import rspeak
+from systems.speaking import Speaking
 from systems.emojihandler import Emojihandler
 from systems.varmanager import VarManager
 from systems.gif_finder import Giphy_find
@@ -24,6 +24,7 @@ class Reflex:
         self.numbers = [0, 1, 2, 3, 4, 5, 6]
         self.random_weights = [10, 9, 8, 4, 4, 2, 10]
         self.varmanager = VarManager()
+        self.speaking = Speaking()
         self.gif_finder = Giphy_find()
         self.prohibited_channels = []
 
@@ -175,9 +176,9 @@ class Reflex:
         if random.uniform(0.0, 1.0) < 0.25:
             txt = self.check_logs()
             if not txt:
-                txt, debugstuff = rspeak(last_message_content)
+                txt = self.speaking.process_input(last_message_content)
         else:
-            txt, debugstuff = rspeak(last_message_content)
+            txt = self.speaking.process_input(last_message_content)
         await channel.send(txt)
 
     async def reaction(self, picked_channel, last_message):
@@ -196,9 +197,9 @@ class Reflex:
         if random.uniform(0.0, 1.0) < 0.25:
             txt = self.check_logs()
             if not txt:
-                txt, debugstuff = rspeak(last_message_content)
+                txt = self.speaking.process_input(last_message_content)
         else:
-            txt, debugstuff = rspeak(last_message_content)
+            txt = self.speaking.process_input(last_message_content)
         await last_message.reply(txt)
 
     async def url(self, picked_channel):
