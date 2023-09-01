@@ -53,6 +53,8 @@ class HouseKeeper:
             for i in guild_list:
                 for e in i.members:
                     if not e.bot and str(e.id) not in data:
+                        print(e)
+                        print(e.global_name, e.name)
                         if not e.global_name:
                             data[str(e.id)] = e.name
                         else:
