@@ -10,6 +10,7 @@ import datetime
 
 # configs + other
 from data.etc import credentials
+from data.etc.anoyed import RESPONSES
 
 # systems
 from systems.logger import log, debug_on
@@ -147,7 +148,7 @@ class Woodhouse(discord.Client):
         if count:
             sentence.replace('  ', '')
             if not sentence:
-                i = "stop that!"
+                i = random.choice(RESPONSES)
             else:
                 i = self.speaking.process_input(sentence)
             # debugchannel = self.get_channel(1007604139657789470) #debugchannel addition

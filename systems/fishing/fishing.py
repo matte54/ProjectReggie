@@ -224,6 +224,7 @@ class Fishing:
             return False
 
     def get_profile(self, user_id):
+        now = datetime.datetime.now()
         # if profile exists load and return
         if os.path.isfile(f"{self.profile_dir}{user_id}.json"):
             with open(f"{self.profile_dir}{user_id}.json", "r") as f:
@@ -237,7 +238,7 @@ class Fishing:
                 "xpCap": 10,
                 "level": 1,
                 "gear": [],
-                "last": "",
+                "last": str(now.isoformat()),
                 "wins": 0
             }
             log(f'[Fishing] - {self.message.author} has no fishing profile, creating...')

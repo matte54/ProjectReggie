@@ -40,4 +40,4 @@ class StatusTask:
                 await client.change_presence(
                     activity=discord.Activity(type=discord.ActivityType.custom, name=picked_status))
 
-            await asyncio.sleep(120)
+            await asyncio.sleep(600 + random.randint(1, 300))
