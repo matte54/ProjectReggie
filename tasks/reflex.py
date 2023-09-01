@@ -44,8 +44,8 @@ class Reflex:
             if channel_list:
                 channel_list = await self.channel_history(channel_list)  # remove dead channels
             if channel_list:
-                if debug_on():
-                    log(f'[Reflex] - FINAL channel list: {channel_list}')
+                #if debug_on():
+                #    log(f'[Reflex] - FINAL channel list: {channel_list}')
                 picked_channel = random.choice(channel_list)
                 # random a reflex action with weights
                 k = random.choices(self.numbers, weights=self.random_weights)
@@ -91,7 +91,6 @@ class Reflex:
                     log(f'[Reflex] - Waiting...')
 
             await asyncio.sleep((60 * random.randint(30, 40)) * self.wait_cycles)  # use this formula for live
-            # await asyncio.sleep(10)
 
     async def channel_history(self, channel_list):
         # check channel history for recent activity to rule out dead channels

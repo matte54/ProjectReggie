@@ -7,6 +7,7 @@ from systems.logger import log
 
 MATCH_LIMITER = 25000
 
+# need to experiment with not using the avoid words? feel like i could get better results with it?
 
 class Speaking:
     def __init__(self):
@@ -51,7 +52,7 @@ class Speaking:
         data_generator = self.data_generator()
 
         for entry in data_generator:
-            x = round(SequenceMatcher(a=self.user_entry, b=entry[0]).ratio(), 2)
+            x = round(SequenceMatcher(a=self.user_entry, b=entry[0].lower()).ratio(), 2)
             if best[2] < x:
                 best = (entry[0], entry[1], x)
                 bestlist.append(best)
@@ -78,9 +79,9 @@ class Speaking:
         self.user_entry = entry.lower()
         self.user_entry = re.sub(self.filter_pattern, "", self.user_entry)  # remove ill-eagle characters
         # check list of ill-eagle words
-        for word in self.user_entry.split():
-            if word in self.avoidlist:
-                self.user_entry = self.user_entry.replace(word, "")
+        #for word in self.user_entry.split():
+        #    if word in self.avoidlist:
+        #        self.user_entry = self.user_entry.replace(word, "")
         self.user_entry = re.sub(r'\s+', ' ', self.user_entry)  # remove double spaces if any
 
         return self.process_data()
