@@ -53,12 +53,10 @@ class HouseKeeper:
             for i in guild_list:
                 for e in i.members:
                     if not e.bot and str(e.id) not in data:
-                        print(e)
-                        print(e.global_name, e.name)
-                        if not e.global_name:
-                            data[str(e.id)] = e.name
-                        else:
+                        try:
                             data[str(e.id)] = e.global_name
+                        except AttributeError:
+                            data[str(e.id)] = e.name
             self.write_json(self.idlist_path, data)
         else:
             # this is just for when there is no file during first start
@@ -66,10 +64,10 @@ class HouseKeeper:
             for i in guild_list:
                 for e in i.members:
                     if not e.bot:
-                        if not e.global_name:
-                            data[str(e.id)] = e.name
-                        else:
+                        try:
                             data[str(e.id)] = e.global_name
+                        except AttributeError:
+                            data[str(e.id)] = e.name
             self.write_json(self.idlist_path, data)
 
     async def cakeday(self):
