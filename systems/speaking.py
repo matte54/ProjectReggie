@@ -16,6 +16,7 @@ class Speaking:
         self.filter_pattern = r'[!()\[\]{};:\'"\\,<>./?@#$%^&*_~]'
         self.user_entry = None
         self.keywords = None
+        self.debugstring = None
 
         # run this when intiating
         self.filter()
@@ -43,6 +44,7 @@ class Speaking:
                             break
                         yield tuple(parts)
         log(f'[Speaking] - Loops: {generatorloops}, Matches: {generator_matches}')
+        self.debugstring += f'Loops: {generatorloops} Potencial Matches: {generator_matches}\n'
 
     def process_data(self):
         start_time = time.time()
@@ -57,7 +59,8 @@ class Speaking:
                 best = (entry[0], entry[1], x)
                 bestlist.append(best)
 
-        log(f'[Speaking] - Processing time was {(time.time() - start_time)}')
+        log(f'[Speaking] - Processing time was {round((time.time() - start_time))} second(s)')
+        self.debugstring += f'Processing time: {round((time.time() - start_time))} second(s)\n'
 
         bestlist.sort(key=lambda y: y[2], reverse=True)
 
@@ -65,19 +68,22 @@ class Speaking:
             rpicked = bestlist[0]  # trying just to pick the best and see how repetetive it gets...
             # rpicked = random.choice(bestlist[-5:])
             log(f'[Speaking] - {self.user_entry} <-{rpicked[2]}-> {rpicked[0]}')
+            self.debugstring += f'{rpicked[2] * 100}% match: {rpicked[0]}\n\nOUTPUT: {rpicked[1]}'
 
             self.user_entry = None  # reset this variables after done
             self.keywords = None
-            return rpicked[1]
+            return rpicked[1], self.debugstring
         else:
             print("No matches!")
             self.user_entry = None  # reset this variables after done
             self.keywords = None
-            return "Uhhh...no"
+            return "Uhhh...no", None
 
     def process_input(self, entry):
+        self.debugstring = ""
         self.user_entry = entry.lower()
         self.user_entry = re.sub(self.filter_pattern, "", self.user_entry)  # remove ill-eagle characters
+        self.debugstring += f'FILTERED INPUT: {self.user_entry}\n\n'
         # check list of ill-eagle words
         #for word in self.user_entry.split():
         #    if word in self.avoidlist:

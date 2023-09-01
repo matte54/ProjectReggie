@@ -40,6 +40,11 @@ simultanously when people are chatting. also diffrent servers.
 - rogue is doing colors green-blue-yellow-orange-red with images? need to go thru all rarities in database again
 so he can start
 - Add cash prize for fishoff winner
+- Make fishing commands use the ID file instead of message.author to get rid of those #0 also in other places.
 
 * Event command
 - Fix the "UP" so it only lists event for that channel
+
+* Seen
+- Make the persons id or name also searchable
+- make the datetime return string humanreadable

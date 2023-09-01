@@ -6,7 +6,6 @@ from systems.logger import log, debug_on
 from systems.varmanager import VarManager
 from systems.gif_finder import Giphy_find
 
-
 class HouseKeeper:
     def __init__(self, client):
         self.client = client

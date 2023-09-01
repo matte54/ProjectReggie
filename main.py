@@ -150,9 +150,11 @@ class Woodhouse(discord.Client):
             if not sentence:
                 i = random.choice(RESPONSES)
             else:
-                i = self.speaking.process_input(sentence)
-            # debugchannel = self.get_channel(1007604139657789470) #debugchannel addition
-            # await debugchannel.send(debugstuff)
+                i, debugmsg = self.speaking.process_input(sentence)
+                if message.guild.id == 194028816333537280:
+                    # if guild darkzone do the debug stuff member
+                    debugchannel = self.get_channel(1007604139657789470)
+                    await debugchannel.send(f'```yaml\n\n{debugmsg}```')
             await message.channel.send(i)
 
         # check for conversions for unitconverter

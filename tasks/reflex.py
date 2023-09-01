@@ -172,9 +172,9 @@ class Reflex:
         if random.uniform(0.0, 1.0) < 0.25:
             txt = self.check_logs()
             if not txt:
-                txt = self.speaking.process_input(last_message_content)
+                txt, debugmsg = self.speaking.process_input(last_message_content)
         else:
-            txt = self.speaking.process_input(last_message_content)
+            txt, debugmsg = self.speaking.process_input(last_message_content)
         await channel.send(txt)
 
     async def reaction(self, picked_channel, last_message):
@@ -193,9 +193,9 @@ class Reflex:
         if random.uniform(0.0, 1.0) < 0.25:
             txt = self.check_logs()
             if not txt:
-                txt = self.speaking.process_input(last_message_content)
+                txt, debugmsg = self.speaking.process_input(last_message_content)
         else:
-            txt = self.speaking.process_input(last_message_content)
+            txt, debugmsg = self.speaking.process_input(last_message_content)
         await last_message.reply(txt)
 
     async def url(self, picked_channel):
