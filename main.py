@@ -91,7 +91,7 @@ class Woodhouse(discord.Client):
         await self.housekeeper.cakeday()
 
         # on ready fishing stuff
-        await self.fishoffhandler.check_date()  # do the check for fishing season rotate
+        #await self.fishoffhandler.check_date()  # do the check for fishing season rotate
 
     def run_loop(self):
         self.run(credentials.KEY)
