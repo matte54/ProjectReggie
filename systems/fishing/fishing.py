@@ -286,6 +286,7 @@ class Fishing:
             current_largest_fish = max(weights, default=0)
 
             if user_id_str not in data:
+                data[user_id_str] = {}
                 data[user_id_str]["name"] = self.caught_fish["name"]
                 data[user_id_str]["weight"] = self.caught_fish["weight"]
                 data[user_id_str]["unique"] = self.caught_fish["unique"]
