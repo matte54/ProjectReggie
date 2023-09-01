@@ -168,6 +168,8 @@ class Fishing:
             f"{self.caught_fish['weight']}lbs {self.caught_fish['name']}")
 
     def between_casts(self):
+        if not self.user_profile["last"]: # first cast ever will casue problems if its blank
+            return
         time_difference = datetime.datetime.now() - datetime.datetime.fromisoformat(self.user_profile["last"])
         # linear interpolation for lower chance (pretty proud of dis LUL)
         seconds_between_casts = int(time_difference.total_seconds())
