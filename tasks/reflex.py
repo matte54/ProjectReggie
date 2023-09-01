@@ -3,7 +3,7 @@
 import asyncio
 import random
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from systems.logger import log, debug_on
 from systems.speaking import Speaking
@@ -44,8 +44,8 @@ class Reflex:
             if channel_list:
                 channel_list = await self.channel_history(channel_list)  # remove dead channels
             if channel_list:
-                #if debug_on():
-                #    log(f'[Reflex] - FINAL channel list: {channel_list}')
+                if debug_on():
+                    log(f'[Reflex] - FINAL channel list: {channel_list}')
                 picked_channel = random.choice(channel_list)
                 # random a reflex action with weights
                 k = random.choices(self.numbers, weights=self.random_weights)
@@ -95,19 +95,16 @@ class Reflex:
     async def channel_history(self, channel_list):
         # check channel history for recent activity to rule out dead channels
         # i think this works, im not quite sure how the around datetime stuff
-        # works in the end need more investigation with channels that have old
-        # messages in them.
         refined_list = []
         for i in channel_list:
-            number_of_messages = 0
             channel = self.client.get_channel(i)
-            async for x in channel.history(limit=10, around=datetime.utcnow()):
-                number_of_messages += 1
-            if debug_on():
-                log(f'[Reflex] - {i} has {number_of_messages} message(s) recently')
-            # if channel has no messages today remove it from the list.
-            if number_of_messages:
-                refined_list.append(i)
+            async for message in channel.history(limit=5):
+                if not message.author.bot:
+                    diffrence = datetime.now() - message.created_at.replace(tzinfo=None)
+                    if not diffrence > timedelta(days=1):
+                        log(f'[Reflex] - {i} has a message today')
+                        refined_list.append(i)
+                        break
         return refined_list
 
     def check_logs(self):
