@@ -124,7 +124,8 @@ class Woodhouse(discord.Client):
             self.prohibited_channels = []
         if str(message.channel.id) in self.prohibited_channels:
             # channel is blacklisted do nothing
-            log(message)  # but log?
+            if not message.author.bot:
+                log(message)  # but log?
             return
 
         if message.channel.type == discord.ChannelType.private:
