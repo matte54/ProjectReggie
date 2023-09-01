@@ -240,7 +240,7 @@ class Fishing:
                 "xpCap": 10,
                 "level": 1,
                 "gear": [],
-                "last": str(now.isoformat()),
+                "last": "",
                 "wins": 0
             }
             log(f'[Fishing] - {self.message.author} has no fishing profile, creating...')
