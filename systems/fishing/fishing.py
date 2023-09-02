@@ -46,7 +46,7 @@ class Fishing:
     async def cast(self, message):
         self.message = message
         self.user_id = message.author.id  # int
-        self.user_name = self.get_user_name(str(self.user_id))
+        self.user_name = self.get_user_name(str(self.user_id).capitalize())
         self.channel = message.channel
         self.user_profile, self.user_profile_path = self.get_profile(self.user_id)  # return profile dict and path(str)
 

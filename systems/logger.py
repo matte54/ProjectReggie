@@ -5,6 +5,7 @@ import time
 import discord
 import re
 import os
+import json
 from sys import platform
 
 
@@ -13,6 +14,13 @@ from sys import platform
 def debug_on():
     debug = True
     return debug
+
+def get_user_name(user_id):
+    if os.path.exists(f'./data/etc/ids.json'):
+        with open(f'./data/etc/ids.json', "r") as f:
+            id_data = json.load(f)
+        if str(user_id) in id_data:
+            return id_data[str(user_id)]
 
 
 def get_timestamp():
@@ -67,24 +75,24 @@ def log(message, flag="[LOG] "):
             msg = flag.upper() + str(message)
         print(msg)
         return
-
+    username = get_user_name(message.author.id).replace(" ", "")
     if message.channel.type == discord.ChannelType.private:
         if platform == "win32":
             x = get_timestamp()
-            msg = f'[MSG] {x}[{message.channel}] - {message.author} : {message.content}'
+            msg = f'[MSG] {x}[{message.channel}] - {username} : {message.content}'
             print(msg)
         else:
-            msg = f'[MSG] [{message.channel}] - {message.author} : {message.content}'
+            msg = f'[MSG] [{message.channel}] - {username} : {message.content}'
             print(msg)
 
     else:
         if platform == "win32":
             x = get_timestamp()
-            msg = f'[MSG] {x}[{message.channel.guild}] [{message.channel}] - {message.author} : {message.content}'
+            msg = f'[MSG] {x}[{message.channel.guild}] [{message.channel}] - {username} : {message.content}'
             print(msg)
         else:
-            msg = f'[MSG] [{message.channel.guild}][{message.channel}] - {message.author} : {message.content}'
+            msg = f'[MSG] [{message.channel.guild}][{message.channel}] - {username} : {message.content}'
             print(msg)
         if message.author.bot:
             return
-        logtofile(str(message.channel.guild), str(message.content), str(message.author))
+        logtofile(str(message.channel.guild), str(message.content), username)
