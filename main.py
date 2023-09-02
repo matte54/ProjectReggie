@@ -109,7 +109,7 @@ class Woodhouse(discord.Client):
 
     async def on_resumed(self):
         log(f'Connection RE-ESTABLISHED!')
-        log(f'Downtime was {datetime.timedelta(seconds=self.total_downtime())}')
+        log(f'Downtime was {self.total_downtime()}')
 
     def total_downtime(self):
         if self.last_disconnect is None:
