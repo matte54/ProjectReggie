@@ -30,7 +30,8 @@ class Reflex:
 
     # main loop
     async def reflex(self):
-        await self.client.wait_until_ready()
+        #await self.client.wait_until_ready()
+        await asyncio.sleep(10)
         self.find_guilds()
         while True:
             if self.varmanager.read("black_channels"):

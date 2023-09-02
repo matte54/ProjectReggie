@@ -16,7 +16,7 @@ class SeenSaver:
             self.write_json(self.filepath, x)
 
     async def seen(self):
-        await self.client.wait_until_ready()
+        await asyncio.sleep(10)
         while True:
             guild_list = []
             for guild in self.client.guilds:

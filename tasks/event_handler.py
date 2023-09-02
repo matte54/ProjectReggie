@@ -22,7 +22,7 @@ class Event_handler:
             json.dump(self.events_dict, f, indent=4)
 
     async def track_events(self):
-        await self.client.wait_until_ready()
+        await asyncio.sleep(10)
         if os.path.exists(self.path):
             self.last_timestamp = os.path.getmtime(self.path)
             with open(self.path, "r") as f:

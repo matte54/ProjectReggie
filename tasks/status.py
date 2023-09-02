@@ -16,7 +16,7 @@ class StatusTask:
 
     async def status_task(self, client):
         while True:
-            await client.wait_until_ready()
+            await asyncio.sleep(10)
 
             picked_status_list = random.choice([self.games, self.listening, self.watching, self.message])
 
@@ -40,4 +40,4 @@ class StatusTask:
                 await client.change_presence(
                     activity=discord.Activity(type=discord.ActivityType.custom, name=picked_status))
 
-            await asyncio.sleep(600 + random.randint(1, 300))
+            await asyncio.sleep(3600 + random.randint(-1000, 1000))
