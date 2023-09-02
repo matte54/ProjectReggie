@@ -16,8 +16,8 @@ from systems.gif_finder import Giphy_find
 
 
 class Reflex:
-    def __init__(self, client):
-        self.client = client
+    def __init__(self):
+        self.client = None
         self.emojihandler = Emojihandler(self.client)
         self.wait_cycles = 1
         self.guild_list = []
@@ -29,9 +29,9 @@ class Reflex:
         self.prohibited_channels = []
 
     # main loop
-    async def reflex(self):
+    async def reflex(self, client):
+        self.client = client
         #await self.client.wait_until_ready()
-        print("Running reflex")
         await asyncio.sleep(10)
         self.find_guilds()
         while True:
