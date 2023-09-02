@@ -31,6 +31,7 @@ class Reflex:
     # main loop
     async def reflex(self):
         #await self.client.wait_until_ready()
+        print("Running reflex")
         await asyncio.sleep(10)
         self.find_guilds()
         while True:
