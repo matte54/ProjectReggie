@@ -35,8 +35,6 @@ from tasks.event_handler import Event_handler
 intents = discord.Intents(messages=True, guilds=True, members=True, emojis=True,
                           message_content=True, reactions=True, presences=True, voice_states=True)
 
-if debug_on():
-    log("! - DEBUG IS ON - !")
 
 
 class Woodhouse(discord.Client):
@@ -85,6 +83,8 @@ class Woodhouse(discord.Client):
         log(f"Running on: {platform.system()} {platform.release()} ({os.name.upper()})")
         log(f'Logged in as {self.user.name} id {self.user.id} - READY!')
         log(f'--------------------------------')
+        if debug_on():
+            log("! - DEBUG IS ON - !")
 
         # on ready housekeeping
         self.housekeeper.gatherids()
@@ -113,9 +113,18 @@ class Woodhouse(discord.Client):
 
     def total_downtime(self):
         if self.last_disconnect is None:
-            return 0.0
+            return "0 sec"
 
-        return (datetime.datetime.utcnow() - self.last_disconnect).total_seconds()
+        downtime_seconds = (datetime.datetime.utcnow() - self.last_disconnect).total_seconds()
+        minutes = int(downtime_seconds // 60)
+        seconds = int(downtime_seconds % 60)
+
+        if minutes == 0:
+            return f"{seconds} sec"
+        elif minutes == 1:
+            return f"1 min {seconds} sec"
+        else:
+            return f"{minutes} mins {seconds} sec"
 
     async def on_message(self, message):
         if self.varmanager.read("black_channels"):
@@ -151,7 +160,7 @@ class Woodhouse(discord.Client):
             if not sentence:
                 i = random.choice(RESPONSES)
             else:
-                i, debugmsg = self.speaking.process_input(sentence)
+                i, debugmsg = await self.speaking.process_input(sentence)
                 if message.guild.id == 194028816333537280:
                     # if guild darkzone do the debug stuff member
                     debugchannel = self.get_channel(1007604139657789470)

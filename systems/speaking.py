@@ -1,7 +1,9 @@
 import os
 import re
 import time
-from difflib import SequenceMatcher
+import difflib
+from multiprocessing import Pool
+
 
 from systems.logger import log
 
@@ -46,18 +48,28 @@ class Speaking:
         log(f'[Speaking] - Loops: {generatorloops}, Matches: {generator_matches}')
         self.debugstring += f'Loops: {generatorloops} Potencial Matches: {generator_matches}\n'
 
-    def process_data(self):
+    def compare_entries(self, entry):
+        if len(entry) >= 2:
+            x = round(difflib.SequenceMatcher(a=self.user_entry, b=entry[0].lower()).ratio(), 2)
+            return (entry[0], entry[1], x)
+        else:
+            return ("", "", 0.00)
+
+    async def process_data(self):
         start_time = time.time()
-        best = ("", "", 0.00)
-        bestlist = []
+        #best = ("", "", 0.00)
+        #bestlist = []
 
-        data_generator = self.data_generator()
+        data = list(self.data_generator())  # Convert the generator to a list
 
-        for entry in data_generator:
-            x = round(SequenceMatcher(a=self.user_entry, b=entry[0].lower()).ratio(), 2)
-            if best[2] < x:
-                best = (entry[0], entry[1], x)
-                bestlist.append(best)
+        # Initialize a Pool of worker processes
+        with Pool() as pool:
+            # Use the pool to parallelize the comparison loop
+            results = pool.map(self.compare_entries, data)
+
+        # Find the best result from the parallel results
+        best = max(results, key=lambda x: x[2])
+        bestlist = [best]
 
         log(f'[Speaking] - Processing time was {round((time.time() - start_time))} second(s)')
         self.debugstring += f'Processing time: {round((time.time() - start_time))} second(s)\n'
@@ -79,7 +91,7 @@ class Speaking:
             self.keywords = None
             return "Uhhh...no", None
 
-    def process_input(self, entry):
+    async def process_input(self, entry):
         self.debugstring = ""
         self.user_entry = entry.lower()
         self.user_entry = re.sub(self.filter_pattern, "", self.user_entry)  # remove ill-eagle characters
@@ -90,4 +102,4 @@ class Speaking:
         #        self.user_entry = self.user_entry.replace(word, "")
         self.user_entry = re.sub(r'\s+', ' ', self.user_entry)  # remove double spaces if any
 
-        return self.process_data()
+        return await self.process_data()

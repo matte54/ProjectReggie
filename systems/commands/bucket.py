@@ -8,6 +8,13 @@ class Bucket:
     def __init__(self):
         self.varmanager = VarManager()
 
+    def get_user_name(self, user_id):
+        if os.path.exists(f'./data/etc/ids.json'):
+            with open(f'./data/etc/ids.json', "r") as f:
+                id_data = json.load(f)
+            if str(user_id) in id_data:
+                return id_data[str(user_id)]
+
     async def command(self, message):
         if self.varmanager.read("fishing_channels"):
             fishing_channels = self.varmanager.read("fishing_channels")
@@ -28,7 +35,7 @@ class Bucket:
                         bucket_str = f'-- Lvl: {profile_data["level"]} - Exp: {profile_data["xp"]}/' \
                                      f'{profile_data["xpCap"]} - Bells: {profile_data["money"]} --'
 
-                        bucket_str += f'\n{str(message.author).upper()}´S BUCKET(TOP 10)\n'
+                        bucket_str += f'\n{self.get_user_name(user_id).capitalize()}´S BUCKET(TOP 10)\n'
                         limit = 0
                         for i in sorted_dict_descending:
                             bucket_str += i.upper() + ' - ' + str(sorted_dict_descending[i]["weight"]) + ' LBS\n'

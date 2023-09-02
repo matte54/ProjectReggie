@@ -29,7 +29,7 @@ class SeenSaver:
                     if not member.bot:
                         if str(member.status) == "online" or str(member.mobile_status) == "online":
                             now = datetime.datetime.now()
-                            data[str(member.id)] = now.isoformat()
+                            data[str(member.id)] = now.strftime("%Y-%m-%d %H:%M:%S")
 
             self.write_json(self.filepath, data)
             await asyncio.sleep(120)

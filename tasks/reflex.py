@@ -45,7 +45,7 @@ class Reflex:
                 channel_list = await self.channel_history(channel_list)  # remove dead channels
             if channel_list:
                 if debug_on():
-                    log(f'[Reflex] - FINAL channel list: {channel_list}')
+                    log(f'[Reflex] - Available channels: {channel_list}')
                 picked_channel = random.choice(channel_list)
                 # random a reflex action with weights
                 k = random.choices(self.numbers, weights=self.random_weights)
@@ -172,9 +172,9 @@ class Reflex:
         if random.uniform(0.0, 1.0) < 0.25:
             txt = self.check_logs()
             if not txt:
-                txt, debugmsg = self.speaking.process_input(last_message_content)
+                txt, debugmsg = await self.speaking.process_input(last_message_content)
         else:
-            txt, debugmsg = self.speaking.process_input(last_message_content)
+            txt, debugmsg = await self.speaking.process_input(last_message_content)
         await channel.send(txt)
 
     async def reaction(self, picked_channel, last_message):
@@ -193,9 +193,9 @@ class Reflex:
         if random.uniform(0.0, 1.0) < 0.25:
             txt = self.check_logs()
             if not txt:
-                txt, debugmsg = self.speaking.process_input(last_message_content)
+                txt, debugmsg = await self.speaking.process_input(last_message_content)
         else:
-            txt, debugmsg = self.speaking.process_input(last_message_content)
+            txt, debugmsg = await self.speaking.process_input(last_message_content)
         await last_message.reply(txt)
 
     async def url(self, picked_channel):

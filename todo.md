@@ -2,8 +2,8 @@
 Bugs/Problems and or Features , already implemented but needs additional work or fixing
 Remove item when finished
 ###########################################################################################
+
 * Main
-- Make the on_reaction take the user var into account and use statistics to consider users fav emojis
 
 * Reflex task
 - Implement URL
@@ -16,8 +16,6 @@ Remove item when finished
 - More data for variaty
 
 * Speaking system
-- Needs re-evaluation on all
-- Build into a class
 
 * Logger system
 - Integrate into user statistics
@@ -40,11 +38,9 @@ simultanously when people are chatting. also diffrent servers.
 - rogue is doing colors green-blue-yellow-orange-red with images? need to go thru all rarities in database again
 so he can start
 - Add cash prize for fishoff winner
-- Make fishing commands use the ID file instead of message.author to get rid of those #0 also in other places.
 
 * Event command
 - Fix the "UP" so it only lists event for that channel
 
 * Seen
 - Make the persons id or name also searchable
-- make the datetime return string humanreadable

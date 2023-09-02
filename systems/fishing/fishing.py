@@ -46,7 +46,7 @@ class Fishing:
     async def cast(self, message):
         self.message = message
         self.user_id = message.author.id  # int
-        self.user_name = message.author
+        self.user_name = self.get_user_name(str(self.user_id))
         self.channel = message.channel
         self.user_profile, self.user_profile_path = self.get_profile(self.user_id)  # return profile dict and path(str)
 
@@ -448,3 +448,10 @@ class Fishing:
             json.dump(data, f, indent=4)
         # if debug_on():
         #    log(f'[Fishing] - Wrote {filepath}')
+
+    def get_user_name(self, user_id):
+        if os.path.exists(f'./data/etc/ids.json'):
+            with open(f'./data/etc/ids.json', "r") as f:
+                id_data = json.load(f)
+            if str(user_id) in id_data:
+                return id_data[str(user_id)]
