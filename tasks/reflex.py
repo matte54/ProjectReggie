@@ -31,9 +31,10 @@ class Reflex:
 
     # main loop
     async def reflex(self):
+        print("Starting reflex loop")
         #await self.client.wait_until_ready()
         await asyncio.sleep(10)
-        self.find_guilds()
+        await self.find_guilds()
         while True:
             if self.varmanager.read("black_channels"):
                 self.prohibited_channels = self.varmanager.read("black_channels")
@@ -136,7 +137,7 @@ class Reflex:
             log(f'[Reflex] - All available channels has last message by Woodhouse')
         return refined_list
 
-    def find_guilds(self):
+    async def find_guilds(self):
         # find servers woodhouse is in
         for guild in self.client.guilds:
             self.guild_list.append(guild)
