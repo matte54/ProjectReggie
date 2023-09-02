@@ -46,6 +46,7 @@ class Reflex:
             if channel_list:
                 if debug_on():
                     log(f'[Reflex] - Available channels: {channel_list}')
+                    print(channel_list)
                 picked_channel = random.choice(channel_list)
                 # random a reflex action with weights
                 k = random.choices(self.numbers, weights=self.random_weights)
@@ -95,22 +96,16 @@ class Reflex:
     async def channel_history(self, channel_list):
         # check channel history for recent activity to rule out dead channels
         # i think this works, im not quite sure how the around datetime stuff
-        print("channel history function")
         refined_list = []
         for i in channel_list:
             channel = self.client.get_channel(i)
-            print("got the channel")
             async for message in channel.history(limit=5):
-                print("history loop")
                 if not message.author.bot:
-                    print("msg wasent from a bot")
                     diffrence = datetime.now() - message.created_at.replace(tzinfo=None)
                     if not diffrence > timedelta(days=1):
-                        print("msg today")
                         log(f'[Reflex] - {i} has a message today')
                         refined_list.append(i)
                         break
-        print("end")
         return refined_list
 
     def check_logs(self):
