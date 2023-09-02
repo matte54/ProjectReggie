@@ -106,7 +106,7 @@ class Reflex:
                 if not message.author.bot:
                     diffrence = datetime.now() - message.created_at.replace(tzinfo=None)
                     if not diffrence > timedelta(days=1):
-                        log(f'[Reflex] - {i} has a message today')
+                        log(f'[Reflex] - {i} - ({channel.guild.name}:{channel.name}) has recent activity')
                         refined_list.append(i)
                         break
         return refined_list
