@@ -41,7 +41,6 @@ class Reflex:
             channel_list = self.find_channel()  # get all channels to work with
             # filter out channels with these functions
             channel_list = await self.wasitme(channel_list)  # remove channels not suitable
-            print("erp")
             if channel_list:
                 channel_list = await self.channel_history(channel_list)  # remove dead channels
             if channel_list:
@@ -96,6 +95,7 @@ class Reflex:
     async def channel_history(self, channel_list):
         # check channel history for recent activity to rule out dead channels
         # i think this works, im not quite sure how the around datetime stuff
+        print("channel history function")
         refined_list = []
         for i in channel_list:
             channel = self.client.get_channel(i)
