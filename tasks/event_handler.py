@@ -54,4 +54,4 @@ class Event_handler:
                 for i in temp_list:
                     del self.events_dict[i]
                 self.write_json()
-            await asyncio.sleep(300)  # this should be alot longer on live maybe 10 minutes
+            await asyncio.sleep(60)  # this should be alot longer on live maybe 10 minutes

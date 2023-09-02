@@ -19,14 +19,15 @@ class Event:
         self.event_date = None
         self.event_msg = None
         self.event_channel = None
-
+        self.events_dict = None
         # make sure file exists
         self.create_file()
 
-        with open(self.events_path, "r") as f:
-            self.events_dict = json.load(f)
+
 
     async def command(self, message):
+        with open(self.events_path, "r") as f:
+            self.events_dict = json.load(f)
         self.msg = message.content.replace('$event ', '')
         if self.msg == "up":
             log(f'[Event] - {message.author} is listing upcoming events')
@@ -47,8 +48,8 @@ class Event:
             await message.channel.send("Syntax error, thats not a valid date")
             return
         current_date = datetime.date.today()
-        if event_date < current_date:
-            await message.channel.send("This date has already passed you dummy")
+        if event_date <= current_date:
+            await message.channel.send("The date has to be a future one")
             return
         self.msg = self.msg.replace(dates[0], "")  # self.msg should now only be the message
 
