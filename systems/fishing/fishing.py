@@ -191,7 +191,7 @@ class Fishing:
         time_difference = datetime.datetime.now() - last_cast
         if time_difference < datetime.timedelta(seconds=60):
             await self.message.channel.send(
-                f'```yaml\nYou are not allowed to fish again this soon {self.message.author}!```')
+                f'```yaml\nYou are not allowed to fish again this soon {self.user_name}!```')
             return True
         else:
             return False
@@ -214,13 +214,13 @@ class Fishing:
         # print(f'fail roll was {roll} and it needs to be bigger then {5 + self.fail_rate_modifier}')
         if roll < (5 + self.fail_rate_modifier):
             await self.message.channel.send(
-                f'```yaml\n{self.message.author} casts their line but FAILS!\n{random.choice(FLARE)}```')
+                f'```yaml\n{self.user_name} casts their line but FAILS!\n{random.choice(FLARE)}```')
             # add last cast time in
             now = datetime.datetime.now()
             self.user_profile["last"] = str(now.isoformat())  # update the last cast time
             self.write_json(f"{self.profile_dir}{self.user_id}.json", self.user_profile)
             if debug_on():
-                log(f'[Fishing] - {self.message.author} failed cast')
+                log(f'[Fishing] - {self.user_name} failed cast')
             return True
         else:
             return False
