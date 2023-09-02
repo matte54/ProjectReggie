@@ -17,7 +17,6 @@ from systems.gif_finder import Giphy_find
 
 class Reflex:
     def __init__(self, client):
-        print("Reflex initilizated!")
         self.client = client
         self.emojihandler = Emojihandler(self.client)
         self.wait_cycles = 1
