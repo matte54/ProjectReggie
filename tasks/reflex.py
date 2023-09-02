@@ -99,13 +99,18 @@ class Reflex:
         refined_list = []
         for i in channel_list:
             channel = self.client.get_channel(i)
+            print("got the channel")
             async for message in channel.history(limit=5):
+                print("history loop")
                 if not message.author.bot:
+                    print("msg wasent from a bot")
                     diffrence = datetime.now() - message.created_at.replace(tzinfo=None)
                     if not diffrence > timedelta(days=1):
+                        print("msg today")
                         log(f'[Reflex] - {i} has a message today')
                         refined_list.append(i)
                         break
+        print("end")
         return refined_list
 
     def check_logs(self):
