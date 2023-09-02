@@ -31,11 +31,11 @@ class Reflex:
 
     # main loop
     async def reflex(self):
-        print("Starting reflex loop")
         #await self.client.wait_until_ready()
         await asyncio.sleep(10)
         await self.find_guilds()
         while True:
+            print("Starting reflex loop")
             if self.varmanager.read("black_channels"):
                 self.prohibited_channels = self.varmanager.read("black_channels")
             else:
