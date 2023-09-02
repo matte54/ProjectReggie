@@ -43,12 +43,12 @@ class Statistics:
     def find_keywords(self):
         # straight from the yake manual, (experimental)
         language = "en"
-        max_ngram_size = 2
+        max_ngram_size = 1
         deduplication_threshold = 0.9
         deduplication_algo = 'seqm'
         windowSize = 1
-        numOfKeywords = 5
-        accepted_value = 0.008  # this needs tweaking
+        numOfKeywords = 25
+        accepted_value = 0.015  # this needs tweaking
 
         custom_kw_extractor = yake.KeywordExtractor(lan=language, n=max_ngram_size, dedupLim=deduplication_threshold,
                                                     dedupFunc=deduplication_algo, windowsSize=windowSize,

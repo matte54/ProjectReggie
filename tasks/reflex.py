@@ -10,6 +10,7 @@ from systems.speaking import Speaking
 from systems.emojihandler import Emojihandler
 from systems.varmanager import VarManager
 from systems.gif_finder import Giphy_find
+from systems.urlhandler import Urlhandler
 
 
 # list of channels ids woodhouse cannot reflex in
@@ -24,6 +25,7 @@ class Reflex:
         self.numbers = [0, 1, 2, 3, 4, 5, 6]
         self.random_weights = [10, 9, 8, 4, 4, 2, 10]
         self.varmanager = VarManager()
+        self.urlhandler = Urlhandler(self.client)
         self.speaking = Speaking()
         self.gif_finder = Giphy_find()
         self.prohibited_channels = []
@@ -48,7 +50,7 @@ class Reflex:
                 picked_channel = random.choice(channel_list)
                 # random a reflex action with weights
                 k = random.choices(self.numbers, weights=self.random_weights)
-                # k = [4] # this is left here to specifiy a choice for debugging
+                #k = [4] # this is left here to specifiy a choice for debugging
                 # If we random nothing or if theres no channels to do anything in
                 if k[0] == 0:
                     log(f'[Reflex] - DO NOTHING - {picked_channel}')
@@ -76,20 +78,21 @@ class Reflex:
                     await self.reply(last_message)
                 # url
                 if k[0] == 4:
+                    log(f'[Reflex] - GIF - {picked_channel}')
+                    self.wait_cycles += 2
+                    await self.gif(picked_channel)
+                # recommend
+                if k[0] == 5:
                     log(f'[Reflex] - URL - {picked_channel}')
                     self.wait_cycles += 2
                     await self.url(picked_channel)
-                # recommend
-                if k[0] == 5:
-                    log(f'[Reflex] - RECOMMEND - {picked_channel}')
-                    self.wait_cycles += 2
-                    self.recommend(picked_channel)
                 # do nothing
                 if k[0] == 6:
                     self.wait_cycles += 1
                     log(f'[Reflex] - Waiting...')
             else:
                 log(f'[Reflex] - No valid channels, waiting...')
+                self.wait_cycles += 1
             await asyncio.sleep((120 * random.randint(30, 40)) * self.wait_cycles)  # use this formula for live
 
 
@@ -199,13 +202,15 @@ class Reflex:
             txt, debugmsg = await self.speaking.process_input(last_message_content)
         await last_message.reply(txt)
 
-    async def url(self, picked_channel):
-        # for now this just uses the giphy trending stuff
-        # scraper should be implemented here at some point
+    async def gif(self, picked_channel):
         channel = self.client.get_channel(picked_channel)
         gif = self.gif_finder.find("")
         if gif:
             await channel.send(gif)
 
-    def recommend(self, picked_channel):
-        pass
+    async def url(self, picked_channel):
+        channel = self.client.get_channel(picked_channel)
+        url = await self.urlhandler.get_url(channel, None)
+        # gif = self.gif_finder.find("")
+        # if gif:
+        await channel.send(url)
