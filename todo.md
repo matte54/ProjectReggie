@@ -6,8 +6,6 @@ Remove item when finished
 * Main
 
 * Reflex task
-- Implement URL
-- Implement Recommendation?
 - Add holiday command for reflex?
 
 * Status task
