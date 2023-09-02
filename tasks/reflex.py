@@ -38,15 +38,13 @@ class Reflex:
                 self.prohibited_channels = self.varmanager.read("black_channels")
             else:
                 self.prohibited_channels = []
-            print("1")
             channel_list = self.find_channel()  # get all channels to work with
             # filter out channels with these functions
-            print("2")
             channel_list = await self.wasitme(channel_list)  # remove channels not suitable
+            print("erp")
             if channel_list:
                 channel_list = await self.channel_history(channel_list)  # remove dead channels
             if channel_list:
-                print("3")
                 if debug_on():
                     log(f'[Reflex] - Available channels: {channel_list}')
                 picked_channel = random.choice(channel_list)
