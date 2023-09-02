@@ -45,7 +45,7 @@ class Woodhouse(discord.Client):
 
         # tasks
         self.statustask = StatusTask()
-        self.reflex = Reflex()
+        self.reflex = Reflex(self)
         self.seen = SeenSaver(self)
         self.event_handler = Event_handler(self)
 
@@ -73,7 +73,7 @@ class Woodhouse(discord.Client):
     # evovling more complex taasks
     async def setup_hook(self):
         self.loop.create_task(self.statustask.status_task(self))
-        self.loop.create_task(self.reflex.reflex(self))
+        self.loop.create_task(self.reflex.reflex())
         self.loop.create_task(self.seen.seen())
         self.loop.create_task(self.event_handler.track_events())
 
