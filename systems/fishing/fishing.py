@@ -375,7 +375,7 @@ class Fishing:
             # if wr fish
             if self.caught_fish["weight"] > wr_data[self.caught_fish["name"]]["weight"]:
                 wr_data[self.caught_fish["name"]]["weight"] = self.caught_fish["weight"]
-                wr_data[self.caught_fish["name"]]["holder"] = str(self.user_name)
+                wr_data[self.caught_fish["name"]]["holder"] = self.user_name
                 wr_data[self.caught_fish["name"]]["time"] = str(datetime.datetime.now().isoformat())
                 self.write_json("./local/fishing/wr.json", wr_data)
 
@@ -384,7 +384,7 @@ class Fishing:
             # fish is not on wr file
             wr_data[self.caught_fish["name"]] = {}
             wr_data[self.caught_fish["name"]]["weight"] = self.caught_fish["weight"]
-            wr_data[self.caught_fish["name"]]["holder"] = str(self.user_name)
+            wr_data[self.caught_fish["name"]]["holder"] = self.user_name
             wr_data[self.caught_fish["name"]]["time"] = str(datetime.datetime.now().isoformat())
             self.write_json("./local/fishing/wr.json", wr_data)
 
