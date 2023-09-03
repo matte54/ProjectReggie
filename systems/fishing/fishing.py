@@ -44,6 +44,7 @@ class Fishing:
                                "class7.json"]
 
     async def cast(self, message):
+        self.caught_fish = None # reset the fish dict
         self.message = message
         self.user_id = message.author.id  # int
         self.user_name = self.get_user_name(str(self.user_id).capitalize())
@@ -311,6 +312,7 @@ class Fishing:
             return False
 
     def handle_bucket(self):
+        self.user_bucket = None
         now = datetime.datetime.now()
         # if the bucket does not exist create and add fish
         if not os.path.isfile(f"{self.bucket_dir}{self.user_id}.json"):
