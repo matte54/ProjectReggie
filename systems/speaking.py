@@ -68,7 +68,7 @@ class Speaking:
             results = pool.map(self.compare_entries, data)
 
         if not results:
-            return "Uhhh...no", None
+            return None, None
         # Find the best result from the parallel results
         best = max(results, key=lambda x: x[2])
         bestlist = [best]
@@ -90,7 +90,7 @@ class Speaking:
             log(f'[Speaking] - No matches, skipping')
             self.user_entry = None  # reset this variables after done
             self.keywords = None
-            return "Uhhh...no", None
+            return None, None
 
     async def process_input(self, entry):
         self.debugstring = ""

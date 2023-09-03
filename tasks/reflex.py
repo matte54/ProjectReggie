@@ -75,7 +75,7 @@ class Reflex:
                     last_message = await self.find_message(picked_channel,
                                                            1)  # get the last message in the chosen channel
                     self.wait_cycles = 1
-                    await self.reply(last_message)
+                    await self.reply(picked_channel, last_message)
                 # url
                 if k[0] == 4:
                     log(f'[Reflex] - GIF - {picked_channel}')
@@ -168,20 +168,26 @@ class Reflex:
         return msg_list
 
     async def talk(self, picked_channel, last_message):
+        channel = self.client.get_channel(picked_channel)
         # random nonsense based on last messsages in the channel
         # gets a list of the last 10 messages instead of just 1 object
         if not last_message:
-            log(f'[Reflex] - No proper messages to use, skipping...')
+            log(f'[Reflex] - No proper messages to use, emoji backup')
+            picked_emoji = self.emojihandler.emojihandler(picked_channel)
+            await channel.send(picked_emoji)
             return
         last_message = random.choice(last_message)
-        channel = self.client.get_channel(picked_channel)
         last_message_content = last_message.content
         if random.uniform(0.0, 1.0) < 0.25:
             txt = self.check_logs()
             if not txt:
                 txt, debugmsg = await self.speaking.process_input(last_message_content)
+                if not txt:  # emoji fallback if none
+                    txt = self.emojihandler.emojihandler(picked_channel)
         else:
             txt, debugmsg = await self.speaking.process_input(last_message_content)
+            if not txt:  # emoji fallback if none
+                txt = self.emojihandler.emojihandler(picked_channel)
         await channel.send(txt)
 
     async def reaction(self, picked_channel, last_message):
@@ -194,9 +200,11 @@ class Reflex:
             if debug_on():
                 log(f'[Reflex] - Already reacted to this message')
 
-    async def reply(self, last_message):
+    async def reply(self, picked_channel, last_message):
         if not last_message:
-            log(f'[Reflex] - No proper messages to use, skipping...')
+            log(f'[Reflex] - No proper messages to use, emoji fallback')
+            picked_emoji = self.emojihandler.emojihandler(picked_channel)
+            await last_message.reply(picked_emoji)
             return
         # replies on last message sent in selected channel
         last_message_content = last_message.content
@@ -204,8 +212,12 @@ class Reflex:
             txt = self.check_logs()
             if not txt:
                 txt, debugmsg = await self.speaking.process_input(last_message_content)
+                if not txt:  # emoji fallback if none
+                    txt = self.emojihandler.emojihandler(picked_channel)
         else:
             txt, debugmsg = await self.speaking.process_input(last_message_content)
+            if not txt:  # emoji fallback if none
+                txt = self.emojihandler.emojihandler(picked_channel)
         await last_message.reply(txt)
 
     async def gif(self, picked_channel):

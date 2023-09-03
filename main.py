@@ -162,10 +162,14 @@ class Woodhouse(discord.Client):
                 i = random.choice(RESPONSES)
             else:
                 i, debugmsg = await self.speaking.process_input(sentence)
+                # emoji fallback if none
+                if not i:
+                    i = self.emojihandler.emojihandler(message.channel.id)
                 if message.guild.id == 194028816333537280:
                     # if guild darkzone do the debug stuff member
                     debugchannel = self.get_channel(1007604139657789470)
-                    await debugchannel.send(f'```yaml\n\n{debugmsg}```')
+                    if debugmsg:
+                        await debugchannel.send(f'```yaml\n\n{debugmsg}```')
             await message.channel.send(i)
 
         # check for conversions for unitconverter

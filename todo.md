@@ -38,6 +38,3 @@ so he can start
 - Add cash prize for fishoff winner
 
 * Event command
-
-* Seen
-- Make the persons id or name also searchable
