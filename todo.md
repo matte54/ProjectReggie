@@ -38,7 +38,6 @@ so he can start
 - Add cash prize for fishoff winner
 
 * Event command
-- Fix the "UP" so it only lists event for that channel
 
 * Seen
 - Make the persons id or name also searchable

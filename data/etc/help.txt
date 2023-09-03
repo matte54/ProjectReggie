@@ -14,7 +14,7 @@ $eee
 $event yyyy-mm-dd <msg>
 - Stores an event at a date and will trigger that msg in the channel it was created at the date.
 $event up
-- Lists 3 earliest upcoming events.
+- Lists 3 earliest upcoming events created in the channel.
 
 $help
 - This command dummy

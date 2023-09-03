@@ -8,7 +8,7 @@ from systems.logger import log, debug_on
 
 # commands
 from systems.commands import help, whoami, holiday, remindme, cast, blacklist, seen, eee, roll, event, define, fishing
-from systems.commands import bucket, fishbase, fishoff, url
+from systems.commands import bucket, fishbase, fishoff, url, status
 
 
 class Mother:
@@ -31,6 +31,7 @@ class Mother:
         self.fishoff = fishoff.Fishoff()
         self.fishbase = fishbase.Fishbase()
         self.url = url.Url(self)
+        self.status = status.Status()
 
         self.cmdlist = {
             "help": self.help,
@@ -48,7 +49,8 @@ class Mother:
             "bucket": self.bucket,
             "fishoff": self.fishoff,
             "fishbase": self.fishbase,
-            "url": self.url
+            "url": self.url,
+            "status": self.status
         }
 
     async def handle(self, message):

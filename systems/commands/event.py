@@ -34,7 +34,8 @@ class Event:
             sorted_entries = sorted(self.events_dict.items(), key=lambda item: item[1]['date'])
             event_str = "-- Upcoming events --\n"
             for item, sorted_date in sorted_entries:
-                event_str += f'{sorted_date["date"]}: {sorted_date["msg"]}\n'
+                if sorted_date["channel"] == message.channel.id:
+                    event_str += f'{sorted_date["date"]}: {sorted_date["msg"]}\n'
             await message.channel.send(f'```yaml\n\n{event_str}```')
             return
         log(f'[Event] - {message.author} is creating {self.msg}')

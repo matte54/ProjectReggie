@@ -43,7 +43,7 @@ maaaaaybe the link scraping? might need a doover , but i do enjoy when he posts 
 It would be a shame to leave it even if its not very used, i worked hard on it lol
 
 * Reddit talking
-Improvements to be done in the future to filtering, but for now i think i just carry it over.
+make the nothing fallback always just an emoji duh
 
 * Debug
 Debugging system expanded, i want to be able to run the bot and have it have as little impact on things as possible
@@ -119,4 +119,6 @@ reward delayer with a random free pokemon not in his dex
 * Statuses
 - Add a command so people can add more statuses
 - Needs to convert the status system to use a file instead for this to work
+- add/remove needs list indexes to make that part simpler
+- Use a dictionary
 

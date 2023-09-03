@@ -50,7 +50,7 @@ class Reflex:
                 picked_channel = random.choice(channel_list)
                 # random a reflex action with weights
                 k = random.choices(self.numbers, weights=self.random_weights)
-                #k = [1] # this is left here to specifiy a choice for debugging
+                #k = [3] # this is left here to specifiy a choice for debugging
                 # If we random nothing or if theres no channels to do anything in
                 if k[0] == 0:
                     log(f'[Reflex] - DO NOTHING - {picked_channel}')
@@ -60,35 +60,35 @@ class Reflex:
                     log(f'[Reflex] - TALK - {picked_channel}')
                     last_message = await self.find_message(picked_channel,
                                                            10)  # get the last message in the chosen channel
-                    self.wait_cycles += 1
+                    self.wait_cycles = 1
                     await self.talk(picked_channel, last_message)
                 # reaction
                 if k[0] == 2:
                     log(f'[Reflex] - REACTION - {picked_channel}')
                     last_message = await self.find_message(picked_channel,
                                                            1)  # get the last message in the chosen channel
-                    self.wait_cycles += 1
+                    self.wait_cycles = 1
                     await self.reaction(picked_channel, last_message)
                 # reply
                 if k[0] == 3:
                     log(f'[Reflex] - REPLY - {picked_channel}')
                     last_message = await self.find_message(picked_channel,
                                                            1)  # get the last message in the chosen channel
-                    self.wait_cycles += 1
+                    self.wait_cycles = 1
                     await self.reply(last_message)
                 # url
                 if k[0] == 4:
                     log(f'[Reflex] - GIF - {picked_channel}')
-                    self.wait_cycles += 2
+                    self.wait_cycles = 2
                     await self.gif(picked_channel)
                 # recommend
                 if k[0] == 5:
                     log(f'[Reflex] - URL - {picked_channel}')
-                    self.wait_cycles += 2
+                    self.wait_cycles = 2
                     await self.url(picked_channel)
                 # do nothing
                 if k[0] == 6:
-                    self.wait_cycles += 1
+                    self.wait_cycles = 1
                     log(f'[Reflex] - Waiting...')
             else:
                 log(f'[Reflex] - No valid channels, waiting...')
@@ -195,6 +195,9 @@ class Reflex:
                 log(f'[Reflex] - Already reacted to this message')
 
     async def reply(self, last_message):
+        if not last_message:
+            log(f'[Reflex] - No proper messages to use, skipping...')
+            return
         # replies on last message sent in selected channel
         last_message_content = last_message.content
         if random.uniform(0.0, 1.0) < 0.25:
