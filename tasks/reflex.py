@@ -49,8 +49,8 @@ class Reflex:
                     log(f'[Reflex] - Available channels: {channel_list}')
                 picked_channel = random.choice(channel_list)
                 # random a reflex action with weights
-                #k = random.choices(self.numbers, weights=self.random_weights)
-                k = [1] # this is left here to specifiy a choice for debugging
+                k = random.choices(self.numbers, weights=self.random_weights)
+                #k = [1] # this is left here to specifiy a choice for debugging
                 # If we random nothing or if theres no channels to do anything in
                 if k[0] == 0:
                     log(f'[Reflex] - DO NOTHING - {picked_channel}')
