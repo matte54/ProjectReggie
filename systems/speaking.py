@@ -67,6 +67,8 @@ class Speaking:
             # Use the pool to parallelize the comparison loop
             results = pool.map(self.compare_entries, data)
 
+        if not results:
+            return "Uhhh...no", None
         # Find the best result from the parallel results
         best = max(results, key=lambda x: x[2])
         bestlist = [best]
@@ -75,7 +77,6 @@ class Speaking:
         self.debugstring += f'Processing time: {round((time.time() - start_time))} second(s)\n'
 
         bestlist.sort(key=lambda y: y[2], reverse=True)
-
         if bestlist:
             rpicked = bestlist[0]  # trying just to pick the best and see how repetetive it gets...
             # rpicked = random.choice(bestlist[-5:])
@@ -86,7 +87,7 @@ class Speaking:
             self.keywords = None
             return rpicked[1], self.debugstring
         else:
-            print("No matches!")
+            log(f'[Speaking] - No matches, skipping')
             self.user_entry = None  # reset this variables after done
             self.keywords = None
             return "Uhhh...no", None

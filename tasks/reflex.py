@@ -49,8 +49,8 @@ class Reflex:
                     log(f'[Reflex] - Available channels: {channel_list}')
                 picked_channel = random.choice(channel_list)
                 # random a reflex action with weights
-                k = random.choices(self.numbers, weights=self.random_weights)
-                #k = [4] # this is left here to specifiy a choice for debugging
+                #k = random.choices(self.numbers, weights=self.random_weights)
+                k = [1] # this is left here to specifiy a choice for debugging
                 # If we random nothing or if theres no channels to do anything in
                 if k[0] == 0:
                     log(f'[Reflex] - DO NOTHING - {picked_channel}')
@@ -160,16 +160,19 @@ class Reflex:
         channel = self.client.get_channel(picked_channel)
         # pycharm does not like this double return thing but it works
         async for message in channel.history(limit=nr_of_messages):
+            if nr_of_messages == 1:
+                return message
             if nr_of_messages > 1:
                 msg_list.append(message)
-        if nr_of_messages > 1:
-            return msg_list
 
-        return message
+        return msg_list
 
     async def talk(self, picked_channel, last_message):
         # random nonsense based on last messsages in the channel
         # gets a list of the last 10 messages instead of just 1 object
+        if not last_message:
+            log(f'[Reflex] - No proper messages to use, skipping...')
+            return
         last_message = random.choice(last_message)
         channel = self.client.get_channel(picked_channel)
         last_message_content = last_message.content
@@ -211,6 +214,4 @@ class Reflex:
     async def url(self, picked_channel):
         channel = self.client.get_channel(picked_channel)
         url = await self.urlhandler.get_url(channel, None)
-        # gif = self.gif_finder.find("")
-        # if gif:
         await channel.send(url)
