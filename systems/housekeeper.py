@@ -90,6 +90,19 @@ class HouseKeeper:
                     if gif:
                         await main_channel.send(gif)
 
+    def clean_logs(self):
+        # cleanup log files (remove empty lines)
+        file_paths = []
+        for root, dirs, files in os.walk("./log/"):
+            for file in files:
+                file_path = os.path.join(root, file)
+                file_paths.append(file_path)
+        for logfile in file_paths:
+            with open(logfile, "r", encoding='UTF-8') as f:
+                lines = [line.strip() for line in f if line.strip()]
+            with open(logfile, 'w') as f:
+                f.write('\n'.join(lines))
+
     def write_json(self, filepath, data):
         with open(filepath, "w") as f:
             json.dump(data, f, indent=4)

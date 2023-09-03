@@ -9,9 +9,6 @@ Remove item when finished
 - Add holiday command for reflex?
 
 * Status task
-- Custom activity seems dosent work
-- Look into twitch API for streaming check?
-- More data for variaty
 
 * Speaking system
 
@@ -30,11 +27,10 @@ Remove item when finished
 - Find a way to limit writes, need to figure out how to have it collect data for each dictionary it needs and write
 only like in 5-10 minute intervals, couldnt figure out how to approach it cause of the diffrent types that will be open
 simultanously when people are chatting. also diffrent servers.
+- rotate monthly stats, display some sort of monthly report? 
 
 * Fishing
 - Created the fish query "fishbase" works but needs some work and some bugfixes
-- rogue is doing colors green-blue-yellow-orange-red with images? need to go thru all rarities in database again
-so he can start
 - Add cash prize for fishoff winner
 
 * Event command
