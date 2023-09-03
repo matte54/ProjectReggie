@@ -31,7 +31,7 @@ class Seen:
                 if str(x.status) == "online":
                     await message.channel.send(f'That user is online right now you dummy.')
                     return
-                if str(matches[0]) in data:
+                if str(idnr) in data:
                     await message.channel.send(f'I last saw that user {data[str(idnr)]}')
                     return
 
