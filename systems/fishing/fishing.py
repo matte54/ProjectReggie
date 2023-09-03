@@ -51,8 +51,8 @@ class Fishing:
         self.channel = message.channel
         self.user_profile, self.user_profile_path = self.get_profile(self.user_id)  # return profile dict and path(str)
 
-        if await self.spam_check():  # check if casted within a minute
-            return
+        #if await self.spam_check():  # check if casted within a minute
+        #    return
         # fail check
         self.between_casts()  # lower or raise failchance based on time since last
         if await self.failed():
@@ -95,6 +95,9 @@ class Fishing:
         # this aint pretty but it gets u the correct file with the modifier
         index_of_item = self.fish_databases.index(chosen_class[0])
         index_of_item = round(index_of_item + self.class_modifier)
+        if index_of_item > 6: # make sure index does not go over 6
+            index_of_item = 6
+        # DUUH list index starts at 0 making me dizzy
         final_item = self.fish_databases[index_of_item]
 
         with open(f'{self.database_dir}{final_item}', "r") as f:
@@ -146,7 +149,7 @@ class Fishing:
         weightcategory, category_number = self.weight_category(self.caught_fish["min_weight"],
                                                                self.caught_fish["max_weight"],
                                                                fish_weight)
-        self.caught_fish["class"] = re.findall("\d+", str(chosen_class))[0]  # class str to an int
+        self.caught_fish["class"] = re.findall("\d+", str(final_item))[0]  # class str to an int
 
         self.caught_fish["weight"] = fish_weight
         self.caught_fish["category"] = weightcategory
@@ -174,9 +177,11 @@ class Fishing:
         time_difference = datetime.datetime.now() - datetime.datetime.fromisoformat(self.user_profile["last"])
         # linear interpolation for lower chance (pretty proud of dis LUL)
         seconds_between_casts = int(time_difference.total_seconds())
+        #seconds_between_casts = 10800 # testing
         if seconds_between_casts < 3600:
             result = 5.0 + (0.0 - 5.0) * (seconds_between_casts / 3600)
             self.fail_rate_modifier = result
+            self.class_modifier = 0
         if seconds_between_casts > 3600:
             result = 5.0 + (0.0 - 5.0) * (seconds_between_casts / 43200)
             self.fail_rate_modifier -= result
