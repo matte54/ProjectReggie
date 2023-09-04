@@ -34,3 +34,7 @@ simultanously when people are chatting. also diffrent servers.
 - Add cash prize for fishoff winner
 
 * Event command
+
+
+* Seen command
+- add a "that was x amount of time ago"
