@@ -54,6 +54,7 @@ class HouseKeeper:
                     if not e.bot and str(e.id) not in data:
                         try:
                             data[str(e.id)] = e.global_name
+                            log(f'[Housekeeper] - Found new user, saving {e.global_name}')
                         except AttributeError:
                             data[str(e.id)] = e.name
             self.write_json(self.idlist_path, data)
@@ -91,6 +92,7 @@ class HouseKeeper:
                         await main_channel.send(gif)
 
     def clean_logs(self):
+        log(f'[Housekeeper] - Cleaning logs')
         # cleanup log files (remove empty lines)
         file_paths = []
         for root, dirs, files in os.walk("./log/"):
@@ -106,5 +108,3 @@ class HouseKeeper:
     def write_json(self, filepath, data):
         with open(filepath, "w") as f:
             json.dump(data, f, indent=4)
-        if debug_on():
-            log(f'[Housekeeper] - Wrote {filepath}')

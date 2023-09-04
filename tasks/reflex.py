@@ -49,8 +49,8 @@ class Reflex:
                     log(f'[Reflex] - Available channels: {channel_list}')
                 picked_channel = random.choice(channel_list)
                 # random a reflex action with weights
-                k = random.choices(self.numbers, weights=self.random_weights)
-                #k = [3] # this is left here to specifiy a choice for debugging
+                #k = random.choices(self.numbers, weights=self.random_weights)
+                k = [2] # this is left here to specifiy a choice for debugging
                 # If we random nothing or if theres no channels to do anything in
                 if k[0] == 0:
                     log(f'[Reflex] - DO NOTHING - {picked_channel}')
@@ -193,7 +193,11 @@ class Reflex:
     async def reaction(self, picked_channel, last_message):
         # adds reaction to last message, skip if already reacted
         x = last_message.reactions
-        if not x:
+        wasme = False
+        for i in x:
+            if i.me:
+                wasme = True
+        if not wasme:
             picked_emoji = self.emojihandler.emojihandler(picked_channel)
             await last_message.add_reaction(picked_emoji)
         else:

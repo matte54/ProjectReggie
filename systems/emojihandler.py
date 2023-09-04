@@ -32,7 +32,7 @@ class Emojihandler:
         # add 3 guild specific emojis to pool
         for i in random.choices(data[str(guildid)], k=3):
             self.emojipool.append(i)
-        log(f'[Emojihandler] - Using: {self.emojipool}')
+        #log(f'[Emojihandler] - Using: {self.emojipool}')
         print(self.emojipool)
         return random.choice(self.emojipool) # return a random choice from the pool
 
