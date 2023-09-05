@@ -148,7 +148,8 @@ class Woodhouse(discord.Client):
             return
 
         # self.newsday.newsdaylog(message) # log for newsday
-        log(message)  # send the message into the logs for storing
+        if not str(message.content).startswith("$"):
+            log(message)  # send the message into the logs for storing
         self.statistics.input(message)  # send message to stats systems
 
         # look for $ commands

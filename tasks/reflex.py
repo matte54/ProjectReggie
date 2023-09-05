@@ -96,7 +96,10 @@ class Reflex:
             else:
                 log(f'[Reflex] - No valid channels, waiting...')
                 self.wait_cycles += 1
-            await asyncio.sleep((120 * random.randint(30, 40)) * self.wait_cycles)  # use this formula for live
+
+            sleep_time = (120 * random.randint(30, 40)) * self.wait_cycles
+            log(f'[Reflex] - Sleeping {round(sleep_time / 60)} minutes')
+            await asyncio.sleep(sleep_time)
 
     async def channel_history(self, channel_list):
         # check channel history for recent activity to rule out dead channels
