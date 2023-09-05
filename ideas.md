@@ -43,7 +43,8 @@ maaaaaybe the link scraping? might need a doover , but i do enjoy when he posts 
 It would be a shame to leave it even if its not very used, i worked hard on it lol
 
 * Reddit talking
-make the nothing fallback always just an emoji duh
+- add a current topic option , need to find somewhere and or somehow to scrape it and make the bot do a natural
+conversation starter like "did you guys hear about x" situation
 
 * Debug
 Debugging system expanded, i want to be able to run the bot and have it have as little impact on things as possible

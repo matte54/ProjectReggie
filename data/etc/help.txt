@@ -29,7 +29,7 @@ $remindme 2weeks 3days 30hours 5minutes <msg> (only 1 time increment is required
 $roll <int>D<int>
 - rolls x amount of x sided dices i.e 2d20
 
-$seen @user
+$seen <user_name> (works with @ and the global name)
 - Tells you last time Woodhouse saw the user
 
 $whoami

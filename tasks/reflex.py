@@ -24,6 +24,7 @@ class Reflex:
         self.guild_list = []
         self.numbers = [0, 1, 2, 3, 4, 5, 6]
         self.random_weights = [10, 9, 8, 4, 4, 2, 10]
+        self.increased_weights = [5, 6, 6, 6, 6, 6, 5]
         self.varmanager = VarManager()
         self.urlhandler = Urlhandler(self.client)
         self.speaking = Speaking()
@@ -45,56 +46,57 @@ class Reflex:
             if channel_list:
                 channel_list = await self.channel_history(channel_list)  # remove dead channels
             if channel_list:
-                if debug_on():
-                    log(f'[Reflex] - Available channels: {channel_list}')
+                log(f'[Reflex] - Available channels: {len(channel_list)}')
                 picked_channel = random.choice(channel_list)
-                # random a reflex action with weights
-                k = random.choices(self.numbers, weights=self.random_weights)
-                #k = [2] # this is left here to specifiy a choice for debugging
-                # If we random nothing or if theres no channels to do anything in
-                if k[0] == 0:
+                # random a reflex action with weights (if theres more then 5 channels to chose from increase chance)
+                if len(channel_list) > 5:
+                    reflex_choice = random.choices(self.numbers, weights=self.increased_weights)
+                else:
+                    reflex_choice = random.choices(self.numbers, weights=self.random_weights)
+                # reflex_choice = [2] # this is left here to specifiy a choice for debugging
+
+                if reflex_choice[0] == 0:
                     log(f'[Reflex] - DO NOTHING - {picked_channel}')
-                    self.wait_cycles = 1
+                    self.wait_cycles += 1
                 # talk
-                if k[0] == 1:
+                if reflex_choice[0] == 1:
                     log(f'[Reflex] - TALK - {picked_channel}')
                     last_message = await self.find_message(picked_channel,
                                                            10)  # get the last message in the chosen channel
                     self.wait_cycles = 1
                     await self.talk(picked_channel, last_message)
                 # reaction
-                if k[0] == 2:
+                if reflex_choice[0] == 2:
                     log(f'[Reflex] - REACTION - {picked_channel}')
                     last_message = await self.find_message(picked_channel,
                                                            1)  # get the last message in the chosen channel
                     self.wait_cycles = 1
                     await self.reaction(picked_channel, last_message)
                 # reply
-                if k[0] == 3:
+                if reflex_choice[0] == 3:
                     log(f'[Reflex] - REPLY - {picked_channel}')
                     last_message = await self.find_message(picked_channel,
                                                            1)  # get the last message in the chosen channel
                     self.wait_cycles = 1
                     await self.reply(picked_channel, last_message)
                 # url
-                if k[0] == 4:
+                if reflex_choice[0] == 4:
                     log(f'[Reflex] - GIF - {picked_channel}')
                     self.wait_cycles = 2
                     await self.gif(picked_channel)
                 # recommend
-                if k[0] == 5:
+                if reflex_choice[0] == 5:
                     log(f'[Reflex] - URL - {picked_channel}')
                     self.wait_cycles = 2
                     await self.url(picked_channel)
                 # do nothing
-                if k[0] == 6:
+                if reflex_choice[0] == 6:
                     self.wait_cycles = 1
                     log(f'[Reflex] - Waiting...')
             else:
                 log(f'[Reflex] - No valid channels, waiting...')
                 self.wait_cycles += 1
             await asyncio.sleep((120 * random.randint(30, 40)) * self.wait_cycles)  # use this formula for live
-
 
     async def channel_history(self, channel_list):
         # check channel history for recent activity to rule out dead channels
