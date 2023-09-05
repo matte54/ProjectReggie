@@ -74,11 +74,12 @@ class Reflex:
                     await self.reaction(picked_channel, last_message)
                 # reply
                 if reflex_choice[0] == 3:
+                    # turned off for now , thought it was gonna be fun but feels mostly annoying
                     log(f'[Reflex] - REPLY - {picked_channel}')
-                    last_message = await self.find_message(picked_channel,
-                                                           1)  # get the last message in the chosen channel
+                    #last_message = await self.find_message(picked_channel,
+                    #                                       1)  # get the last message in the chosen channel
                     self.wait_cycles = 1
-                    await self.reply(picked_channel, last_message)
+                    #await self.reply(picked_channel, last_message)
                 # url
                 if reflex_choice[0] == 4:
                     log(f'[Reflex] - GIF - {picked_channel}')
