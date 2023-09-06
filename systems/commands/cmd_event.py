@@ -54,8 +54,8 @@ class Event:
             return
         self.msg = self.msg.replace(dates[0], "")  # self.msg should now only be the message
 
-        if len(self.msg) < 1 or len(self.msg) > 80:
-            await message.channel.send("Syntax error, the event needs a message to display (less then 150 chars)")
+        if len(self.msg) == 0 or len(self.msg) > 80:
+            await message.channel.send("Syntax error, the event needs a message to display (less then 80 chars)")
             return
         self.event_date = dates[0]
         self.event_msg = self.msg

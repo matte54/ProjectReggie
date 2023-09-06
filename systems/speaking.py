@@ -1,6 +1,7 @@
 import os
 import re
 import time
+import random
 import difflib
 from multiprocessing import Pool
 
@@ -31,7 +32,8 @@ class Speaking:
             self.avoidlist.append(word.lower())
 
     async def data_generator(self):
-        files = os.listdir(self.data_path)
+        all_files = os.listdir(self.data_path)
+        files = random.sample(all_files, 6) # pick 6 random files of data to speed up :(
         generatorloops = 0
         generator_matches = 0
         self.keywords = sorted(self.user_entry.split(), key=len, reverse=True)[:2]  # get longest words
