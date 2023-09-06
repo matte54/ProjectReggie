@@ -7,31 +7,33 @@ from systems.logger import log, debug_on
 
 
 # commands
-from systems.commands import help, whoami, holiday, remindme, cast, blacklist, seen, eee, roll, event, define, fishing
-from systems.commands import bucket, fishbase, fishoff, url, status
+from systems.commands import (cmd_help, cmd_whoami, cmd_holiday, cmd_remindme, cmd_cast, cmd_blacklist, cmd_seen,
+                              cmd_eee, cmd_roll, cmd_event, cmd_define, cmd_fishing, cmd_bucket, cmd_fishbase,
+                              cmd_fishoff, cmd_url, cmd_status, cmd_tacklebox)
 
 
 class Mother:
     def __init__(self, client):
         self.client = client
         # commands
-        self.remindme = remindme.Remindme()
-        self.event = event.Event()
-        self.help = help.Help()
-        self.holiday = holiday.Holiday()
-        self.whoami = whoami.Whoami(self.client)
-        self.cast = cast.Cast(self.client)
-        self.blacklist = blacklist.Blacklist()
-        self.seen = seen.Seen(self.client)
-        self.eee = eee.Eee()
-        self.roll = roll.Roll()
-        self.define = define.Define()
-        self.fishing = fishing.Fishing()
-        self.bucket = bucket.Bucket()
-        self.fishoff = fishoff.Fishoff()
-        self.fishbase = fishbase.Fishbase()
-        self.url = url.Url(self)
-        self.status = status.Status()
+        self.remindme = cmd_remindme.Remindme()
+        self.event = cmd_event.Event()
+        self.help = cmd_help.Help()
+        self.holiday = cmd_holiday.Holiday()
+        self.whoami = cmd_whoami.Whoami(self.client)
+        self.cast = cmd_cast.Cast(self.client)
+        self.blacklist = cmd_blacklist.Blacklist()
+        self.seen = cmd_seen.Seen(self.client)
+        self.eee = cmd_eee.Eee()
+        self.roll = cmd_roll.Roll()
+        self.define = cmd_define.Define()
+        self.fishing = cmd_fishing.Fishing()
+        self.tacklebox = cmd_tacklebox.Tacklebox()
+        self.bucket = cmd_bucket.Bucket()
+        self.fishoff = cmd_fishoff.Fishoff()
+        self.fishbase = cmd_fishbase.Fishbase()
+        self.url = cmd_url.Url(self)
+        self.status = cmd_status.Status()
 
         self.cmdlist = {
             "help": self.help,
@@ -50,7 +52,8 @@ class Mother:
             "fishoff": self.fishoff,
             "fishbase": self.fishbase,
             "url": self.url,
-            "status": self.status
+            "status": self.status,
+            "tacklebox": self.tacklebox
         }
 
     async def handle(self, message):

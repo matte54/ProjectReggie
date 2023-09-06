@@ -55,6 +55,7 @@ class Fishing:
             return
         # fail check
         self.between_casts()  # lower or raise failchance based on time since last
+        self.item_modifiers()
         if await self.failed():
             self.fish_stats.stat_this(self.user_id, None, True, self.isShiny)
             return
@@ -85,6 +86,9 @@ class Fishing:
         self.write_json(f"{self.profile_dir}{self.user_id}.json", self.user_profile)
 
         await self.channel.send(embed=finished_embed)
+
+    def item_modifiers(self):
+        pass
 
     def rolls(self):
         now = datetime.datetime.now()

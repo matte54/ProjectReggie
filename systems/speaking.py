@@ -55,12 +55,19 @@ class Speaking:
         else:
             return ("", "", 0.00)
 
+    async def convert_async_generator_to_list(self):
+        result = []
+        async for item in self.data_generator():
+            result.append(item)
+        return result
+
     async def process_data(self):
         start_time = time.time()
         #best = ("", "", 0.00)
         #bestlist = []
 
-        data = await list(self.data_generator())  # Convert the generator to a list
+        data = await self.convert_async_generator_to_list()
+        #data = await list(self.data_generator())  # Convert the generator to a list
 
         # Initialize a Pool of worker processes
         with Pool() as pool:
