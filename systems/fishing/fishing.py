@@ -51,8 +51,8 @@ class Fishing:
         self.channel = message.channel
         self.user_profile, self.user_profile_path = self.get_profile(self.user_id)  # return profile dict and path(str)
 
-        #if await self.spam_check():  # check if casted within a minute
-        #    return
+        if await self.spam_check():  # check if casted within a minute
+            return
         # fail check
         self.between_casts()  # lower or raise failchance based on time since last
         if await self.failed():
