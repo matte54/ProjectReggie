@@ -30,7 +30,7 @@ class Speaking:
         for word in text:
             self.avoidlist.append(word.lower())
 
-    def data_generator(self):
+    async def data_generator(self):
         files = os.listdir(self.data_path)
         generatorloops = 0
         generator_matches = 0
@@ -60,7 +60,7 @@ class Speaking:
         #best = ("", "", 0.00)
         #bestlist = []
 
-        data = list(self.data_generator())  # Convert the generator to a list
+        data = await list(self.data_generator())  # Convert the generator to a list
 
         # Initialize a Pool of worker processes
         with Pool() as pool:
