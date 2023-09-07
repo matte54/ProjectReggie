@@ -94,9 +94,12 @@ class Reflex:
                 if reflex_choice[0] == 6:
                     self.wait_cycles = 1
                     log(f'[Reflex] - Waiting...')
+
+                self.prohibited_channels.append(picked_channel)
             else:
                 log(f'[Reflex] - No valid channels, waiting...')
                 self.wait_cycles += 1
+
 
             sleep_time = (120 * random.randint(30, 40)) * self.wait_cycles
             log(f'[Reflex] - Sleeping {round(sleep_time / 60)} minutes')
