@@ -158,6 +158,11 @@ class Reactionstats:
         self.guild_id = str(user.guild.id)
         self.user_id = str(user.id)
         emoji = str(emoji)
+        if not os.path.isfile(f'{self.stats_user_path}{self.user_id}.json'):
+            log(f'[Statistics] - user {self.user_id} has no stats file.')
+            # leave this here for now
+            # this will only trigger if user has never spoken before doing a reaction.
+            return
 
         with open(f'{self.stats_guild_path}{self.guild_id}.json', "r") as f:
             self.guild_data = json.load(f)
