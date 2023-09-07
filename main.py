@@ -100,14 +100,20 @@ class Woodhouse(discord.Client):
         self.run(credentials.KEY)
 
     async def on_disconnect(self):
-        log(f'Connection LOST!')
         if self.reconnected:
             self.reconnected = False
             self.last_disconnect = datetime.datetime.utcnow()
+            # trying this to only say lost if its been over 3 s to stop the spam
+            await self.lost_connection()
 
     async def on_connect(self):
         log(f'Connection ESTABLISHED!')
         self.reconnected = True
+
+    async def lost_connection(self):
+        await asyncio.sleep(3)
+        if not self.reconnected:
+            log(f'Connection LOST!')
 
     async def on_resumed(self):
         if not self.reconnected:  # trying to add this cause it does not seem to always resume
