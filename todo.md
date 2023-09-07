@@ -14,6 +14,7 @@ Remove item when finished
 
 * Logger system
 - Integrate into user statistics
+- make a system that checks if a posted url seems like a gif and save it onto a file to use later
 
 * Housekeeper system
 - Log rotation -> logger

@@ -7,6 +7,7 @@ import os
 import platform
 import random
 import datetime
+import logging
 
 # configs + other
 from data.etc import credentials
@@ -35,7 +36,7 @@ from tasks.event_handler import Event_handler
 intents = discord.Intents(messages=True, guilds=True, members=True, emojis=True,
                           message_content=True, reactions=True, presences=True, voice_states=True)
 
-
+logging.getLogger('discord.gateway').setLevel(30) # trying to get rid of the resumed spam
 
 class Woodhouse(discord.Client):
     def __init__(self, *args, **kwargs):
@@ -110,9 +111,9 @@ class Woodhouse(discord.Client):
 
     async def on_resumed(self):
         if not self.reconnected:  # trying to add this cause it does not seem to always resume
-            log(f'Connection RE-ESTABLISHED!')
             downtime = self.total_downtime()
             if downtime != "0 sec":
+                log(f'Connection RE-ESTABLISHED!')
                 log(f'Downtime was {downtime}')
             self.last_disconnect = None
 

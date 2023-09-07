@@ -73,11 +73,12 @@ unique fishes can only be caught once per season? , extra money? special unique 
 - failflares into file (add more) also add 25% chance failflares that includes the lost fish for extra salt.
 - Redesign schools system to be more global and permanent? maybe have something like if sevral class x is caught within
 a time frame, increase the chance of class x being caught again (simulating a school being present)
-- Include message that you have taken the lead in a competition if u catch a bigger fish
 - Tacklebox buy|list|shop , buy an item save it in the users profile item list as a tuple with the date to give it an 
 experiation date, build a function in the rolls that checks items to a json with the items effects.
+- Item ideas(personal): 
+mushroom(random class weights), bait(rarity+x?), line(reduced fail chance), sonar(class+x?)
+- item ideas(global): chum(rarity+x? and class+x?), mirror(flips class weights)
 
-- Unique fish = Nemo, Jaws, Qwerty, Dory
 
 * Remind me
 Remind me system is possible ? could be fun
