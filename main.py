@@ -142,6 +142,11 @@ class Woodhouse(discord.Client):
         else:
             return f"{minutes} mins {seconds} sec"
 
+    async def on_guild_join(self, guild):
+        log(f'ALERT - Woodhouse joined {guild.name}')
+        self.housekeeper.gatherids()
+        self.housekeeper.gather_emojis()
+
     async def on_message(self, message):
         if self.varmanager.read("black_channels"):
             self.prohibited_channels = self.varmanager.read("black_channels")
