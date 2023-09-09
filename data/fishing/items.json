@@ -1,3 +1,32 @@
 {
-
+    "mushroom": [
+        "randomly flip class chances",
+        200,
+        true
+    ],
+    "bait": [
+        "++ rarity chance",
+        100,
+        true
+    ],
+    "line": [
+        "-- fail chance",
+        100,
+        true
+    ],
+    "sonar": [
+        "++ class chance",
+        100,
+        false
+    ],
+    "chum": [
+        "Global: + class + rarity",
+        350,
+        true
+    ],
+    "mirror": [
+        "Global: mirror class chances",
+        500,
+        true
+    ]
 }

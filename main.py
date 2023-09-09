@@ -22,7 +22,7 @@ from systems.varmanager import VarManager
 from systems.unitconverter import Converter
 from systems.emojihandler import Emojihandler
 from systems.statistics import Statistics, Reactionstats
-# from systems.newsday import Newsday
+from systems.voicetrack import Voicetrack
 
 # fishing stuff
 from systems.fishing.fishoffhandler import Fishoffhandler
@@ -32,6 +32,7 @@ from tasks.status import StatusTask
 from tasks.reflex import Reflex
 from tasks.seensaver import SeenSaver
 from tasks.event_handler import Event_handler
+from tasks.fishing_gear_keeper import FishingGearHandler
 
 intents = discord.Intents(messages=True, guilds=True, members=True, emojis=True,
                           message_content=True, reactions=True, presences=True, voice_states=True)
@@ -49,6 +50,7 @@ class Woodhouse(discord.Client):
         self.reflex = Reflex(self)
         self.seen = SeenSaver(self)
         self.event_handler = Event_handler(self)
+        self.fishing_gear_handler = FishingGearHandler(self)
 
         # systems
         self.mother = Mother(self)
@@ -60,6 +62,7 @@ class Woodhouse(discord.Client):
         self.statistics = Statistics(self)
         self.reactionstats = Reactionstats(self)
         self.speaking = Speaking()
+        self.voicetracker = Voicetrack()
 
         # fishing
         self.fishoffhandler = Fishoffhandler(self)
@@ -77,6 +80,7 @@ class Woodhouse(discord.Client):
         self.loop.create_task(self.reflex.reflex())
         self.loop.create_task(self.seen.seen())
         self.loop.create_task(self.event_handler.track_events())
+        self.loop.create_task(self.fishing_gear_handler.check_gear())
 
     async def on_ready(self):
         log(f"Discord.py API version: {discord.__version__}")
@@ -146,6 +150,9 @@ class Woodhouse(discord.Client):
         log(f'ALERT - Woodhouse joined {guild.name}')
         self.housekeeper.gatherids()
         self.housekeeper.gather_emojis()
+
+    async def on_guild_remove(self, guild):
+        log(f'ALERT - Woodhouse left {guild.name}')
 
     async def on_message(self, message):
         if self.varmanager.read("black_channels"):
@@ -228,9 +235,15 @@ class Woodhouse(discord.Client):
 
         self.housekeeper.gather_emojis()
 
-    async def on_voice_state_update(self, member, before, after):
-        pass
+    async def on_voice_state_update(self, member, voice_before, voice_after):
         # keep track of time in voice chat later maybe hmm
+        #self.voicetracker.process(member, voice_before, voice_after)
+        pass
+
+    async def on_member_join(self, member):
+        if not member.bot:
+            log(f'{member.name} just joined {member.guild.name}, re-gather ids...')
+            self.housekeeper.gatherids()
 
 
 if __name__ == "__main__":

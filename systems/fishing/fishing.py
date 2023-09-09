@@ -44,7 +44,7 @@ class Fishing:
                                "class7.json"]
 
     async def cast(self, message):
-        self.caught_fish = None # reset the fish dict
+        self.caught_fish = None  # reset the fish dict
         self.message = message
         self.user_id = message.author.id  # int
         self.user_name = self.get_user_name(str(self.user_id).capitalize())
@@ -99,7 +99,7 @@ class Fishing:
         # this aint pretty but it gets u the correct file with the modifier
         index_of_item = self.fish_databases.index(chosen_class[0])
         index_of_item = round(index_of_item + self.class_modifier)
-        if index_of_item > 6: # make sure index does not go over 6
+        if index_of_item > 6:  # make sure index does not go over 6
             index_of_item = 6
         # DUUH list index starts at 0 making me dizzy
         final_item = self.fish_databases[index_of_item]
@@ -175,13 +175,19 @@ class Fishing:
         log(f"[Fishing] - {self.user_name} caught a {'shiny ' if self.isShiny else ''}"
             f"{self.caught_fish['weight']}lbs {self.caught_fish['name']}")
 
+    def check_global_items(self):
+        pass
+
+    def check_personal_items(self):
+        pass
+
     def between_casts(self):
-        if not self.user_profile["last"]: # first cast ever will casue problems if its blank
+        if not self.user_profile["last"]:  # first cast ever will casue problems if its blank
             return
         time_difference = datetime.datetime.now() - datetime.datetime.fromisoformat(self.user_profile["last"])
         # linear interpolation for lower chance (pretty proud of dis LUL)
         seconds_between_casts = int(time_difference.total_seconds())
-        #seconds_between_casts = 10800 # testing
+        # seconds_between_casts = 10800 # testing
         if seconds_between_casts < 3600:
             result = 5.0 + (0.0 - 5.0) * (seconds_between_casts / 3600)
             self.fail_rate_modifier = result
