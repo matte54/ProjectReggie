@@ -114,7 +114,7 @@ class Reflex:
             async for message in channel.history(limit=5):
                 if not message.author.bot:
                     diffrence = datetime.now() - message.created_at.replace(tzinfo=None)
-                    if not diffrence > timedelta(days=1):
+                    if not diffrence > timedelta(hours=3):
                         log(f'[Reflex] - {i} - ({channel.guild.name}:{channel.name}) has recent activity')
                         refined_list.append(i)
                         break
