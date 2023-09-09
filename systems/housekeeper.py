@@ -53,14 +53,15 @@ class HouseKeeper:
             for i in guild_list:
                 for e in i.members:
                     if not e.bot and str(e.id) not in data:
-                        if e.global_name and e.name == "null":
-                            # added this in to skip old accounts that hasent chosen a globalname yet
-                            continue
-                        try:
-                            data[str(e.id)] = e.global_name
-                            log(f'[Housekeeper] - Found new user, saving {e.global_name}')
-                        except AttributeError:
-                            data[str(e.id)] = e.name
+                        if e.name or e.global_name:
+                            if e.global_name:
+                                data[str(e.id)] = e.global_name
+                                log(f'[Housekeeper] - Found new user, saving {e.global_name}')
+                            else:
+                                data[str(e.id)] = e.name
+                                log(f'[Housekeeper] - Found new user, saving {e.name}')
+                        else:
+                            log(f'[Housekeeper] - Invalid username {e.id}(old account), skipping...')
             self.write_json(self.idlist_path, data)
         else:
             # this is just for when there is no file during first start
