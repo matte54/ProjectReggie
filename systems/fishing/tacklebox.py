@@ -44,7 +44,7 @@ class Tacklebox:
             await message.channel.send(f'```yaml\n\nYou can not afford to rent that item```')
             return
         # we passed all checks aquire the item
-        log(f'[Tacklebox] - {message.author} rents {item} for {item[1]} bells')
+        log(f'[Tacklebox] - {message.author} rents {item} for {self.shop_dict[item][1]} bells')
         now = datetime.datetime.now()
         current_gear = self.user_data["gear"]
         current_gear.append((item, str(now.isoformat())))
@@ -55,6 +55,7 @@ class Tacklebox:
         # update shop
         self.shop_dict[item][2] = False
         self.write_json("./data/fishing/items.json", self.shop_dict)
+        await message.channel.send(f'```yaml\n\n{message.author} rents {item} for {self.shop_dict[item][1]} bells```')
 
     async def list_gear(self, message):
         # list users current items
@@ -63,7 +64,6 @@ class Tacklebox:
             current_time = datetime.datetime.now()
             list_string = ""
             for i in self.user_data["gear"]:
-                print(i)
                 time_difference = current_time - datetime.datetime.fromisoformat(i[1])
                 time_left = datetime.timedelta(hours=3) - time_difference
                 list_string += f'{i[0]} - time remaining: {str(time_left).split(".")[0]}\n'
