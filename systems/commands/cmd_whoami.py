@@ -24,7 +24,8 @@ class Whoami:
         z = f"Python version: {platform.python_version()}"
         o = f"Running on: {platform.system()} {platform.release()} ({os.name.upper()})"
         l = f'{my_host} - {my_ip}'
-        final_output = "\n".join([s, y, z, o, l])
+        u = f'source: https://github.com/matte54/ProjectReggie'
+        final_output = "\n".join([s, y, z, o, l, u])
         x = f'```yaml\n\n{final_output}```'
 
         await message.channel.send(x)
