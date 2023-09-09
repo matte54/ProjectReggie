@@ -226,6 +226,8 @@ class Woodhouse(discord.Client):
             for emoji in removed_emojis:
                 await main_channel.send(f'Emoji {emoji} was removed')
 
+        self.housekeeper.gather_emojis()
+
     async def on_voice_state_update(self, member, before, after):
         pass
         # keep track of time in voice chat later maybe hmm

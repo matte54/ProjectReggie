@@ -32,6 +32,7 @@ class HouseKeeper:
         data["default"] = default_emoji_list
         # gather emoji str names in a list and save the in a guild id key
         for guild in self.client.guilds:
+            log(f'[Housekeeper] - Saving {guild.name} emojilist')
             emoji_list = []
             emojis = guild.emojis
             for emoji in emojis:
@@ -52,6 +53,9 @@ class HouseKeeper:
             for i in guild_list:
                 for e in i.members:
                     if not e.bot and str(e.id) not in data:
+                        if e.global_name and e.name == "null":
+                            # added this in to skip old accounts that hasent chosen a globalname yet
+                            continue
                         try:
                             data[str(e.id)] = e.global_name
                             log(f'[Housekeeper] - Found new user, saving {e.global_name}')

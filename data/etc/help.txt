@@ -16,6 +16,9 @@ $event yyyy-mm-dd <msg>
 $event up
 - Lists 3 earliest upcoming events created in the channel.
 
+$gamesweek
+- Lists videogames released this week, (not 100% sure at what point the week this is updated)
+
 $help
 - This command dummy
 
@@ -31,6 +34,10 @@ $roll <int>D<int>
 
 $seen <user_name> (works with @ and the global name)
 - Tells you last time Woodhouse saw the user
+
+$status add watching/listening/playing <thing>
+- adds into the custom statuses the bot uses
+$status rm <id_nr> removes it (sort of broken atm)
 
 $whoami
 - About section for the bot (technical information)
