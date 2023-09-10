@@ -4,6 +4,7 @@ import os
 import datetime
 from systems.logger import log
 
+
 class Seen:
     def __init__(self, client):
         self.client = client
@@ -59,13 +60,9 @@ class Seen:
         result_string = "That was "
 
         if days > 0:
-            result_string += f"{days} days"
+            result_string += f"{days} days "
         if hours > 0:
-            if result_string:
-                result_string += ", "
-            result_string += f"{hours} hours"
+            result_string += f"{hours} hours "
         if result_string:
-            result_string += " and "
         result_string += f"{minutes} minutes ago"
         return result_string
-
