@@ -1,6 +1,7 @@
 import re
 import json
 import os
+import datetime
 from systems.logger import log
 
 class Seen:
@@ -19,7 +20,8 @@ class Seen:
                 await message.channel.send(f'That user is online right now you dummy.')
                 return
             if str(matches[0]) in data:
-                await message.channel.send(f'I last saw that user {data[str(matches[0])]}')
+                duration = self.get_duration(data[str(matches[0])])
+                await message.channel.send(f'```yaml\n\nI last saw that user {data[str(matches[0])]}\n{duration}```')
                 return
         # check usernames instead
         user_search_name = message.content.replace("$seen ", "")
@@ -32,7 +34,8 @@ class Seen:
                     await message.channel.send(f'That user is online right now you dummy.')
                     return
                 if str(idnr) in data:
-                    await message.channel.send(f'I last saw that user {data[str(idnr)]}')
+                    duration = self.get_duration(data[str(idnr)])
+                    await message.channel.send(f'```yaml\n\nI last saw that user {data[str(idnr)]}\n{duration}```')
                     return
 
         await message.channel.send(f'Invalid syntax or no data on user')
@@ -45,4 +48,24 @@ class Seen:
             for key, value in data.items():
                 usernamelist.append((key, value))
         return usernamelist
+
+    def get_duration(self, timestamp):
+        time_difference = datetime.datetime.now() - datetime.datetime.fromisoformat(timestamp)
+
+        days = time_difference.days
+        seconds = time_difference.seconds
+        hours, remainder = divmod(seconds, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        result_string = "That was "
+
+        if days > 0:
+            result_string += f"{days} days"
+        if hours > 0:
+            if result_string:
+                result_string += ", "
+            result_string += f"{hours} hours"
+        if result_string:
+            result_string += " and "
+        result_string += f"{minutes} minutes ago"
+        return result_string
 
