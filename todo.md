@@ -34,6 +34,7 @@ simultanously when people are chatting. also diffrent servers.
 * Fishing
 - Created the fish query "fishbase" works but needs some work and some bugfixes
 - Add cash prize for fishoff winner
+- add rarity value to catch string aswell?
 
 * Event command
 

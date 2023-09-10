@@ -5,10 +5,12 @@ import json
 import datetime
 
 from systems.logger import log
+from systems.varmanager import VarManager
 
 
 class Voicetrack:
     def __init__(self):
+        self.varmanager = VarManager()
         self.user_in_voice = False
         self.user_id = None
 

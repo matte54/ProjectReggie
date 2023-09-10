@@ -11,33 +11,33 @@ class Converter:
         txt = message.content
 
         # temperature
-        m = re.search(r'(?:\s|^)(\-?\d+)( ?celcius| ?fahrenheit|c|f)\b', txt, flags=re.IGNORECASE)
+        m = re.search(r'(?:\s|^)(\-?\d+)( ?(?:celcius|c|fahrenheit|f))(?=\s|$)', txt, flags=re.IGNORECASE)
         if m:
-            number, unit = self.temp(int(m[1]), m[2])
+            number, unit = self.temp(int(m[1]), m[2].replace(" ", ""))
             await self.reply_message(message, f'{number}{unit}', f'{m[1]}{m[2]}')
 
         # weight
-        m = re.search(r'(?:\s|^)(\-?\d+)( ?pounds| ?kilograms|lbs|kg)\b', txt, flags=re.IGNORECASE)
+        m = re.search(r'(?:\s|^)(\-?\d+)( ?(?:pounds|lbs|kilograms|kg))(?=\s|$)', txt, flags=re.IGNORECASE)
         if m:
-            number, unit = self.weight(int(m[1]), m[2])
+            number, unit = self.weight(int(m[1]), m[2].replace(" ", ""))
             await self.reply_message(message, f'{number}{unit}', f'{m[1]}{m[2]}')
 
         # length
-        m = re.search(r'(?:\s|^)(\-?\d+)( ?feet| ?meters|ft|m)\b', txt, flags=re.IGNORECASE)
+        m = re.search(r'(?:\s|^)(\-?\d+)( ?(?:feet|ft|meters|m))(?=\s|$)', txt, flags=re.IGNORECASE)
         if m:
-            number, unit = self.length(int(m[1]), m[2])
+            number, unit = self.length(int(m[1]), m[2].replace(" ", ""))
             await self.reply_message(message, f'{number}{unit}', f'{m[1]}{m[2]}')
 
         # distance
-        m = re.search(r'(?:\s|^)(\-?\d+)( ?miles| ?kilometers|mi|km)\b', txt, flags=re.IGNORECASE)
+        m = re.search(r'(?:\s|^)(\-?\d+)( ?(?:miles|mi|kilometers|km))(?=\s|$)', txt, flags=re.IGNORECASE)
         if m:
-            number, unit = self.distance(int(m[1]), m[2])
+            number, unit = self.distance(int(m[1]), m[2].replace(" ", ""))
             await self.reply_message(message, f'{number}{unit}', f'{m[1]}{m[2]}')
 
         # volume
-        m = re.search(r'(?:\s|^)(\-?\d+)( ?gallons| ?liters|gal|l)\b', txt, flags=re.IGNORECASE)
+        m = re.search(r'(?:\s|^)(\-?\d+)( ?(?:gallons|gal|liters|l))(?=\s|$)', txt, flags=re.IGNORECASE)
         if m:
-            number, unit = self.volume(int(m[1]), m[2])
+            number, unit = self.volume(int(m[1]), m[2].replace(" ", ""))
             await self.reply_message(message, f'{number}{unit}', f'{m[1]}{m[2]}')
 
     def temp(self, number, unit):
