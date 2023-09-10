@@ -63,6 +63,5 @@ class Seen:
             result_string += f"{days} days "
         if hours > 0:
             result_string += f"{hours} hours "
-        if result_string:
         result_string += f"{minutes} minutes ago"
         return result_string
