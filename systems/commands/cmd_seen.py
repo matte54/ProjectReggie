@@ -28,7 +28,7 @@ class Seen:
         user_search_name = message.content.replace("$seen ", "")
         usernamelist = self.gather_usernames()
         for idnr, username in usernamelist:
-            if username == user_search_name:
+            if username == user_search_name.lower():
                 guild = message.guild
                 x = guild.get_member(int(idnr))
                 if str(x.status) == "online":
@@ -47,7 +47,7 @@ class Seen:
             with open(f'./data/etc/ids.json', "r") as f:
                 data = json.load(f)
             for key, value in data.items():
-                usernamelist.append((key, value))
+                usernamelist.append((key, value.lower()))
         return usernamelist
 
     def get_duration(self, timestamp):
