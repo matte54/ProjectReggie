@@ -8,6 +8,8 @@ from discord import Embed
 from systems.logger import debug_on, log
 from systems.fishing.fishstats import Fishstat
 from data.fishing.flare import FLARE
+from data.fishing.weights import WEIGHTS
+from systems.varmanager import VarManager
 
 # Modifiers to tweak
 SHINYCHANCE = 99  # rolls 1-100 needs to be equals to or greater then the number for shiny
@@ -35,6 +37,7 @@ class Fishing:
         # constant stuff
         self.client = client
         self.fish_stats = Fishstat()
+        self.varmanager = VarManager()
 
         self.profile_dir = "./local/fishing/profiles/"
         self.database_dir = "./data/fishing/databases/"
@@ -102,15 +105,19 @@ class Fishing:
 
     def pick_class(self):
         # class pick
-        # this is the place for schools mods later
-        end_weights = [38, 19, 15, 12, 7, 6, 3]
+        school_ojb = self.varmanager.read("school")
+        if school_ojb[0]:
+            end_weights = WEIGHTS[school_ojb[1]]
+        else:
+            end_weights = WEIGHTS["default"]
         # personal items
         if self.personal_items_list:
             if "sonar" in self.personal_items_list:
                 end_weights = [3, 6, 12, 19, 38, 15, 12]
             if "mushroom" in self.personal_items_list:
-                end_weights = [random.randint(1, 38), random.randint(1, 38), random.randint(1, 38), random.randint(1, 38),
-                        random.randint(1, 38), random.randint(1, 38), random.randint(1, 38)]
+                end_weights = [random.randint(1, 38), random.randint(1, 38), random.randint(1, 38),
+                               random.randint(1, 38),
+                               random.randint(1, 38), random.randint(1, 38), random.randint(1, 38)]
 
         # global items next
         if self.global_items_list:
@@ -119,9 +126,8 @@ class Fishing:
                 # increase all by 1-6 but not over 38
             if "mirror" in self.global_items_list:
                 end_weights.reverse()
-
+        log(f"[Fishing] - Classweights: {end_weights}")
         return random.choices(self.fish_databases, weights=end_weights)
-
 
     def rolls(self):
         now = datetime.datetime.now()
@@ -151,7 +157,7 @@ class Fishing:
                 rarity_value = data[fish][key]
                 rarity_value -= self.rarity_modifier
                 if rarity_value <= 0.0:
-                    rarity_value = random.uniform(0.01, 0.18) # make sure rarity dosent go to low
+                    rarity_value = random.uniform(0.01, 0.18)  # make sure rarity dosent go to low
                 weight = 1 / rarity_value
                 weights.append(weight)
             fish, key = random.choices(weighted_items, weights=weights, k=1)[0]
@@ -267,7 +273,6 @@ class Fishing:
 
         self.item_modifiers()
 
-
     def item_modifiers(self):
         if self.personal_items_list:
             if "line" in self.personal_items_list:
@@ -280,7 +285,6 @@ class Fishing:
             if "chum" in self.global_items_list:
                 # trying this for now might need tweaks
                 self.rarity_modifier += 0.20
-
 
     async def spam_check(self):
         # check here if cast was less then a minute ago
@@ -310,7 +314,7 @@ class Fishing:
         # rolls to check for success this needs more modifiers for items and other stuff later
         # but for now i will use the same as 1.0
         roll = random.uniform(3.0 + (0.025 * self.user_profile["level"]), 10)
-        #print(f'fail roll was {roll} and it needs to be bigger then {5 + self.fail_rate_modifier}')
+        # print(f'fail roll was {roll} and it needs to be bigger then {5 + self.fail_rate_modifier}')
         if roll < (5 + self.fail_rate_modifier):
             await self.message.channel.send(
                 f'```yaml\n{self.user_name} casts their line but FAILS!\n{random.choice(FLARE)}```')

@@ -33,6 +33,7 @@ from tasks.reflex import Reflex
 from tasks.seensaver import SeenSaver
 from tasks.event_handler import Event_handler
 from tasks.fishing_gear_keeper import FishingGearHandler
+from tasks.schools import Schools
 
 intents = discord.Intents(messages=True, guilds=True, members=True, emojis=True,
                           message_content=True, reactions=True, presences=True, voice_states=True)
@@ -51,6 +52,7 @@ class Woodhouse(discord.Client):
         self.seen = SeenSaver(self)
         self.event_handler = Event_handler(self)
         self.fishing_gear_handler = FishingGearHandler(self)
+        self.schools = Schools(self)
 
         # systems
         self.mother = Mother(self)
@@ -81,6 +83,7 @@ class Woodhouse(discord.Client):
         self.loop.create_task(self.seen.seen())
         self.loop.create_task(self.event_handler.track_events())
         self.loop.create_task(self.fishing_gear_handler.check_gear())
+        self.loop.create_task(self.schools.main_loop())
 
     async def on_ready(self):
         log(f"Discord.py API version: {discord.__version__}")
