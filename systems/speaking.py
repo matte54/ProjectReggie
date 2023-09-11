@@ -106,6 +106,9 @@ class Speaking:
         self.user_entry = entry.lower()
         self.user_entry = re.sub(self.filter_pattern, "", self.user_entry)  # remove ill-eagle characters
         self.user_entry = re.sub(r'^\s+', '', self.user_entry)
+        # final cleanup to remove extra whispace
+        words = self.user_entry.split()
+        self.user_entry = ' '.join(words)
         self.debugstring += f'FILTERED INPUT: {self.user_entry}\n\n'
         # check list of ill-eagle words
         #for word in self.user_entry.split():
