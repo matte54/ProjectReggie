@@ -1,13 +1,19 @@
 import json
 import datetime
+import asyncio
 
 from systems.logger import log
+from systems.varmanager import VarManager
 
 
 class Tacklebox:
-    def __init__(self):
+    def __init__(self, client):
+        self.client = client
         self.user_data = None
         self.shop_dict = None
+        self.varmanager = VarManager()
+
+        self.active_channels = self.collect_channel_ids()  # list of channels with fishing turned on
 
     async def process_message(self, message):
         self.user_data = None
@@ -44,7 +50,6 @@ class Tacklebox:
             await message.channel.send(f'```yaml\n\nYou can not afford to rent that item```')
             return
         # we passed all checks aquire the item
-        log(f'[Tacklebox] - {message.author} rents {item} for {self.shop_dict[item][1]} bells')
         now = datetime.datetime.now()
         current_gear = self.user_data["gear"]
         current_gear.append((item, str(now.isoformat())))
@@ -55,7 +60,20 @@ class Tacklebox:
         # update shop
         self.shop_dict[item][2] = False
         self.write_json("./data/fishing/items.json", self.shop_dict)
-        await message.channel.send(f'```yaml\n\n{message.author} rents {item} for {self.shop_dict[item][1]} bells```')
+        # send message about shopper if global in all active fishing channels
+        if item == "chum" or item == "mirror":
+            log(f'[Tacklebox] - {message.author} rents GLOBAL item {item} for {self.shop_dict[item][1]} bells')
+            for channel in self.active_channels:
+                ch = self.client.get_channel(channel)
+                await ch.send(f'```yaml\n\n{message.author} rents GLOBAL item {item} for'
+                                           f' {self.shop_dict[item][1]}'
+                                           f' bells\n{self.shop_dict[item][0]}```')
+                await asyncio.sleep(2)
+        else:
+            log(f'[Tacklebox] - {message.author} rents {item} for {self.shop_dict[item][1]} bells')
+            await message.channel.send(f'```yaml\n\n{message.author} rents item {item} for'
+                                       f' {self.shop_dict[item][1]}'
+                                       f' bells\n{self.shop_dict[item][0]}```')
 
     async def list_gear(self, message):
         # list users current items
@@ -97,3 +115,8 @@ class Tacklebox:
     def write_json(self, filepath, data):
         with open(filepath, "w") as f:
             json.dump(data, f, indent=4)
+
+    def collect_channel_ids(self):
+        if self.varmanager.read("fishing_channels"):
+            fishing_channels = self.varmanager.read("fishing_channels")
+            return fishing_channels

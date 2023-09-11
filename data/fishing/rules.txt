@@ -10,7 +10,7 @@ gives the fisher the average success chance, waiting longer (up to a certain poi
 Every fish has a range of weight it can be, to make it more fun instead of just numbers your catches range of weight
 is displayed in the prefix of the name (tiny-small-medium-large-big-huge) to give you atleast an idea.
 Some fishes are rarer than others (has nothing to do with weight) and the rarity of the fish is displayed by the
-outline of the portrait (green-blue-yellow-orange-red)
+outline of the portrait (green-blue-yellow-orange-red) unique fish are purple.
 
 Every fish gives your profile XP, your profile can be viewed along with your currently held top 10 fish with the
 $bucket command.

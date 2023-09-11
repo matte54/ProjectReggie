@@ -17,7 +17,7 @@
     "sonar": [
         "++ class chance",
         100,
-        false
+        true
     ],
     "chum": [
         "Global: + class + rarity",

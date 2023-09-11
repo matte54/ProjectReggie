@@ -8,7 +8,6 @@ from discord import Embed
 from systems.logger import debug_on, log
 from systems.fishing.fishstats import Fishstat
 from data.fishing.flare import FLARE
-from data.fishing.weights import WEIGHTS
 
 # Modifiers to tweak
 SHINYCHANCE = 99  # rolls 1-100 needs to be equals to or greater then the number for shiny
@@ -43,6 +42,9 @@ class Fishing:
         self.fish_databases = ["class1.json", "class2.json", "class3.json", "class4.json", "class5.json", "class6.json",
                                "class7.json"]
 
+        self.global_items_list = None
+        self.personal_items_list = None
+
     async def cast(self, message):
         self.caught_fish = None  # reset the fish dict
         self.message = message
@@ -50,12 +52,23 @@ class Fishing:
         self.user_name = self.get_user_name(str(self.user_id).capitalize())
         self.channel = message.channel
         self.user_profile, self.user_profile_path = self.get_profile(self.user_id)  # return profile dict and path(str)
+        # reset modifiers
+        self.fail_rate_modifier = 0.0
+        self.class_modifier = 0
+        self.rarity_modifier = 0.0
+
+        # reset item lists
+        self.global_items_list = []
+        self.personal_items_list = []
+        # gather current item lists
+        self.global_items_list = self.check_global_items()
+        self.personal_items_list = self.check_personal_items()
 
         if await self.spam_check():  # check if casted within a minute
             return
         # fail check
         self.between_casts()  # lower or raise failchance based on time since last
-        self.item_modifiers()
+
         if await self.failed():
             self.fish_stats.stat_this(self.user_id, None, True, self.isShiny)
             return
@@ -87,15 +100,34 @@ class Fishing:
 
         await self.channel.send(embed=finished_embed)
 
-    def item_modifiers(self):
-        pass
+    def pick_class(self):
+        # class pick
+        # this is the place for schools mods later
+        end_weights = [38, 19, 15, 12, 7, 6, 3]
+        # personal items
+        if self.personal_items_list:
+            if "sonar" in self.personal_items_list:
+                end_weights = [3, 6, 12, 19, 38, 15, 12]
+            if "mushroom" in self.personal_items_list:
+                end_weights = [random.randint(1, 38), random.randint(1, 38), random.randint(1, 38), random.randint(1, 38),
+                        random.randint(1, 38), random.randint(1, 38), random.randint(1, 38)]
+
+        # global items next
+        if self.global_items_list:
+            if "chum" in self.global_items_list:
+                end_weights = [min(x + random.randint(1, 6), 38) for x in end_weights]
+                # increase all by 1-6 but not over 38
+            if "mirror" in self.global_items_list:
+                end_weights.reverse()
+
+        return random.choices(self.fish_databases, weights=end_weights)
+
 
     def rolls(self):
         now = datetime.datetime.now()
         self.user_profile["last"] = str(now.isoformat())  # update the last cast time
 
-        # class pick
-        chosen_class = random.choices(self.fish_databases, weights=WEIGHTS["default"])
+        chosen_class = self.pick_class()
         # this aint pretty but it gets u the correct file with the modifier
         index_of_item = self.fish_databases.index(chosen_class[0])
         index_of_item = round(index_of_item + self.class_modifier)
@@ -117,6 +149,9 @@ class Fishing:
             weights = []
             for fish, key in weighted_items:
                 rarity_value = data[fish][key]
+                rarity_value -= self.rarity_modifier
+                if rarity_value <= 0.0:
+                    rarity_value = random.uniform(0.01, 0.18) # make sure rarity dosent go to low
                 weight = 1 / rarity_value
                 weights.append(weight)
             fish, key = random.choices(weighted_items, weights=weights, k=1)[0]
@@ -176,10 +211,41 @@ class Fishing:
             f"{self.caught_fish['weight']}lbs {self.caught_fish['name']}")
 
     def check_global_items(self):
-        pass
+        # find all profiles
+        found_global_items = []
+        profiles_list = []
+        for root, dirs, files in os.walk(self.profile_dir):
+            for file in files:
+                profiles_list.append(file)
+        for profile in profiles_list:
+            with open(f'{self.profile_dir}{profile}', "r") as f:
+                profiledata = json.load(f)
+            if profiledata["gear"]:
+                for item in profiledata["gear"]:
+                    if item[0] == "chum":
+                        found_global_items.append(item[0])
+                    if item[0] == "mirror":
+                        found_global_items.append(item[0])
+
+        if found_global_items:
+            log(f"[Fishing] - {self.user_name} benefits from these global items {found_global_items}")
+            return found_global_items
+        else:
+            return None
 
     def check_personal_items(self):
-        pass
+        found_personal_items = []
+        with open(f'{self.user_profile_path}', "r") as f:
+            profiledata = json.load(f)
+        if profiledata["gear"]:
+            for item in profiledata["gear"]:
+                if item[0] != "chum" or item[0] != "mirror":
+                    found_personal_items.append(item[0])
+        if found_personal_items:
+            log(f"[Fishing] - {self.user_name} is using these items {found_personal_items}")
+            return found_personal_items
+        else:
+            return None
 
     def between_casts(self):
         if not self.user_profile["last"]:  # first cast ever will casue problems if its blank
@@ -197,7 +263,24 @@ class Fishing:
             self.fail_rate_modifier -= result
             class_result = 0 - (0 - 3) * (seconds_between_casts / 43200)
             self.class_modifier = class_result
-        # this might need some smaller re-evalution when levels and other modifiers get into the mix
+        # tacklebox stuff after
+
+        self.item_modifiers()
+
+
+    def item_modifiers(self):
+        if self.personal_items_list:
+            if "line" in self.personal_items_list:
+                # trying this for now might need tweaks
+                self.fail_rate_modifier -= 3
+            if "bait" in self.personal_items_list:
+                # trying this for now might need tweaks
+                self.rarity_modifier += 0.20
+        if self.global_items_list:
+            if "chum" in self.global_items_list:
+                # trying this for now might need tweaks
+                self.rarity_modifier += 0.20
+
 
     async def spam_check(self):
         # check here if cast was less then a minute ago
@@ -227,7 +310,7 @@ class Fishing:
         # rolls to check for success this needs more modifiers for items and other stuff later
         # but for now i will use the same as 1.0
         roll = random.uniform(3.0 + (0.025 * self.user_profile["level"]), 10)
-        # print(f'fail roll was {roll} and it needs to be bigger then {5 + self.fail_rate_modifier}')
+        #print(f'fail roll was {roll} and it needs to be bigger then {5 + self.fail_rate_modifier}')
         if roll < (5 + self.fail_rate_modifier):
             await self.message.channel.send(
                 f'```yaml\n{self.user_name} casts their line but FAILS!\n{random.choice(FLARE)}```')

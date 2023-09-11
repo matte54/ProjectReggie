@@ -28,7 +28,7 @@ class Mother:
         self.roll = cmd_roll.Roll()
         self.define = cmd_define.Define()
         self.fishing = cmd_fishing.Fishing()
-        self.tacklebox = cmd_tacklebox.Tacklebox()
+        self.tacklebox = cmd_tacklebox.Tacklebox(self.client)
         self.bucket = cmd_bucket.Bucket()
         self.fishoff = cmd_fishoff.Fishoff()
         self.fishbase = cmd_fishbase.Fishbase()

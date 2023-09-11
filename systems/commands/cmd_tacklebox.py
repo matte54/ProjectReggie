@@ -6,8 +6,9 @@ from systems.fishing import tacklebox
 
 
 class Tacklebox:
-    def __init__(self):
-        self.tacklebox = tacklebox.Tacklebox()
+    def __init__(self, client):
+        self.client = client
+        self.tacklebox = tacklebox.Tacklebox(self.client)
         self.varmanager = VarManager()
 
     async def command(self, message):

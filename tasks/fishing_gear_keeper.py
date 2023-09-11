@@ -13,6 +13,7 @@ class FishingGearHandler:
         self.varmanager = VarManager()
         self.fishing_channels = None
         self.profiles_path = "./local/fishing/profiles/"
+        self.items_file = "./data/fishing/items.json"
         self.profiles_list = []
 
     async def check_gear(self):
@@ -31,8 +32,15 @@ class FishingGearHandler:
                     continue
                 for item in profile_data["gear"]:
                     if datetime.datetime.fromisoformat(item[1]) < three_hours_ago:
+                        # remove item from userprofile
                         profile_data["gear"].remove(item)
                         self.write_json(f'{self.profiles_path}{profile}', profile_data)
+                        # reset item status in shop
+                        with open(f'{self.items_file}', "r") as f:
+                            items_dict = json.load(f)
+                            items_dict[item][2] = True
+                            self.write_json(f'{self.items_file}', items_dict)
+                        # message fishing channels
                         for channel in self.fishing_channels:
                             ch = self.client.get_channel(channel)
                             await ch.send(f'```yaml\n\nRent time expired on {item[0]} for'
