@@ -32,8 +32,10 @@ class Emojihandler:
         # add 3 guild specific emojis to pool
         for i in random.choices(data[str(guildid)], k=3):
             self.emojipool.append(i)
-        log(f'[Emojihandler] - Using: {self.emojipool}')
-        return random.choice(self.emojipool) # return a random choice from the pool
+
+        x = random.choice(self.emojipool)
+        log(f'[Emojihandler] - Using emoji: {x} in {channel.guild.name}:{channel.name}')
+        return x  # return a random choice from the pool
 
     def check_stats(self, guildid):
         # this checks the guilds popular emojis
@@ -47,4 +49,3 @@ class Emojihandler:
                 else:
                     return sorted_dict[0:3]
         return None
-

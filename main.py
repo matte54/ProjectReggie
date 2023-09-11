@@ -95,6 +95,7 @@ class Woodhouse(discord.Client):
         self.housekeeper.gatherids()
         self.housekeeper.gather_emojis()
         self.housekeeper.clean_logs()
+        self.housekeeper.logrotate()
         await self.housekeeper.cakeday()
 
         # on ready fishing stuff

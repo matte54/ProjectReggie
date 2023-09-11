@@ -38,11 +38,13 @@ class Urlhandler:
                 for e in self.data[i].keys():
                     for tag in self.data[i][e]["tags"]:
                         if tag in self.keywords:
+                            log(f'[Urlhandler] - Tag matched: ({tag})!')
                             if self.data[i][e]["link"].startswith("https://v.redd.it"):
                                 url_pool.append(self.data[i][e]["dlink"])
                             else:
                                 url_pool.append(self.data[i][e]["dlink"])
         else:
+            log(f'[Urlhandler] - Fallback, not using keywords.!')
             for i in self.data.keys():
                 for e in self.data[i].keys():
                     link = self.data[i][e]["dlink"]

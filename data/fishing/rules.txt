@@ -1,0 +1,47 @@
+--- Fishing Information --
+Fishing related commands ONLY works in fishing activated channels (ask your guild admin)
+Summary commands are $cast $bucket $fishoff $tacklebox $fishbase
+The fishing game is cross-server so your will be competing with all other servers woodhouse is in.
+
+$cast throws your line and you have a certain % chance to get something, there is a 1 minute spam cooldown.
+If you fish every minute your chances of catching something will be extremly low, waiting around an hour
+gives the fisher the average success chance, waiting longer (up to a certain point) yields better chances.
+
+Every fish has a range of weight it can be, to make it more fun instead of just numbers your catches range of weight
+is displayed in the prefix of the name (tiny-small-medium-large-big-huge) to give you atleast an idea.
+Some fishes are rarer than others (has nothing to do with weight) and the rarity of the fish is displayed by the
+outline of the portrait (green-blue-yellow-orange-red)
+
+Every fish gives your profile XP, your profile can be viewed along with your currently held top 10 fish with the
+$bucket command.
+As you increase in level your chances of failure will decrease in small increments.
+
+When you get a duplicate of a fish you already have the smaller one will get sold and yield you Bells a.k.a money.
+Bells will also be earned from other sources including catching unique/shiny fish, and winning the competition.
+(Beware that bells as of this writing still has no real use , but it will be in future updates)
+
+$fishoff command will list the leaderboard for the current season each fisher will have their biggest fish listed.
+The season ends at midnight on the turn off the month Woodhouse localtime (CEST), consult the $whoami command to see
+the server localtime.
+The winner will be rewarded price bells and also immortalized in a winner scoreboard(not displayable atm), and all
+fishers will have their buckets emptied of fish and it starts over again.
+
+$fishbase <name of the fish> will give list the encylopedia entry for that fish and also give the current world
+record and also list what fishers currently have that fish in their bucket along with some other information.
+
+Each class of fish (there are 7) has 1-2 Unique fish that yields a bigger xp/bells reward when caught, some of them
+can be quite large but some of the can also be quite small considering the classes etc.
+Each unique fish can ONLY be caught ONCE per season by any fisher.
+
+Shinies, there is a small chance (1% or less) that any fish can result in a shiny version.
+A shiny rewards the catcher instantly with bells price, and a shiny have the potential of being a much larger version
+of its normal counterpart , it should be noted that even if a fish is shiny it can still be a "TINY" (i.e
+in the lower weight spectrum of its kind) however getting a "HUGE" shiny will almost certainly yield a world record fish.
+
+** NOT FUNCTIONAL YET DO NOT USE **
+$tacklebox rent|shop|list command shop will list the current available items for rent, list will list your current
+active item, rent <item> will rent the item.
+the item rent last 3 hours and is then automaticly removed.
+2 (for now) have a global effect as in if your get this item all fishers across the verse will recive the benefits.
+an item can only be rented by one fisher at a time.
+** NOT FUNCTIONAL YET DO NOT USE **

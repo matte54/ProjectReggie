@@ -6,18 +6,34 @@ from systems.logger import log, debug_on
 from systems.varmanager import VarManager
 from systems.gif_finder import Giphy_find
 
+
 class HouseKeeper:
     def __init__(self, client):
         self.client = client
         # startup housekeeping
-        self.logrotate()  # rotate chat logs if needed (monthly?)
+
         self.idlist_path = "./data/etc/ids.json"
         self.emojilist_path = "./local/emojis.json"
         self.default_emojis_path = "./data/etc/default_emojis.txt"
         self.gif_find = Giphy_find()
 
     def logrotate(self):
-        pass
+        file_list = []
+        for root, dirs, files in os.walk("./log/"):
+            for file in files:
+                file_path = os.path.join(root, file)
+                file_list.append(file_path)
+
+        for logfile in file_list:
+            size = os.path.getsize(logfile)
+            size_in_mb = round(size / (1024 * 1024), 1)
+            if size_in_mb >= 2.0:  # rotate log if over 2mb
+                try:
+                    today = datetime.date.today()
+                    os.rename(logfile, f'{logfile}{today.strftime("%Y_%m")}')  # rename file with y and d
+                    log(f'[Housekeeper] - Rotating log {logfile[6:]}')
+                except OSError as e:
+                    log(f"Error rotating {logfile[6:]}: {e}")
 
     def clear_monthly(self):
         # Clear monthly stats and post here?
@@ -89,7 +105,7 @@ class HouseKeeper:
                 date = i.joined_at
                 # check if today is the cakeday
                 if date.month == today.month and date.day == today.day:
-                    log(f'[Housekeeper] - Today is {i}s cakeday in {guild}')
+                    log(f'[Housekeeper] - Today is {i}s cakeday in {guild.name}')
                     main_channel = guild.text_channels[0]
                     await main_channel.send(f'Happy Cakeday {i.mention}')
                     gif = self.gif_find.find("cake birthday")
@@ -97,7 +113,6 @@ class HouseKeeper:
                         await main_channel.send(gif)
 
     def clean_logs(self):
-        log(f'[Housekeeper] - Cleaning logs')
         # cleanup log files (remove empty lines)
         file_paths = []
         for root, dirs, files in os.walk("./log/"):
@@ -105,10 +120,22 @@ class HouseKeeper:
                 file_path = os.path.join(root, file)
                 file_paths.append(file_path)
         for logfile in file_paths:
+            # Create a list to store non-empty lines
+            updated_lines = []
+            lines_removed = False  # Flag to track if any lines were removed
+
             with open(logfile, "r", encoding='UTF-8') as f:
-                lines = [line.strip() for line in f if line.strip()]
-            with open(logfile, 'w') as f:
-                f.write('\n'.join(lines))
+                for line in f:
+                    if not line.strip():
+                        lines_removed = True
+                    else:
+                        updated_lines.append(line.strip())
+
+            # Check if any lines were removed before writing back to the file
+            if lines_removed:
+                log(f'[Housekeeper] - Cleaning {logfile[6:]}')
+                with open(logfile, 'w', encoding='UTF-8') as f:
+                    f.write('\n'.join(updated_lines))
 
     def write_json(self, filepath, data):
         with open(filepath, "w") as f:

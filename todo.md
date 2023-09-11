@@ -40,4 +40,3 @@ simultanously when people are chatting. also diffrent servers.
 
 
 * Seen command
-- add a "that was x amount of time ago"
