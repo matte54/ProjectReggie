@@ -65,6 +65,7 @@ class Reflex:
                                                            10)  # get the last message in the chosen channel
                     self.wait_cycles = 1
                     await self.talk(picked_channel, last_message)
+                    self.prohibited_channels.append(picked_channel)
                 # reaction
                 if reflex_choice[0] == 2:
                     log(f'[Reflex] - REACTION - {picked_channel}')
@@ -85,17 +86,18 @@ class Reflex:
                     log(f'[Reflex] - GIF - {picked_channel}')
                     self.wait_cycles = 2
                     await self.gif(picked_channel)
+                    self.prohibited_channels.append(picked_channel)
                 # recommend
                 if reflex_choice[0] == 5:
                     log(f'[Reflex] - URL - {picked_channel}')
                     self.wait_cycles = 2
                     await self.url(picked_channel)
+                    self.prohibited_channels.append(picked_channel)
                 # do nothing
                 if reflex_choice[0] == 6:
                     self.wait_cycles = 1
                     log(f'[Reflex] - Waiting...')
 
-                self.prohibited_channels.append(picked_channel)
             else:
                 log(f'[Reflex] - No valid channels, waiting...')
                 self.wait_cycles += 1
