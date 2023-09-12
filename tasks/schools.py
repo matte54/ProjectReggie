@@ -65,7 +65,7 @@ class Schools:
                             await ch.send(f'```yaml\n\nThe school has left the area```')
                             await asyncio.sleep(2)
                     else:
-                        if random.randint(1, 100) < 75:
+                        if random.randint(1, 100) < 25:
                             log(f'[Schools] - Waiting for the school to end')
                         await asyncio.sleep(60)
                 else:
