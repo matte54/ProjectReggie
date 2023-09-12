@@ -3,6 +3,7 @@ import random
 import json
 import os
 import re
+import math
 from discord import Embed
 
 from systems.logger import debug_on, log
@@ -314,6 +315,19 @@ class Fishing:
         # rolls to check for success this needs more modifiers for items and other stuff later
         # but for now i will use the same as 1.0
         roll = random.uniform(3.0 + (0.025 * self.user_profile["level"]), 10)
+        if debug_on():
+            # calculate probability.
+            total_trials = 10000  # Number of trials to simulate
+            successful_trials = 0
+            for _ in range(total_trials):
+                result = random.uniform(3.0 + (0.025 * self.user_profile["level"]), 10)
+                condition = 5 + self.fail_rate_modifier
+                if result < condition:
+                    successful_trials += 1
+            probability = successful_trials / total_trials
+            probability_of_success = 1 - probability
+            log(f'[Fishing] - Success probability: {probability_of_success:.2%}')
+
         # print(f'fail roll was {roll} and it needs to be bigger then {5 + self.fail_rate_modifier}')
         if roll < (5 + self.fail_rate_modifier):
             await self.message.channel.send(

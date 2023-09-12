@@ -56,8 +56,7 @@ class Mother:
             "url": self.url,
             "status": self.status,
             "tacklebox": self.tacklebox,
-            "gamesweek": self.gamesweek,
-            "fishrules": self.fishrules
+            "gamesweek": self.gamesweek
         }
 
     async def handle(self, message):
