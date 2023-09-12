@@ -18,7 +18,7 @@ class Fishrules:
                 current_line = line
                 self.char_count += len(current_line)
 
-                if self.char_count <= 2000:
+                if self.char_count <= 1700:
                     self.current_variable += current_line
                 else:
                     # Add the current_variable to the list

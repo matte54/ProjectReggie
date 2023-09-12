@@ -38,10 +38,12 @@ A shiny rewards the catcher instantly with bells price, and a shiny have the pot
 of its normal counterpart , it should be noted that even if a fish is shiny it can still be a "TINY" (i.e
 in the lower weight spectrum of its kind) however getting a "HUGE" shiny will almost certainly yield a world record fish.
 
-** NOT FUNCTIONAL YET DO NOT USE **
+Schools, every now and then a school can appear and will increase the chances of getting the indicated class
+for a short period of time, there is also a special school that randomly sets the class chances into a mess.
+
+** EXPERIMENTAL, USE ON YOUR OWN RISK **
 $tacklebox rent|shop|list command shop will list the current available items for rent, list will list your current
 active item, rent <item> will rent the item.
 the item rent last 3 hours and is then automaticly removed.
 2 (for now) have a global effect as in if your get this item all fishers across the verse will recive the benefits.
 an item can only be rented by one fisher at a time.
-** NOT FUNCTIONAL YET DO NOT USE **
