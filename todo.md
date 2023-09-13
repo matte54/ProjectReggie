@@ -32,9 +32,9 @@ simultanously when people are chatting. also diffrent servers.
 - rotate monthly stats, display some sort of monthly report? 
 
 * Fishing
-- Created the fish query "fishbase" works but needs some work and some bugfixes
 - Add cash prize for fishoff winner
 - add rarity value to catch string aswell?
+- Is waiting WAY to long causing the to fail chance to get very high instead? im starting to suspect something like that
 
 * Event command
 

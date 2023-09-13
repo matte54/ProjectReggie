@@ -127,7 +127,12 @@ class Fishing:
                 # increase all by 1-6 but not over 38
             if "mirror" in self.global_items_list:
                 end_weights.reverse()
-        log(f"[Fishing] - Classweights: {end_weights}")
+
+        if debug_on():
+            # calculate weight percentages instead
+            total_weight = sum(end_weights)
+            percentage_list = [str(round(((weight / total_weight) * 100))) + "%" for weight in end_weights]
+            log(f"[Fishing] - Classweights: {percentage_list}")
         return random.choices(self.fish_databases, weights=end_weights)
 
     def rolls(self):
@@ -267,7 +272,7 @@ class Fishing:
             self.class_modifier = 0
         if seconds_between_casts > 3600:
             result = 5.0 + (0.0 - 5.0) * (seconds_between_casts / 43200)
-            self.fail_rate_modifier -= result
+            self.fail_rate_modifier += result
             class_result = 0 - (0 - 3) * (seconds_between_casts / 43200)
             self.class_modifier = class_result
         # tacklebox stuff after
