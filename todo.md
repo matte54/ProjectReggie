@@ -34,7 +34,8 @@ simultanously when people are chatting. also diffrent servers.
 * Fishing
 - Add cash prize for fishoff winner
 - add rarity value to catch string aswell?
-- Is waiting WAY to long causing the to fail chance to get very high instead? im starting to suspect something like that
+- Challenge fish needs to go back in. (wait until test season is over)
+- More challenge-like competitions? 
 
 * Event command
 

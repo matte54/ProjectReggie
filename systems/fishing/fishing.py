@@ -271,7 +271,8 @@ class Fishing:
             self.fail_rate_modifier = result
             self.class_modifier = 0
         if seconds_between_casts > 3600:
-            result = 5.0 + (0.0 - 5.0) * (seconds_between_casts / 43200)
+            result = 5.0 + (0.0 - 5.0) * (seconds_between_casts / 43200) - 5
+            print(result)
             self.fail_rate_modifier += result
             class_result = 0 - (0 - 3) * (seconds_between_casts / 43200)
             self.class_modifier = class_result
@@ -319,6 +320,7 @@ class Fishing:
     async def failed(self):
         # rolls to check for success this needs more modifiers for items and other stuff later
         # but for now i will use the same as 1.0
+        print(self.fail_rate_modifier)
         roll = random.uniform(3.0 + (0.025 * self.user_profile["level"]), 10)
         if debug_on():
             # calculate probability.
