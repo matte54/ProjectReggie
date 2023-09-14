@@ -174,7 +174,6 @@ class Fishing:
                 #    continue  # unique rate is still to high on 1.0 so put this here MAYBE?
                 ucheck = self.unique_checks(fish)
                 if ucheck:
-                    log(f'[Fishing] - User got unique fish {fish}')
                     self.handle_money(50)  # give the user 50 money for the catch
                     self.isUnique = True
                     decided_fish = True
@@ -219,7 +218,7 @@ class Fishing:
         else:
             self.caught_fish["worth"] += random.randint(1, 3)
             self.caught_fish["xp_worth"] += random.randint(1, 3)
-        log(f"[Fishing] - {self.user_name} caught a {'shiny ' if self.isShiny else ''}"
+        log(f"[Fishing] - {self.user_name} CAUGHT a {self.caught_fish['category']} class{self.caught_fish['class']} {'unique ' if self.isUnique else ''}{'shiny ' if self.isShiny else ''}"
             f"{self.caught_fish['weight']}lbs {self.caught_fish['name']}")
 
     def check_global_items(self):
@@ -342,7 +341,7 @@ class Fishing:
             self.user_profile["last"] = str(now.isoformat())  # update the last cast time
             self.write_json(f"{self.profile_dir}{self.user_id}.json", self.user_profile)
             if debug_on():
-                log(f'[Fishing] - {self.user_name} failed cast')
+                log(f'[Fishing] - {self.user_name} FAILED cast')
             return True
         else:
             return False
