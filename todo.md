@@ -36,6 +36,7 @@ simultanously when people are chatting. also diffrent servers.
 - add rarity value to catch string aswell?
 - Challenge fish needs to go back in. (wait until test season is over)
 - More challenge-like competitions? 
+- Add a bells+ msg to the embed for the extra money rewards
 
 * Event command
 

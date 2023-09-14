@@ -5,7 +5,7 @@ import random
 from systems.logger import log
 from systems.varmanager import VarManager
 
-SCHOOL_CHANCE = 35  # %
+SCHOOL_CHANCE = 15  # %
 
 
 class Schools:
@@ -47,7 +47,7 @@ class Schools:
                             await ch.send(f'```yaml\n\na {school_name} school just appeared in the waters nearby!```')
                         await asyncio.sleep(2)
                 else:
-                    log(f'[Schools] - Possible but sleepin')
+                    log(f'[Schools] - Possible but no')
                     await asyncio.sleep(3600)
             else:
                 if self.school_active:
@@ -65,11 +65,12 @@ class Schools:
                             await ch.send(f'```yaml\n\nThe school has left the area```')
                             await asyncio.sleep(2)
                     else:
-                        if random.randint(1, 100) < 25:
+                        if random.randint(1, 100) < 10:
                             log(f'[Schools] - Waiting for the school to end')
                         await asyncio.sleep(60)
                 else:
-                    log(f'[Schools] - Schools sleepin')
+                    if random.randint(1, 100) < 25:
+                        log(f'[Schools] - Schools standby')
                     await asyncio.sleep(3600)
 
     def collect_channel_ids(self):
