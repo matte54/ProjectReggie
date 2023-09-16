@@ -146,6 +146,7 @@ class Fishing:
         if index_of_item > 6:  # make sure index does not go over 6
             index_of_item = 6
         # DUUH list index starts at 0 making me dizzy
+        log(f"[Fishing] - Class modifier {chosen_class[0][:-5]} -> class{index_of_item + 1}")
         final_item = self.fish_databases[index_of_item]
 
         with open(f'{self.database_dir}{final_item}', "r") as f:
@@ -182,7 +183,8 @@ class Fishing:
                 decided_fish = True
 
         self.caught_fish["name"] = fish
-
+        if debug_on():
+            self.calculate_rarity_chance(fish , weighted_items, weights)
         # simple shiny system for now
         # this should probably mark the fish in the bucket later not sure if going with astrix thing again
         self.isShiny = False  # reset the shiny status or it will carry over to the next cast
@@ -220,6 +222,15 @@ class Fishing:
             self.caught_fish["xp_worth"] += random.randint(1, 3)
         log(f"[Fishing] - {self.user_name} CAUGHT a {self.caught_fish['category']} class{self.caught_fish['class']} {'unique ' if self.isUnique else ''}{'shiny ' if self.isShiny else ''}"
             f"{self.caught_fish['weight']}lbs {self.caught_fish['name']}")
+
+    def calculate_rarity_chance(self, fish, items, weights):
+        # calculate the chance in % to get the specific fish
+        fish_list = [item[0] for item in items]
+        iterations = 10000
+        selections = random.choices(fish_list, weights=weights, k=iterations)
+        hits = selections.count(fish)
+        probability_percentage = (hits / iterations) * 100
+        log(f"[Fishing] - {fish} probability was {probability_percentage:.2f}%")
 
     def check_global_items(self):
         # find all profiles
