@@ -17,8 +17,6 @@ Remove item when finished
 - make a system that checks if a posted url seems like a gif and save it onto a file to use later
 
 * Housekeeper system
-- Log rotation -> logger
-- 
 
 * Emojihandler system
 

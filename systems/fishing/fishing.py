@@ -283,7 +283,8 @@ class Fishing:
         if seconds_between_casts > 3600:
             result = 5.0 + (0.0 - 5.0) * (seconds_between_casts / 43200) - 5
             self.fail_rate_modifier += result
-            class_result = 0 - (0 - 3) * (seconds_between_casts / 43200)
+            class_result = 0 - (0 - 3) * (seconds_between_casts / 43200) - 9
+            print(class_result)
             self.class_modifier = class_result
         # tacklebox stuff after
 
