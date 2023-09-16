@@ -2,10 +2,10 @@ import asyncio
 import datetime
 import random
 
-from systems.logger import log
+from systems.logger import log, debug_on
 from systems.varmanager import VarManager
 
-SCHOOL_CHANCE = 15  # %
+SCHOOL_CHANCE = 95  # %
 
 
 class Schools:
@@ -33,6 +33,12 @@ class Schools:
                 self.varmanager.read("school")[2])
             if time_difference >= datetime.timedelta(hours=24) and not self.school_active:
                 if random.randint(1, 100) < SCHOOL_CHANCE:
+                    if debug_on():
+                        total_seconds = time_difference.total_seconds()
+                        hours = total_seconds // 3600  # 1 hour = 3600 seconds
+                        minutes = (total_seconds % 3600) // 60  # 1 minute = 60 seconds
+                        log(f'[Schools] - triggering school, last school was {int(hours)}h {int(minutes)}m ago')
+
                     school_name = random.choice(self.school_types)
                     school_start = datetime.datetime.now()
                     self.varmanager.write("school", (True, school_name, school_start.isoformat()))

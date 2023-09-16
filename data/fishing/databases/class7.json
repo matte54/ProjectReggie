@@ -155,8 +155,8 @@
     },
     "Moby dick": {
         "joke": "It is not down on any map, true places never are.",
-        "min_weight": 3500,
-        "max_weight": 6500,
+        "min_weight": 1500,
+        "max_weight": 5000,
         "value": 50,
         "xp": 50,
         "rarity": 1.0,
