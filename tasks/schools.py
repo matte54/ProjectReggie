@@ -5,7 +5,7 @@ import random
 from systems.logger import log, debug_on
 from systems.varmanager import VarManager
 
-SCHOOL_CHANCE = 95  # %
+SCHOOL_CHANCE = 15  # %
 
 
 class Schools:
