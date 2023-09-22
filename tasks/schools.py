@@ -53,7 +53,7 @@ class Schools:
                             await ch.send(f'```yaml\n\na {school_name} school just appeared in the waters nearby!```')
                         await asyncio.sleep(2)
                 else:
-                    log(f'[Schools] - Possible but no')
+                    log(f'[Schools] - Available, but skipping this iteration')
                     await asyncio.sleep(3600)
             else:
                 if self.school_active:
@@ -76,7 +76,7 @@ class Schools:
                         await asyncio.sleep(60)
                 else:
                     if random.randint(1, 100) < 25:
-                        log(f'[Schools] - Schools standby')
+                        log(f'[Schools] - On cooldown')
                     await asyncio.sleep(3600)
 
     def collect_channel_ids(self):

@@ -34,6 +34,8 @@ simultanously when people are chatting. also diffrent servers.
 - add rarity value to catch string aswell?
 - Challenge fish needs to go back in. (wait until test season is over)
 - More challenge-like competitions? 
+- Make a endscreen for the fishoff, Overall winner +prize , challenge(name?) winner +prize, most weight + prize
+Pitty prize for most fails +prize ? 
 - Add a bells+ msg to the embed for the extra money rewards
 
 * Event command
