@@ -1,5 +1,6 @@
 import requests
 import json
+import datetime
 from bs4 import BeautifulSoup
 
 
@@ -48,4 +49,7 @@ if __name__ == "__main__":
     videogames = main()
 
 if videogames:
+    today = datetime.datetime.now()
+    week_number = today.strftime("%W")
+    print(f'Scraped videogames for week {week_number}')
     write_json("./weeks_videogames.json", videogames)
