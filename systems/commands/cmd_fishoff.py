@@ -29,6 +29,9 @@ class Fishoff:
                     placenumber = 1
                     for i in sorted_dict_descending:
                         username = self.get_user_name(i)
+                        if not username:
+                            log(f'[Fishoff] - Username is Nonetype, skipping')
+                            continue
                         if sorted_dict_descending[i]["shiny"]:
                             shiny_str = "*"
                         else:

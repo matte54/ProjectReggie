@@ -60,7 +60,7 @@ class Mother:
         }
 
     async def handle(self, message):
-        content = message.content.replace('$', '')
+        content = message.content.replace('$', '').lower()
         firstword = content.split(' ', 1)[0]
         command_function = self.cmdlist.get(firstword)
 
