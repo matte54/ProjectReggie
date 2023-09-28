@@ -23,6 +23,7 @@ from systems.unitconverter import Converter
 from systems.emojihandler import Emojihandler
 from systems.statistics import Statistics, Reactionstats
 from systems.voicetrack import Voicetrack
+from systems.mail import MailAlert
 
 # fishing stuff
 from systems.fishing.fishoffhandler import Fishoffhandler
@@ -253,3 +254,8 @@ class Woodhouse(discord.Client):
 if __name__ == "__main__":
     woodhouse = Woodhouse(intents=intents)
     woodhouse.run_loop()
+
+
+#except Exception as e:
+#    print(e)
+#    mailer.send_mail("Woodhouse exception occured", e)

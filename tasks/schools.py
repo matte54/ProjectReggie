@@ -14,7 +14,7 @@ class Schools:
         self.varmanager = VarManager()
         self.fishing_channels = None
         self.school_active = False
-        self.school_length = random.randint(15, 60)
+        self.school_length = random.randint(40, 80)
         self.school_types = ["class2", "class3", "class4", "class5", "class6", "class7", "trip"]
         # create the variable if needed
         if not self.varmanager.read("school"):

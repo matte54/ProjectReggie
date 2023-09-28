@@ -41,14 +41,14 @@ class Statistics:
         self.write_json(f'{self.stats_user_path}{self.user_id}.json', self.user_data)
 
     def find_keywords(self):
-        # straight from the yake manual, (experimental)
+        # straight from the yake manual, (experimental) https://liaad.github.io/yake/docs/getting_started.html
         language = "en"
         max_ngram_size = 1
         deduplication_threshold = 0.9
         deduplication_algo = 'seqm'
         windowSize = 1
         numOfKeywords = 25
-        accepted_value = 0.015  # this needs tweaking
+        accepted_value = 0.035  # this needs tweaking
 
         custom_kw_extractor = yake.KeywordExtractor(lan=language, n=max_ngram_size, dedupLim=deduplication_threshold,
                                                     dedupFunc=deduplication_algo, windowsSize=windowSize,
