@@ -22,7 +22,7 @@ class FishingGearHandler:
         log(f'[Fishing Gear Handler] - Starting profile searches')
         while self.client:
             current_time = datetime.datetime.now()
-            three_hours_ago = current_time - datetime.timedelta(hours=0)
+            three_hours_ago = current_time - datetime.timedelta(hours=3)
             self.find_profiles()
             for profile in self.profiles_list:
                 user_id = profile.replace(".json", "")
