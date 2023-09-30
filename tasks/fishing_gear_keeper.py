@@ -22,7 +22,7 @@ class FishingGearHandler:
         log(f'[Fishing Gear Handler] - Starting profile searches')
         while self.client:
             current_time = datetime.datetime.now()
-            three_hours_ago = current_time - datetime.timedelta(hours=3)
+            three_hours_ago = current_time - datetime.timedelta(hours=0)
             self.find_profiles()
             for profile in self.profiles_list:
                 user_id = profile.replace(".json", "")
@@ -38,7 +38,7 @@ class FishingGearHandler:
                         # reset item status in shop
                         with open(f'{self.items_file}', "r") as f:
                             items_dict = json.load(f)
-                            items_dict[item][2] = True
+                            items_dict[item[0]][2] = True
                             self.write_json(f'{self.items_file}', items_dict)
                         # message fishing channels
                         for channel in self.fishing_channels:
