@@ -23,7 +23,11 @@ class Fishoffhandler:
 
         # -
         self.now = None
-        self.current_month = datetime.datetime.now().strftime('%b %Y')
+
+        current_date = datetime.datetime.now()
+        last_month_date = current_date - datetime.timedelta(days=current_date.day)
+        self.current_month = last_month_date.strftime('%b %Y')
+        #self.current_month = datetime.datetime.now().strftime('%b %Y')
         self.active_channels = self.collect_channel_ids()  # list of channels with fishing turned on
 
         # create the history file if there isent one
@@ -44,6 +48,7 @@ class Fishoffhandler:
             log(f'[Fishoff Handler] Day of the month is {self.now.day} keep fishing')
 
     async def fishoff(self):
+        log(f'[Fishoff Handler] its the season end, crowning a fishoff winner')
         if os.path.exists(f'./local/fishing/fishoff.json'):
             with open(f'./local/fishing/fishoff.json', "r") as f:
                 fishoff_data = json.load(f)
