@@ -9,7 +9,8 @@ from systems.logger import log, debug_on
 # commands
 from systems.commands import (cmd_help, cmd_whoami, cmd_holiday, cmd_remindme, cmd_cast, cmd_blacklist, cmd_seen,
                               cmd_eee, cmd_roll, cmd_event, cmd_define, cmd_fishing, cmd_bucket, cmd_fishbase,
-                              cmd_fishoff, cmd_url, cmd_status, cmd_tacklebox, cmd_gamesweek, cmd_fishrules)
+                              cmd_fishoff, cmd_url, cmd_status, cmd_tacklebox, cmd_gamesweek, cmd_fishrules,
+                              cmd_fishscore)
 
 
 class Mother:
@@ -36,6 +37,7 @@ class Mother:
         self.status = cmd_status.Status()
         self.gamesweek = cmd_gamesweek.Gamesweek()
         self.fishrules = cmd_fishrules.Fishrules()
+        self.fishscore = cmd_fishscore.Fishscore()
 
         self.cmdlist = {
             "help": self.help,
@@ -56,7 +58,8 @@ class Mother:
             "url": self.url,
             "status": self.status,
             "tacklebox": self.tacklebox,
-            "gamesweek": self.gamesweek
+            "gamesweek": self.gamesweek,
+            "fishscore": self.fishscore
         }
 
     async def handle(self, message):

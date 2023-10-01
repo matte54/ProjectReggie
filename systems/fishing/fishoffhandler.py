@@ -23,7 +23,7 @@ class Fishoffhandler:
 
         # -
         self.now = None
-        self.current_month = datetime.datetime.now().strftime('%B %Y')
+        self.current_month = datetime.datetime.now().strftime('%b %Y')
         self.active_channels = self.collect_channel_ids()  # list of channels with fishing turned on
 
         # create the history file if there isent one
