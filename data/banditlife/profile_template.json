@@ -1,0 +1,23 @@
+{
+    "character": {
+        "name": "",
+        "money": 100,
+        "inventory_size": 20,
+        "supplies": [],
+        "equipment": [],
+        "inventory": []
+    },
+    "hideout": {
+        "money": 0,
+        "storage_size": 50,
+        "supplies": 0,
+        "equipment": [],
+        "storage": []
+    },
+    "variables": {
+        "created_at": "",
+        "raiding": false,
+        "sleeping": false,
+        "alive": true
+    }
+}

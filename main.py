@@ -209,6 +209,13 @@ class Woodhouse(discord.Client):
         await self.unitconverter.check(message)
 
     async def on_reaction_add(self, reaction, user):
+        if self.varmanager.read("black_channels"):
+            self.prohibited_channels = self.varmanager.read("black_channels")
+        else:
+            self.prohibited_channels = []
+        if str(reaction.message.channel.id) in self.prohibited_channels:
+            # channel is blacklisted do nothing
+            return
         if user.bot:
             return
         self.reactionstats.handle_reactions(reaction, user)
@@ -221,8 +228,16 @@ class Woodhouse(discord.Client):
             await reaction.message.add_reaction(picked_emoji)
 
     async def on_guild_emojis_update(self, guild, t1, t2):
-        main_channel = guild.text_channels[0]
-        # This should be dedicated emojichannel if server does not have one skip.
+        if guild.id == 194028816333537280:
+            main_channel = self.get_channel(663921560616435722)
+            # if we in the darkzone do msgs in debugchannel
+        elif guild.id == 584587012120510474:
+            main_channel = self.get_channel(1149993330189533264)
+            # if we in rockhound do woodhousecommands
+        else:
+            main_channel = guild.text_channels[0]
+            # if somewhere else do main channel
+
 
         set_t1 = set(t1)
         set_t2 = set(t2)

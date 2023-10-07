@@ -126,3 +126,12 @@ reward delayer with a random free pokemon not in his dex
 - add/remove needs list indexes to make that part simpler
 - Use a dictionary
 
+* days inspired money game
+- trading, selling, raiding?, exploring?
+- Dayz loot table
+- Bandits "b"? Loot runs 
+- selectable areas, lvls of danger 
+- inventory management 
+- storage on person and base 
+- black market 
+- death drops on person loot
