@@ -58,7 +58,7 @@ class Woodhouse(discord.Client):
         self.fishing_gear_handler = FishingGearHandler(self)
         self.schools = Schools(self)
         # testing banditstuff
-        self.areamanger = Areamanager()
+        #self.areamanger = Areamanager()
 
         # systems
         self.mother = Mother(self)
