@@ -1,0 +1,35 @@
+{
+    "a": {
+    },
+    "b": {
+    },
+    "c": {
+    },
+    "d": {
+    },
+    "e": {
+    },
+    "f": {
+    },
+    "g": {
+    },
+    "h": {
+    },
+    "i": {
+    },
+    "j": {
+    },
+    "variables": {
+        "name": "Bunker 1",
+        "players": [],
+        "stock": 0,
+        "stock_min": 10,
+        "stock_max": 30,
+        "difficulty": 1,
+        "danger": 1,
+        "tier1": 8,
+        "tier2": 3,
+        "tier3": 1,
+        "tier4": 0
+    }
+}

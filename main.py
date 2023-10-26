@@ -36,6 +36,9 @@ from tasks.event_handler import Event_handler
 from tasks.fishing_gear_keeper import FishingGearHandler
 from tasks.schools import Schools
 
+# banditlife tasks
+from systems.banditlife.areamanager import Areamanager
+
 intents = discord.Intents(messages=True, guilds=True, members=True, emojis=True,
                           message_content=True, reactions=True, presences=True, voice_states=True)
 
@@ -54,6 +57,8 @@ class Woodhouse(discord.Client):
         self.event_handler = Event_handler(self)
         self.fishing_gear_handler = FishingGearHandler(self)
         self.schools = Schools(self)
+        # testing banditstuff
+        self.areamanger = Areamanager()
 
         # systems
         self.mother = Mother(self)
@@ -73,6 +78,7 @@ class Woodhouse(discord.Client):
         # testing disconnection handling
         self.reconnected = False
         self.last_disconnect = None
+
 
     # can this somehow be changed, so it only runs one task that controls all of them (when there are multiple)
     # been sort of looking at the cogs there are some stuff about the tasks system that built can keep an eye
@@ -104,6 +110,10 @@ class Woodhouse(discord.Client):
 
         # on ready fishing stuff
         await self.fishoffhandler.check_date()  # do the check for fishing season rotate
+
+        # on ready testing
+        self.areamanger.quick_distribute()
+
 
     def run_loop(self):
         self.run(credentials.KEY)

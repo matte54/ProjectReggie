@@ -3,7 +3,7 @@
         "name": "",
         "money": 100,
         "inventory_size": 20,
-        "supplies": [],
+        "supplies": 0,
         "equipment": [],
         "inventory": []
     },

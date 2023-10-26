@@ -1,0 +1,57 @@
+{
+    "a": {
+        "wooden_crate_0151": {
+            "lock": 0,
+            "storage": 15
+        }
+    },
+    "b": {},
+    "c": {},
+    "d": {},
+    "e": {},
+    "f": {
+        "well_2961": {
+            "lock": 0,
+            "storage": 5
+        },
+        "barrel_6932": {
+            "lock": 0,
+            "storage": 8
+        },
+        "drawer_4285": {
+            "lock": 0,
+            "storage": 5
+        }
+    },
+    "g": {
+        "chest_6606": {
+            "lock": 1,
+            "storage": 16
+        }
+    },
+    "h": {},
+    "i": {},
+    "j": {
+        "bag_3514": {
+            "lock": 0,
+            "storage": 4
+        },
+        "well_0556": {
+            "lock": 0,
+            "storage": 5
+        }
+    },
+    "variables": {
+        "name": "Town 1",
+        "players": [],
+        "stock": 58,
+        "stock_min": 10,
+        "stock_max": 50,
+        "difficulty": 1,
+        "danger": 1,
+        "tier1": 8,
+        "tier2": 3,
+        "tier3": 1,
+        "tier4": 0
+    }
+}

@@ -1,0 +1,86 @@
+{
+    "buildings": {
+        "House_1": {
+            "lock": 0,
+            "storage": 8
+        },
+        "House_2": {
+            "lock": 0,
+            "storage": 5
+        },
+        "House_3": {
+            "lock": 1,
+            "storage": 12
+        }
+    },
+    "outdoor": {
+        "well": {
+            "lock": 0,
+            "storage": 5
+        },
+        "field": {
+            "lock": 0,
+            "storage": 2
+        },
+        "tree": {
+            "lock": 0,
+            "storage": 2
+        }
+    },
+    "stashes": {
+        "small_bag": {
+            "lock": 0,
+            "storage": 5
+        },
+        "suitcase": {
+            "lock": 0,
+            "storage": 6
+        },
+        "fancy_suitcase": {
+            "lock": 2,
+            "storage": 6
+        }
+    },
+    "containers_small": {
+        "small_lockbox": {
+            "lock": 1,
+            "storage": 4
+        },
+        "drawer": {
+            "lock": 0,
+            "storage": 5
+        },
+        "bag": {
+            "lock": 0,
+            "storage": 4
+        }
+    },
+    "containers_medium": {
+        "cupboard": {
+            "lock": 0,
+            "storage": 8
+        },
+        "locker": {
+            "lock": 1,
+            "storage": 12
+        },
+        "barrel": {
+            "lock": 0,
+            "storage": 8
+        }
+    },
+    "containers_large":  {
+        "wooden_crate": {
+            "lock": 0,
+            "storage": 15
+        },
+        "closet": {
+            "lock": 1,
+            "storage": 20
+        },
+        "chest": {
+            "lock": 1,
+            "storage": 16
+        }
+    }
+}
