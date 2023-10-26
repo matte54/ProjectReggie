@@ -112,7 +112,7 @@ class Woodhouse(discord.Client):
         await self.fishoffhandler.check_date()  # do the check for fishing season rotate
 
         # on ready testing
-        self.areamanger.quick_distribute()
+        #self.areamanger.quick_distribute()
 
 
     def run_loop(self):
