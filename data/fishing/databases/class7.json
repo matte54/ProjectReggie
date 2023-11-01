@@ -90,7 +90,7 @@
     "Great white shark": {
         "joke": "Watch out for its jaws!",
         "min_weight": 18.0,
-        "max_weight": 6000.0,
+        "max_weight": 5500.0,
         "value": 10,
         "xp": 10,
         "rarity": 0.92,
@@ -101,7 +101,7 @@
     "Whale shark": {
         "joke": "I'm tellin' ya, it was thiiiiiiiiiiiiiiiiiiiis big!",
         "min_weight": 250.0,
-        "max_weight": 6200.0,
+        "max_weight": 6000.0,
         "value": 15,
         "xp": 15,
         "rarity": 0.97,
@@ -211,7 +211,7 @@
     "Radioactive carp": {
         "joke": "Soo cool bruh!",
         "min_weight": 3500.0,
-        "max_weight": 5890.0,
+        "max_weight": 5550.0,
         "value": 7,
         "xp": 10,
         "rarity": 1.0,

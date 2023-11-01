@@ -38,6 +38,7 @@ simultanously when people are chatting. also diffrent servers.
 - Make a endscreen for the fishoff, Overall winner +prize , challenge(name?) winner +prize, most weight + prize
 Pitty prize for most fails +prize ? 
 - Add a bells+ msg to the embed for the extra money rewards
+- Add a chance for a up to 20% weight modifier on all fish, attempt to make same fish win every time
 
 * Event command
 
