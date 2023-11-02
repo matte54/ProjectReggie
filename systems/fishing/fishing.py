@@ -574,7 +574,7 @@ class Fishing:
         if ding != 0:
             embed.add_field(name="DING!", value=f"{username} is now level {ding}!")
         fishwithoutspaces = fish.replace(" ", "")
-        icon_url = f"http://thedarkzone.se/fishicons/{fishwithoutspaces}.png"
+        icon_url = f"https://api.thedarkzone.se/fishicons/{fishwithoutspaces}.png"
         embed.set_thumbnail(url=icon_url)
         return embed
 
