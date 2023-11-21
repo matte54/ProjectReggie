@@ -97,4 +97,4 @@ class Fishbase:
             self.embed.add_field(name="Holders", value=f'{holder_list}')
         else:
             self.embed.add_field(name="Holders", value=f"None")
-        self.embed.set_thumbnail(url=f'http://thedarkzone.se:8080/fishicons/{self.query.capitalize().replace(" ", "")}.png')
+        self.embed.set_thumbnail(url=f'https://api.thedarkzone.se/fishicons/{self.query.capitalize().replace(" ", "")}.png')

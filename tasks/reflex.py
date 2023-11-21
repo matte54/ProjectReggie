@@ -23,7 +23,7 @@ class Reflex:
         self.wait_cycles = 1
         self.guild_list = []
         self.numbers = [0, 1, 2, 3, 4, 5, 6]
-        self.random_weights = [10, 9, 8, 4, 4, 2, 10]
+        self.random_weights = [10, 5, 8, 4, 4, 2, 10]
         self.increased_weights = [5, 6, 6, 6, 6, 6, 5]
         self.varmanager = VarManager()
         self.urlhandler = Urlhandler(self.client)
