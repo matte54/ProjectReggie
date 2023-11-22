@@ -231,7 +231,7 @@ class Woodhouse(discord.Client):
         self.reactionstats.handle_reactions(reaction, user)
         # If woodhouse sees someone add a reaction , 25% chance of him adding one to.
         reacted_channel_id = reaction.message.channel.id
-        if random.random() < 0.10:
+        if random.random() < 0.08:
             picked_emoji = self.emojihandler.emojihandler(reacted_channel_id)
             await asyncio.sleep(3)
             # added a sleep here, rate limits are easily reached if people are spamming reactions.
