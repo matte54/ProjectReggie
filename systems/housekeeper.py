@@ -12,6 +12,8 @@ class HouseKeeper:
         self.client = client
         # startup housekeeping
 
+        self.user_stats_path = "./local/statistics/user/"
+        self.guild_stats_path = "./local/statistics/guild/"
         self.idlist_path = "./data/etc/ids.json"
         self.emojilist_path = "./local/emojis.json"
         self.default_emojis_path = "./data/etc/default_emojis.txt"
@@ -35,9 +37,28 @@ class HouseKeeper:
                 except OSError as e:
                     log(f"Error rotating {logfile[6:]}: {e}")
 
-    def clear_monthly(self):
-        # Clear monthly stats and post here?
-        pass
+    def check_monthly_stats(self):
+        # reset month section on all stat files if its the first of the month
+        now = datetime.datetime.now()
+        if now.day == 1:
+            log(f'[Housekeeper] - Resetting monthly statistics')
+            # user files
+            user_file_list = os.listdir(self.user_stats_path)
+            for file in user_file_list:
+                with open(f"{self.user_stats_path}{file}", "r") as f:
+                    data = json.load(f)
+                data["month"]["messages"] = 0
+                data["month"]["emojis"] = {}
+                self.write_json(f"{self.user_stats_path}{file}", data)
+
+            # guild files
+            guild_file_list = os.listdir(self.guild_stats_path)
+            for file in guild_file_list:
+                with open(f"{self.guild_stats_path}{file}", "r") as f:
+                    data = json.load(f)
+                data["month"]["messages"] = 0
+                data["month"]["emojis"] = {}
+                self.write_json(f"{self.guild_stats_path}{file}", data)
 
     def gather_emojis(self):
         data = {}
