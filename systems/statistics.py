@@ -13,6 +13,7 @@ class Statistics:
         self.stats_user_path = "./local/statistics/user/"
         self.stats_guild_path = "./local/statistics/guild/"
         self.emoji_pattern = r"<:[a-zA-Z0-9]+:\d+>"
+        self.keyword_pattern = r'^[a-zA-Z]+$'
 
         self.message_str = None
         self.guild_id = None
@@ -57,6 +58,9 @@ class Statistics:
 
         decent_keywords = []
         for kw in keywords:
+            # not sure about dis but lets try
+            if not bool(re.match(self.keyword_pattern, kw[0])):
+                return
             if kw[1] < accepted_value:
                 decent_keywords.append(kw)
         if not decent_keywords:
@@ -75,9 +79,23 @@ class Statistics:
         # add nr of messages to guild and user stats
         self.guild_data["alltime"]["messages"] += 1
         self.guild_data["month"]["messages"] += 1
-
         self.user_data["alltime"]["messages"] += 1
         self.user_data["month"]["messages"] += 1
+
+        # this is cause i dont want to manually add the new keys into every file
+        if "users" not in self.guild_data["alltime"]:
+            self.guild_data["alltime"]["users"] = {}
+        if self.user_id not in self.guild_data["alltime"]["users"]:
+            self.guild_data["alltime"]["users"][self.user_id] = 1
+        else:
+            self.guild_data["alltime"]["users"][self.user_id] += 1
+
+        if "users" not in self.guild_data["month"]:
+            self.guild_data["month"]["users"] = {}
+        if self.user_id not in self.guild_data["month"]["users"]:
+            self.guild_data["month"]["users"][self.user_id] = 1
+        else:
+            self.guild_data["month"]["users"][self.user_id] += 1
 
     def handle_emojis(self):
         raw_emoji_list = re.findall(self.emoji_pattern, self.message_str)
@@ -121,9 +139,11 @@ class Statistics:
     def file_check(self, guild_id, user_id):
         if not os.path.isfile(f'{self.stats_guild_path}{guild_id}.json'):
             blank_dict = {"alltime": {
+                "users": {},
                 "messages": 0,
                 "emojis": {}},
                 "month": {
+                    "users": {},
                     "messages": 0,
                     "emojis": {}
                 }}
@@ -154,10 +174,10 @@ class Reactionstats:
         self.guild_id = None
         self.user_id = None
 
-    def handle_reactions(self, emoji, user):
-        self.guild_id = str(user.guild.id)
-        self.user_id = str(user.id)
-        emoji = str(emoji)
+    def handle_reactions(self, raw):
+        self.guild_id = str(raw.guild_id)
+        self.user_id = str(raw.user_id)
+        emoji = str(raw.emoji)
         if not os.path.isfile(f'{self.stats_user_path}{self.user_id}.json'):
             log(f'[Statistics] - user {self.user_id} has no stats file.')
             # leave this here for now

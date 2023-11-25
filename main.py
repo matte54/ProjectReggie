@@ -44,6 +44,7 @@ intents = discord.Intents(messages=True, guilds=True, members=True, emojis=True,
 
 logging.getLogger('discord.gateway').setLevel(30) # trying to get rid of the resumed spam
 
+
 class Woodhouse(discord.Client):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -114,7 +115,6 @@ class Woodhouse(discord.Client):
 
         # on ready testing
         #self.areamanger.quick_distribute()
-
 
     def run_loop(self):
         self.run(credentials.KEY)
@@ -219,7 +219,15 @@ class Woodhouse(discord.Client):
         # check for conversions for unitconverter
         await self.unitconverter.check(message)
 
+    async def on_raw_reaction_add(self, raw):
+        if raw.member.bot:
+            return
+        # raw data, triggers on adding reaction to old messages
+        # only for statistics
+        self.reactionstats.handle_reactions(raw)
+
     async def on_reaction_add(self, reaction, user):
+        # remove this and add to raw instead? hmm
         if self.varmanager.read("black_channels"):
             self.prohibited_channels = self.varmanager.read("black_channels")
         else:
@@ -229,7 +237,6 @@ class Woodhouse(discord.Client):
             return
         if user.bot:
             return
-        self.reactionstats.handle_reactions(reaction, user)
         # If woodhouse sees someone add a reaction , 25% chance of him adding one to.
         reacted_channel_id = reaction.message.channel.id
         if random.random() < 0.08:

@@ -27,9 +27,6 @@ Remove item when finished
 - Find a way to limit writes, need to figure out how to have it collect data for each dictionary it needs and write
 only like in 5-10 minute intervals, couldnt figure out how to approach it cause of the diffrent types that will be open
 simultanously when people are chatting. also diffrent servers.
-- rotate monthly stats, display some sort of monthly report? 
-- Fix so keyword Yake does not pick emoji names
-- Add a username +1 msg for the guild statistics to display most active user
 
 * Fishing
 - Add cash prize for fishoff winner
