@@ -60,7 +60,7 @@ class Statistics:
         for kw in keywords:
             # not sure about dis but lets try
             if not bool(re.match(self.keyword_pattern, kw[0])):
-                return
+                continue
             if kw[1] < accepted_value:
                 decent_keywords.append(kw)
         if not decent_keywords:
