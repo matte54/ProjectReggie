@@ -6,7 +6,6 @@ Remove item when finished
 * Main
 
 * Reflex task
-- Add holiday command for reflex?
 
 * Status task
 

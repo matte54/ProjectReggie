@@ -58,6 +58,7 @@ class HouseKeeper:
                     data = json.load(f)
                 data["month"]["messages"] = 0
                 data["month"]["emojis"] = {}
+                data["month"]["users"] = {}
                 self.write_json(f"{self.guild_stats_path}{file}", data)
 
     def gather_emojis(self):
