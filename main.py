@@ -108,7 +108,7 @@ class Woodhouse(discord.Client):
         self.housekeeper.clean_logs()
         self.housekeeper.logrotate()
         self.housekeeper.check_monthly_stats()
-        await self.housekeeper.cakeday()
+        #await self.housekeeper.cakeday() # broken fix later.
 
         # on ready fishing stuff
         await self.fishoffhandler.check_date()  # do the check for fishing season rotate
