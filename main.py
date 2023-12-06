@@ -40,7 +40,8 @@ from tasks.schools import Schools
 from systems.banditlife.areamanager import Areamanager
 
 intents = discord.Intents(messages=True, guilds=True, members=True, emojis=True,
-                          message_content=True, reactions=True, presences=True, voice_states=True)
+                          message_content=True, reactions=True, presences=True, voice_states=True,
+                          emojis_and_stickers=True)
 
 logging.getLogger('discord.gateway').setLevel(30) # trying to get rid of the resumed spam
 
