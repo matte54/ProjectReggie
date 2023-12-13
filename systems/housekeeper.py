@@ -61,6 +61,15 @@ class HouseKeeper:
                 data["month"]["users"] = {}
                 self.write_json(f"{self.guild_stats_path}{file}", data)
 
+            # fishing stats reset
+            with open(f"./local/fishing/stats.json", "r") as f:
+                fishdata = json.load(f)
+                fishdata["month"]["fails"] = 0
+                fishdata["month"]["catches"] = 0
+                fishdata["month"]["shinies"] = 0
+                fishdata["month"]["uniques"] = 0
+                self.write_json(f"./local/fishing/stats.json", fishdata)
+
     def gather_emojis(self):
         data = {}
         # add in some of the default emojis from the default_emojis file

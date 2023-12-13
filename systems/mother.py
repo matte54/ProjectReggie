@@ -10,7 +10,7 @@ from systems.logger import log, debug_on
 from systems.commands import (cmd_help, cmd_whoami, cmd_holiday, cmd_remindme, cmd_cast, cmd_blacklist, cmd_seen,
                               cmd_eee, cmd_roll, cmd_event, cmd_define, cmd_fishing, cmd_bucket, cmd_fishbase,
                               cmd_fishoff, cmd_url, cmd_status, cmd_tacklebox, cmd_gamesweek, cmd_fishrules,
-                              cmd_fishscore, cmd_b, cmd_stats, cmd_guildstats)
+                              cmd_fishscore, cmd_b, cmd_stats, cmd_guildstats, cmd_fishstats)
 
 
 class Mother:
@@ -38,6 +38,7 @@ class Mother:
         self.gamesweek = cmd_gamesweek.Gamesweek()
         self.fishrules = cmd_fishrules.Fishrules()
         self.fishscore = cmd_fishscore.Fishscore()
+        self.fishstats = cmd_fishstats.Fishstats()
         self.b = cmd_b.B(self.client)
         self.stats = cmd_stats.Stats()
         self.guildstats = cmd_guildstats.Guildstats()
@@ -63,6 +64,7 @@ class Mother:
             "tacklebox": self.tacklebox,
             "gamesweek": self.gamesweek,
             "fishscore": self.fishscore,
+            "fishstats": self.fishstats,
             "b": self.b,
             "stats": self.stats,
             "guildstats": self.guildstats

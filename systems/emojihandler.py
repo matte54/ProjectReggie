@@ -25,7 +25,8 @@ class Emojihandler:
         list_of_popular_emojis = self.check_stats(guildid)
         if list_of_popular_emojis:
             for i in list_of_popular_emojis:
-                self.emojipool.append(i)
+                if i in data[str(guildid)]:
+                    self.emojipool.append(i)
         # add 3 random default emojis to pool
         for i in random.choices(data["default"], k=3):
             self.emojipool.append(i)
@@ -43,7 +44,7 @@ class Emojihandler:
             with open(f'./local/statistics/guild/{guildid}.json', "r") as f:
                 guild_emoji_stats = json.load(f)
             if len(guild_emoji_stats) > 0:
-                sorted_dict = sorted(guild_emoji_stats["alltime"]["emojis"], reverse=True)
+                sorted_dict = sorted(guild_emoji_stats["month"]["emojis"], reverse=True)
                 if len(sorted_dict) < 3:
                     return sorted_dict
                 else:
