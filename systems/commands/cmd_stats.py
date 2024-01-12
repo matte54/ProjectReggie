@@ -8,7 +8,7 @@ from systems.varmanager import VarManager
 class Stats:
     def __init__(self):
         self.varmanager = VarManager()
-        self.re_pattern = re.compile(r'<:(.*?):')
+        self.re_pattern = re.compile(r'<a?:([^>:]+):[0-9]+>')  # old pattern r'<:(.*?):'
 
     def get_user_name(self, user_id):
         if os.path.exists(f'./data/etc/ids.json'):
@@ -39,11 +39,8 @@ class Stats:
 
             stat_str += f'\nTop 10 used emojis this month\n'
             limit = 0
-            print(monthly_sorted_dict_descending)
             for i in monthly_sorted_dict_descending:
                 just_name = self.re_pattern.findall(i)
-                print(just_name)
-                print(just_name[0])
                 stat_str += just_name[0] + ' - ' + str(monthly_sorted_dict_descending[i]) + '\n'
                 limit += 1
                 if limit == 10:
