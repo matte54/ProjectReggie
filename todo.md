@@ -4,6 +4,7 @@ Remove item when finished
 ###########################################################################################
 
 * Main
+- Changing of emojis still gives permission error? thonk
 
 * Reflex task
 

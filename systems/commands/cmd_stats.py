@@ -39,8 +39,11 @@ class Stats:
 
             stat_str += f'\nTop 10 used emojis this month\n'
             limit = 0
+            print(monthly_sorted_dict_descending)
             for i in monthly_sorted_dict_descending:
                 just_name = self.re_pattern.findall(i)
+                print(just_name)
+                print(just_name[0])
                 stat_str += just_name[0] + ' - ' + str(monthly_sorted_dict_descending[i]) + '\n'
                 limit += 1
                 if limit == 10:
