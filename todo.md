@@ -9,6 +9,7 @@ Remove item when finished
 * Reflex task
 
 * Status task
+- Change the inventory to plain text files instead, easier to just add stuff
 
 * Speaking system
 
@@ -27,6 +28,8 @@ Remove item when finished
 - Find a way to limit writes, need to figure out how to have it collect data for each dictionary it needs and write
 only like in 5-10 minute intervals, couldnt figure out how to approach it cause of the diffrent types that will be open
 simultanously when people are chatting. also diffrent servers.
+- make the statistics display command add up numbers from the names not the IDs cause the ids change when i switch
+out the emotes back n forth for xmas etc
 
 * Fishing
 - Add cash prize for fishoff winner

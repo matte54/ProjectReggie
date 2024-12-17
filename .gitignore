@@ -1,6 +1,7 @@
 /data/etc/credentials.py
 /data/etc/giphy_key.py
 /data/redditdata/
+/data/pokemon/
 __pycache__/
 local/
 log/
