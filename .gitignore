@@ -11,5 +11,6 @@ test.py
 .idea/
 /data/etc/ids.json
 /data/etc/vars.json
-/tools/class*.json
+/tools/
 ideas.md
+databasemodfier.py

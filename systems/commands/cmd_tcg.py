@@ -163,7 +163,7 @@ class Tcg:
             with open(f'{self.sets_path}{set_id}/{cardid}.json', "r") as f:
                 card_data = json.load(f)
             pokemon_name = card_data["name"]
-            best_string += f'"{pokemon_name}" - ({cardid}) - ${value}\n'
+            best_string += f'"{pokemon_name}" - ({cardid}) - ${value:.2f}\n'
 
         return best_string
 

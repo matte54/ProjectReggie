@@ -59,9 +59,10 @@ class PokemonTCG:
                     card_dicts.append(data)
 
         # remove trainer and energy cards
-        for i in range(len(card_dicts) - 1, -1, -1):
-            if "Trainer" in card_dicts[i]["supertype"] or "Energy" in card_dicts[i]["supertype"]:
-                del card_dicts[i]
+        card_dicts = [
+            card for card in card_dicts
+            if "Trainer" not in card["supertype"] and "Energy" not in card["supertype"]
+        ]
 
         # Create a rarity map
         rarity_map = {rarity: [] for rarity, _, _ in self.raritydata}
@@ -83,6 +84,7 @@ class PokemonTCG:
                 if rarity_map[rarity] and rarity_counts[rarity] < limit
             ]
             if not available_rarities:  # Stop if no valid rarities are left
+                log(f'[Pokemon] - out of valid rarities {len(available_rarities)}')
                 break
 
             rarities, chances = zip(*available_rarities)
@@ -104,6 +106,7 @@ class PokemonTCG:
                 rarity for rarity in rarities if rarity_map[rarity]
             ]
             if not available_rarities:  # Break if no cards are left
+                log(f'[Pokemon] - Error, out of valid cards')
                 break
 
             # Prioritize rarer cards by reversing the original order
