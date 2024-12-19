@@ -13,4 +13,4 @@ test.py
 /data/etc/vars.json
 /tools/
 ideas.md
-databasemodfier.py
+tools/databasemodfier.py

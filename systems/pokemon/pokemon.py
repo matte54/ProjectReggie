@@ -126,7 +126,13 @@ class PokemonTCG:
         # add into discord gallery upload
         pokecard_img_list = []
         for poke_id in self.card_list:
-            pokecard_img_list.append(discord.File(f'{self.images_path}{self.working_set}/images/{poke_id[0]}.png', spoiler=True))
+            try:
+                pokecard_img_list.append(
+                    discord.File(f'{self.images_path}{self.working_set}/images/{poke_id[0]}.png', spoiler=True))
+            except FileNotFoundError:
+                log(f'[Pokemon] - Error, {self.images_path}{self.working_set}/images/{poke_id[0]}.png not found!')
+                pokecard_img_list.append(
+                    discord.File(f'./data/pokemon/default_card.png', spoiler=True))
 
         return self.selected_cards, pokecard_img_list
 

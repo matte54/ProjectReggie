@@ -40,7 +40,9 @@ class Tcg:
             "free": (self.free, False),
             "profile": (self.profile, False),
             "q": (self.query, True),
-            "buy": (self.buy, True)
+            "buy": (self.buy, True),
+            "sell": (self.sell, True),
+            "admin": (self.admin, True)
         }
 
     async def command(self, message):
@@ -92,10 +94,12 @@ class Tcg:
             time_since_last_pull = self.now - datetime.fromisoformat(self.userprofile["profile"]["last"])
             if not time_since_last_pull > timedelta(hours=24):
                 remaining_time = timedelta(hours=24) - time_since_last_pull
-                remaining_hours = remaining_time.total_seconds() / 3600
+                hours, remainder = divmod(remaining_time.total_seconds(), 3600)
+                minutes = remainder // 60
+                remaining = f"{int(hours)}h {int(minutes)}m"
 
-                await self.message.channel.send(f'```yaml\n\nYou have {remaining_hours:.2f} hours left until your daily free booster pack...```')
-                log(f'[Pokemon] - {self.username} has {remaining_hours:.2f} hours remaining on freebie')
+                await self.message.channel.send(f'```yaml\n\nYou have {remaining} left until your daily free booster pack...```')
+                log(f'[Pokemon] - {self.username} has {remaining} remaining on freebie')
                 return
 
         value = None
@@ -136,11 +140,13 @@ class Tcg:
         else:
             time_since_last_pull = self.now - datetime.fromisoformat(self.userprofile["profile"]["last"])
             remaining_time = timedelta(hours=24) - time_since_last_pull
-            remaining_hours = remaining_time.total_seconds() / 3600
-            if remaining_hours < 0:
+
+            if remaining_time.total_seconds() <= 0:
                 remaining = "NOW"
             else:
-                remaining = f'{remaining_hours:.2f}H'
+                hours, remainder = divmod(remaining_time.total_seconds(), 3600)
+                minutes = remainder // 60
+                remaining = f"{int(hours)}h {int(minutes)}m"
 
         profilestring = f'```yaml\n\n'
         profilestring += f'***** {self.username.upper()}´S TCG PROFILE *****\n'
@@ -222,7 +228,11 @@ class Tcg:
                     card_data = json.load(f)
                 card_value = card_data["cardmarket"]["prices"]["averageSellPrice"]
                 card_img_path = f'{self.images_path}{set_id}/images/{set_id}-{card_id}.png'
-                card_img = discord.File(card_img_path)
+                try:
+                    card_img = discord.File(card_img_path)
+                except FileNotFoundError:
+                    log(f'[Pokemon] - Error, {self.images_path}{set_id}/images/{set_id}-{card_id}.png not found!')
+                    card_img = discord.File('./data/pokemon/default_card.png')
 
                 await self.message.channel.send(file=card_img)
 
@@ -340,4 +350,86 @@ class Tcg:
         summary_message += f'```||'
 
         return summary_message
+
+    async def money_handler(self, value):
+        self.userprofile["profile"]["money"] += round(value, 2)
+
+        self.pokehandler.write_json(self.userprofile_path, self.userprofile)
+        log(f'[Pokemon] - {self.username} now has ${self.userprofile["profile"]["money"]} - Wrote {self.userprofile_path}!')
+
+    async def find_json_files(self, directory):
+        json_files = []
+        for root, dirs, files in os.walk(directory):  # os.walk traverses directories recursively
+            for file in files:
+                if file.endswith('.json'):  # Check if the file has a .json extension
+                    json_files.append(os.path.join(root, file))  # Get the full path
+        return json_files
+
+    async def sell(self, subcommand2):
+        if "-" not in subcommand2:
+            log(f'[Pokemon] - invalid card id')
+            await self.message.channel.send(f'```yaml\n\nNot a valid CARD ID```')
+            return
+        set_match_found = False
+        set_id, card_id = subcommand2.split("-")
+        for t in self.setdatalist:
+            if set_id == t[0]:
+                set_match_found = True
+                break
+
+        if not set_match_found:
+            log(f'[Pokemon] - set not found')
+            await self.message.channel.send(f'```yaml\n\nSet not found```')
+            return
+
+        card_found = False
+        for file in os.listdir(f'{self.sets_path}{set_id}'):
+            if file.endswith(".json"):
+                if file == f'{set_id}-{card_id}.json':
+                    card_found = True
+                    break
+        if card_found:
+            card_path = f'{self.sets_path}{set_id}/{set_id}-{card_id}.json'
+            with open(card_path, "r") as f:
+                card_data = json.load(f)
+            card_value = card_data["cardmarket"]["prices"]["averageSellPrice"]
+            pokemon_name = card_data["name"]
+            try:
+                check = self.userprofile['sets'][set_id][f'{set_id}-{card_id}']
+                await self.message.channel.send(
+                    f'```yaml\n\n{self.username} SOLD "{pokemon_name}" ({subcommand2}) card for ${card_value}```')
+                del self.userprofile['sets'][set_id][f'{set_id}-{card_id}']
+                await self.money_handler(card_value)
+                log(f"[Pokemon] - {self.username} sold {pokemon_name}-{subcommand2} for {card_value}")
+            except KeyError:
+                log(f'[Pokemon] - {self.username} does not own this card')
+                await self.message.channel.send(
+                    f'```yaml\n\nYou do not own this card```')
+        else:
+            log(f'[Pokemon] - Card not found')
+            await self.message.channel.send(
+                f'```yaml\n\nCard not found```')
+
+    async def admin(self, subcommand2):
+        # first make sure im the one issuing the command
+        if not self.message.author.id == 131955255989501953:
+            await self.message.channel.send(
+                f'```yaml\n\nUh uh uh , you didn´t say the magic word (you are not an admin)```')
+            log(f'[Pokemon] - {self.username} tried to get admin access and got denied')
+            return
+
+        if subcommand2 == "reset":
+            user_profiles_list = await self.find_json_files('./local/pokemon/profiles/')
+            for profile in user_profiles_list:
+                with open(profile, "r") as f:
+                    profile_data = json.load(f)
+                profile_data["profile"]["last"] = ""
+                self.pokehandler.write_json(profile, profile_data)
+            log(f'[Pokemon][ADMIN] - {self.username} reset all free pulls')
+            await self.message.channel.send(
+                f'```yaml\n\nADMIN {self.username} reset everyones free pack timer, pulls for all!```')
+            return
+
+        await self.message.channel.send(
+            f'```yaml\n\nAdmin command not recognized```')
 
