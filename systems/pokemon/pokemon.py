@@ -118,21 +118,40 @@ class PokemonTCG:
             rarity_map[chosen_rarity].remove(item)
 
         if debug_on():
-            log(f'[Pokemon] - {len(self.selected_cards)} cards picked')
+            log(f'[Pokemon][DEBUG] - {len(self.selected_cards)} cards picked')
 
         for card in self.selected_cards:
             self.card_list.append((card["id"], card["rarity"], card["name"]))
+            if debug_on():
+                log(f'[Pokemon][DEBUG] - {card["name"]}({card["id"]}) - {card["rarity"]}')
 
-        # add into discord gallery upload
+        # rarity sorting test
+        rarity_dict = {item[0].lower(): item[1] for item in self.raritydata}
+        self.card_list.sort(key=lambda card: rarity_dict.get(card[1].lower(), 1.0))
+
         pokecard_img_list = []
         for poke_id in self.card_list:
             try:
+                # Use the sorted list to append files (using poke_id[0] for card ID)
+                image_path = f'{self.images_path}{self.working_set}/images/{poke_id[0]}.png'  # poke_id[0] is the card ID
                 pokecard_img_list.append(
-                    discord.File(f'{self.images_path}{self.working_set}/images/{poke_id[0]}.png', spoiler=True))
+                    discord.File(image_path, spoiler=True))
             except FileNotFoundError:
+                # If the image is not found, use a default image
                 log(f'[Pokemon] - Error, {self.images_path}{self.working_set}/images/{poke_id[0]}.png not found!')
                 pokecard_img_list.append(
                     discord.File(f'./data/pokemon/default_card.png', spoiler=True))
+
+        # add into discord gallery upload
+        #pokecard_img_list = []
+        #for poke_id in self.card_list:
+        #    try:
+        #        pokecard_img_list.append(
+        #            discord.File(f'{self.images_path}{self.working_set}/images/{poke_id[0]}.png', spoiler=True))
+        #    except FileNotFoundError:
+        #        log(f'[Pokemon] - Error, {self.images_path}{self.working_set}/images/{poke_id[0]}.png not found!')
+        #        pokecard_img_list.append(
+        #            discord.File(f'./data/pokemon/default_card.png', spoiler=True))
 
         return self.selected_cards, pokecard_img_list
 

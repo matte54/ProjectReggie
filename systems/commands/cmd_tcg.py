@@ -1,5 +1,7 @@
-import os, json
+import os
+import json
 import discord
+
 from datetime import datetime, timedelta
 
 from systems.logger import debug_on, log
@@ -150,7 +152,7 @@ class Tcg:
 
         profilestring = f'```yaml\n\n'
         profilestring += f'***** {self.username.upper()}´S TCG PROFILE *****\n'
-        profilestring += f'Money: ${self.userprofile["profile"]["money"]} Cards: {self.userprofile["profile"]["cards"]} Opened: {self.userprofile["profile"]["boosters_opened"]} Free: {remaining}\n'
+        profilestring += f'Money: ${self.userprofile["profile"]["money"]:.2f} Cards: {self.userprofile["profile"]["cards"]} Opened: {self.userprofile["profile"]["boosters_opened"]} Free: {remaining}\n'
         profilestring += f'***** TOP 10 MOST VALUEABLE CARDS OWNED *****\n'
         profilestring += await self.find_best()
         profilestring += f'```'
@@ -193,11 +195,14 @@ class Tcg:
                     match_found = True
                     break
             if match_found:
+                cards_owned, cards_total, id_list = await self.owned(subcommand2)
+                print(id_list)
                 with open(f'{self.setdata_path}{subcommand2}_setdata.json', "r") as f:
                     data = json.load(f)
                 await self.message.channel.send(
                     f'```yaml\n\n{data["series"]} - {data["name"]}({subcommand2})\n'
                     f'Set contains {data["total"]} total cards, released {data["releaseDate"]}```')
+                await self.message.author.send(f'```yaml\n\n*These are the cards you own in the {subcommand2} set*\n\n{id_list}```')
                 return
             else:
                 await self.message.channel.send(f'```yaml\n\nSet not found```')
@@ -287,14 +292,16 @@ class Tcg:
         dupes = 0
         new = 0
         highv = []
+        shighv = []
+        uhighv = []
 
         # stamp profile stats
         self.userprofile["profile"]["boosters_opened"] += 1
 
         #subtract set cost if any
         if set_cost:
-            self.userprofile["profile"]["money"] -= round(set_cost, 2)
-
+            #self.userprofile["profile"]["money"] -= round(set_cost, 2)
+            await self.money_handler(-set_cost)
         # Extract relevant data
         trunc_list = [
             (card["id"], card["name"], card["rarity"], card["cardmarket"]["prices"]["averageSellPrice"])
@@ -306,13 +313,21 @@ class Tcg:
 
         # Update user profile
         for card_id, name, rarity, sell_price in trunc_list:
-            if sell_price > 30.0:
+            # some flare to the values of the cards
+            if sell_price >= 30.0 and not sell_price > 99.0:
                 log(f"[Pokemon] - {name}' ID {card_id} is a HIGH value card ({sell_price})")
                 highv.append((card_id, name, sell_price))
+            if sell_price >= 100.0 and not sell_price > 299.0:
+                log(f"[Pokemon] - {name}' ID {card_id} is a SUPER HIGH value card ({sell_price})")
+                shighv.append((card_id, name, sell_price))
+            if sell_price >= 300.0:
+                log(f"[Pokemon] - {name}' ID {card_id} is a ULTRA HIGH value card ({sell_price})")
+                uhighv.append((card_id, name, sell_price))
 
             if card_id in self.userprofile["sets"][self.set_id]:
                 # User already owns the card - sell or handle as needed
-                self.userprofile["profile"]["money"] += round(sell_price, 2)
+                # self.userprofile["profile"]["money"] += round(sell_price, 2)
+                await self.money_handler(sell_price)
                 income += round(sell_price, 2)
                 dupes += 1
                 log(f"[Pokemon] - {self.username}s already has '{name}({card_id})' selling.")
@@ -324,7 +339,7 @@ class Tcg:
                 log(f"[Pokemon] - Added '{name}' ID {card_id} to {self.username}s profile.")
 
         # round off all money here before write
-        self.userprofile["profile"]["money"] = round(self.userprofile["profile"]["money"], 2)
+        #self.userprofile["profile"]["money"] = round(self.userprofile["profile"]["money"], 2)
 
         # Write updated profile to disk
         self.pokehandler.write_json(self.userprofile_path, self.userprofile)
@@ -334,22 +349,46 @@ class Tcg:
 
         money_gained = round(income, 2)
 
+        cards_owned, cards_total, id_list = await self.owned(self.set_id)
+
         # info about new cards or dupes and money gains here
         summary_message = f'||```yaml\n\n*** {self.username}s boosterpack summary ***\n'
+
         if highv:
-            summary_message += f'{len(highv)} high value card(s) pulled!\n'
+            summary_message += f'{len(highv)} HIGH value card(s) pulled!\n'
             for card in highv:
                 summary_message += f'{card[1]}({card[0]}) - ${card[2]}\n'
+        if shighv:
+            summary_message += f'{len(shighv)} SUPER HIGH value card(s) pulled!\n'
+            for card in shighv:
+                summary_message += f'{card[1]}({card[0]}) - ${card[2]}\n'
+        if uhighv:
+            summary_message += f'{len(uhighv)} ULTRA HIGH value card(s) pulled!\n'
+            for card in uhighv:
+                summary_message += f'{card[1]}({card[0]}) - ${card[2]}\n'
+
         if new:
             summary_message += f'{new} NEW cards '
         if dupes:
             summary_message += f'{dupes} dupes'
         if money_gained:
             summary_message += f'\n${money_gained} gained from selling dupes'
-
+        summary_message += f'\nYou now own {cards_owned}/{cards_total} cards in this set'
         summary_message += f'```||'
 
         return summary_message
+
+    async def owned(self, setid):
+        # this function is flawed since i dont count trainers and energy THONK
+        id_list = []
+        cards_owned = len(self.userprofile["sets"][setid])
+        with open(f'{self.setdata_path}/{setid}_setdata.json', "r") as f:
+            data = json.load(f)
+        cards_in_set = data["total"]
+        id_list.extend(self.userprofile["sets"][setid].keys())
+        id_list.sort()
+
+        return cards_owned, cards_in_set, id_list
 
     async def money_handler(self, value):
         self.userprofile["profile"]["money"] += round(value, 2)
@@ -428,6 +467,11 @@ class Tcg:
             log(f'[Pokemon][ADMIN] - {self.username} reset all free pulls')
             await self.message.channel.send(
                 f'```yaml\n\nADMIN {self.username} reset everyones free pack timer, pulls for all!```')
+            return
+
+        if subcommand2 == "test":
+            # test section for debugging
+            await self.owned("bw1")
             return
 
         await self.message.channel.send(
