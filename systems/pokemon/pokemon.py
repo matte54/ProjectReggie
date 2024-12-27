@@ -49,7 +49,7 @@ class PokemonTCG:
             return await self.pick_cards()
 
     async def pick_cards(self):
-        # load all cards into list
+        # Load all cards into a list
         card_dicts = []
         for file in os.listdir(f'{self.set_path}{self.working_set}'):
             if file.endswith(".json"):
@@ -58,16 +58,15 @@ class PokemonTCG:
                     data = json.load(json_file)
                     card_dicts.append(data)
 
-        # remove trainer and energy cards
-        card_dicts = [
-            card for card in card_dicts
-            if "Trainer" not in card["supertype"] and "Energy" not in card["supertype"]
-        ]
+        # Separate trainer cards and other cards
+        trainer_cards = [card for card in card_dicts if "Trainer" in card["supertype"]]
+        other_cards = [card for card in card_dicts if
+                       "Trainer" not in card["supertype"] and "Energy" not in card["supertype"]]
 
-        # Create a rarity map
+        # Create a rarity map for non-trainer cards
         rarity_map = {rarity: [] for rarity, _, _ in self.raritydata}
-        for d in card_dicts:
-            rarity_map[d["rarity"]].append(d)
+        for card in other_cards:
+            rarity_map[card["rarity"]].append(card)
 
         # Flatten weights and limits from raritydata
         rarities, chances, limits = zip(*self.raritydata)
@@ -75,16 +74,28 @@ class PokemonTCG:
         # Initialize counters for each rarity
         rarity_counts = {rarity: 0 for rarity in rarities}
 
-        # Pick items respecting limits
+        # Initialize selection with the possibility of adding one trainer card
         self.selected_cards = []
+        trainer_card_used = False  # Track if a trainer card has been added
+
+        # Pick items respecting limits
         for _ in range(10):
             # Filter rarities with available cards and limits not exceeded
             available_rarities = [
                 (rarity, chance) for rarity, chance, limit in zip(rarities, chances, limits)
                 if rarity_map[rarity] and rarity_counts[rarity] < limit
             ]
-            if not available_rarities:  # Stop if no valid rarities are left
-                log(f'[Pokemon] - out of valid rarities {len(available_rarities)}')
+
+            if not available_rarities and not trainer_card_used:
+                # Attempt to add a trainer card as a fallback (rare chance)
+                if trainer_cards and random.random() < 0.2:  # 10% chance
+                    trainer_card = random.choice(trainer_cards)
+                    self.selected_cards.append(trainer_card)
+                    trainer_cards.remove(trainer_card)  # Remove it to avoid duplicates
+                    trainer_card_used = True
+                    continue
+
+            if not available_rarities:  # Break if no valid rarities are left
                 break
 
             rarities, chances = zip(*available_rarities)
@@ -99,23 +110,16 @@ class PokemonTCG:
             # Increment the counter for the chosen rarity
             rarity_counts[chosen_rarity] += 1
 
-        # Fallback to fill the remaining slots
+        # Fallback to fill the remaining slots, allowing duplicates
+        all_cards = other_cards + trainer_cards  # Combine all cards into a single pool
         while len(self.selected_cards) < 10:
-            # Filter rarities with available cards (ignore limits here)
-            available_rarities = [
-                rarity for rarity in rarities if rarity_map[rarity]
-            ]
-            if not available_rarities:  # Break if no cards are left
+            if not all_cards:  # If there are no cards left at all
                 log(f'[Pokemon] - Error, out of valid cards')
                 break
 
-            # Prioritize rarer cards by reversing the original order
-            chosen_rarity = available_rarities[-1]
-            # Select a random item from the chosen rarity group
-            item = random.choice(rarity_map[chosen_rarity])
+            # Pick a random card from all available cards (duplicates allowed)
+            item = random.choice(all_cards)
             self.selected_cards.append(item)
-            # Remove the item to avoid duplicates
-            rarity_map[chosen_rarity].remove(item)
 
         if debug_on():
             log(f'[Pokemon][DEBUG] - {len(self.selected_cards)} cards picked')
@@ -142,17 +146,6 @@ class PokemonTCG:
                 pokecard_img_list.append(
                     discord.File(f'./data/pokemon/default_card.png', spoiler=True))
 
-        # add into discord gallery upload
-        #pokecard_img_list = []
-        #for poke_id in self.card_list:
-        #    try:
-        #        pokecard_img_list.append(
-        #            discord.File(f'{self.images_path}{self.working_set}/images/{poke_id[0]}.png', spoiler=True))
-        #    except FileNotFoundError:
-        #        log(f'[Pokemon] - Error, {self.images_path}{self.working_set}/images/{poke_id[0]}.png not found!')
-        #        pokecard_img_list.append(
-        #            discord.File(f'./data/pokemon/default_card.png', spoiler=True))
-
         return self.selected_cards, pokecard_img_list
 
     async def pick_random_set(self):
@@ -166,13 +159,12 @@ class PokemonTCG:
 
         picked_set = random.choices(set_ids, weights=weights, k=1)[0]
 
-        if debug_on():
-            # --- Just some debugging to help tweak chance numbers ---
-            total_weight = sum(weights)
-            probabilities = [w / total_weight for w in weights]
-            picked_probability = probabilities[set_ids.index(picked_set)]
-            picked_index = set_ids.index(picked_set)
+        # Debugging to understand probabilities
+        total_weight = sum(weights)
+        probabilities = [w / total_weight for w in weights]
+        picked_index = set_ids.index(picked_set)
+        picked_probability = probabilities[picked_index]
+        picked_odds_percentage = picked_probability * 100
+        log(f'[Pokemon] - ID: {picked_set} odds: {picked_probability:.2%}')
 
-            log(f'[Pokemon] - ID: {picked_set} rarity: {weights[picked_index]:%} odds: {picked_probability:%}')
-
-        return picked_set
+        return picked_set, picked_odds_percentage

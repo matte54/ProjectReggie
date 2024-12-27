@@ -55,5 +55,5 @@ class Pokehandler:
                 return id_data[str(user_id)]
 
     def write_json(self, filepath, data):
-        with open(filepath, "w") as f:
+        with open(filepath, "w", encoding="UTF-8") as f:
             json.dump(data, f, indent=4)

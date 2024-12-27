@@ -105,7 +105,8 @@ class Tcg:
                 return
 
         value = None
-        self.set_id = await self.pokemon.pick_random_set()
+        self.set_id, rarityindex = await self.pokemon.pick_random_set()
+
         if os.path.exists(f'{self.setdata_path}{self.set_id}_setdata.json'):
             with open(f'{self.setdata_path}{self.set_id}_setdata.json', "r") as f:
                 data = json.load(f)
@@ -120,9 +121,14 @@ class Tcg:
                 value = item[2]
 
         log(f'[Pokemon] - {self.username} claims their daily free boosterpack')
-        await self.message.channel.send(
-            f'```yaml\n\n{self.username} opens their daily FREE booster pack (10 cards) - ${value}\n{data["series"]} - {data["name"]}({self.set_id})\n'
-            f'Set contains {data["total"]} total cards, released {data["releaseDate"]}```')
+
+        claimstring = f'```yaml\n\n{self.username} opens their daily FREE booster pack (10 cards) - ${value}\n{data["series"]} - {data["name"]}({self.set_id})\n'
+        claimstring += f'Set contains {data["total"]} total cards, released {data["releaseDate"]}'
+        if rarityindex < 0.4:
+            claimstring += '\nThis set is a rare (more valueable) pull!'
+        claimstring += '```'
+
+        await self.message.channel.send(claimstring)
 
         self.selected_cards, card_img_list = await self.pokemon.process_input(self.set_id)
 
