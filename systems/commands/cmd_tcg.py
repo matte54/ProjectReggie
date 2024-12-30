@@ -1,6 +1,7 @@
 import os
 import json
 import discord
+import random
 
 from datetime import datetime, timedelta
 
@@ -287,10 +288,18 @@ class Tcg:
             f'Set contains {data["total"]} total cards, released {data["releaseDate"]}```')
         # post card images
         await self.message.channel.send(files=card_img_list)
-
         summary_message = await self.handle_cards(value)
-
+        await self.setbroker()  # adjust set values
         await self.message.channel.send(summary_message)
+
+    async def setbroker(self):
+        # increasing prices of sets
+        price_increase = random.uniform(1.2, 2.5)
+        for i, item in enumerate(self.setdatalist):
+            if item[0] == self.set_id:
+                self.setdatalist[i] = (item[0], item[1], int(item[2] * price_increase))
+                log(f'[Pokemon] - Increasing price of set {item[0]} from ${item[2]} to ${self.setdatalist[i][2]}')
+                break
 
     async def handle_cards(self, set_cost):
         # define and zero catch info

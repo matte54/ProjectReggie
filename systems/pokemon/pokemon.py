@@ -74,25 +74,33 @@ class PokemonTCG:
         # Initialize counters for each rarity
         rarity_counts = {rarity: 0 for rarity in rarities}
 
-        # Initialize selection with the possibility of adding one trainer card
+        # Initialize selection with the possibility of adding trainer cards
         self.selected_cards = []
         trainer_card_used = False  # Track if a trainer card has been added
 
         # Pick items respecting limits
         for _ in range(10):
+            # Decide whether to add a trainer card (low probability)
+            if trainer_cards and random.random() < 0.05:  # chance to pick a trainer card
+                log(f'[Pokemon][DEBUG] - Adding a trainer card')
+                trainer_card = random.choice(trainer_cards)
+                self.selected_cards.append(trainer_card)
+                # make sure only one trainer card is picked
+                break
+
             # Filter rarities with available cards and limits not exceeded
             available_rarities = [
                 (rarity, chance) for rarity, chance, limit in zip(rarities, chances, limits)
                 if rarity_map[rarity] and rarity_counts[rarity] < limit
             ]
 
-            if not available_rarities and not trainer_card_used:
-                # Attempt to add a trainer card as a fallback (rare chance)
-                if trainer_cards and random.random() < 0.2:  # 10% chance
+            if not available_rarities:
+                # Attempt to add a trainer card as a fallback
+                if trainer_cards and not trainer_card_used and random.random() < 0.1:  # 10% chance
+                    log(f'[Pokemon][DEBUG] - Adding a fallback trainer card')
                     trainer_card = random.choice(trainer_cards)
                     self.selected_cards.append(trainer_card)
-                    trainer_cards.remove(trainer_card)  # Remove it to avoid duplicates
-                    trainer_card_used = True
+                    trainer_card_used = True  # Mark the trainer card as used
                     continue
 
             if not available_rarities:  # Break if no valid rarities are left
