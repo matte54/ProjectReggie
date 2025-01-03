@@ -2,6 +2,7 @@ import os
 import json
 import discord
 import random
+import time
 
 from datetime import datetime, timedelta
 
@@ -16,6 +17,8 @@ from systems.pokemon.rarity_data import x as rarity_data
 
 
 class Tcg:
+    picking_underway = False
+
     def __init__(self, client):
         # define paths
         self.setdata_path = "./data/pokemon/setdata/"
@@ -38,6 +41,7 @@ class Tcg:
         self.set_id = None
         self.selected_cards = None
         self.userprofile_path = None
+        self.picking_underway = Tcg.picking_underway
 
         self.subcommands = {
             "free": (self.free, False),
@@ -92,6 +96,9 @@ class Tcg:
                 return id_data[str(user_id)]
 
     async def free(self):
+        if Tcg.picking_underway:
+            log(f"[Pokemon] - Picking already underway, ignoring request")
+            return
         # check time stamp
         if self.userprofile["profile"]["last"]:  # protection against a new profile without a time value
             time_since_last_pull = self.now - datetime.fromisoformat(self.userprofile["profile"]["last"])
@@ -116,6 +123,8 @@ class Tcg:
             log(f'[Pokemon] - {self.setdata_path}{self.set_id}_setdata.json does not exist!')
             return
 
+        Tcg.picking_underway = True  # set class var between objects
+
         # get the set value
         for item in self.setdatalist:
             if item[0] == self.set_id:
@@ -139,6 +148,9 @@ class Tcg:
         summary_message = await self.handle_cards(0)
 
         await self.message.channel.send(summary_message)
+
+        time.sleep(3)
+        Tcg.picking_underway = False  # set class var between objects
 
     async def profile(self):
         log(f'[Pokemon] - {self.username} - requests their profile')
@@ -259,6 +271,9 @@ class Tcg:
                 return
 
     async def buy(self, subcommand2):
+        if Tcg.picking_underway:
+            log(f"[Pokemon] - Picking already underway, ignoring request")
+            return
 
         # get the set value
         for item in self.setdatalist:
@@ -282,6 +297,8 @@ class Tcg:
             with open(f'{self.setdata_path}{subcommand2}_setdata.json', "r") as f:
                 data = json.load(f)
 
+        Tcg.picking_underway = True  # set class var between objects
+
         log(f'[Pokemon] - {self.username} buys the "{subcommand2}" boosterpack')
         await self.message.channel.send(
             f'```yaml\n\n{self.username} BUYS a booster pack (10 cards) - ${value}\n{data["series"]} - {data["name"]}({subcommand2})\n'
@@ -292,9 +309,12 @@ class Tcg:
         await self.setbroker()  # adjust set values
         await self.message.channel.send(summary_message)
 
+        time.sleep(3)  # extra wait time for disk to spin up for getting images
+        Tcg.picking_underway = False  # set class var between objects
+
     async def setbroker(self):
         # increasing prices of sets
-        price_increase = random.uniform(1.2, 2.5)
+        price_increase = random.uniform(1.2, 2.0)
         for i, item in enumerate(self.setdatalist):
             if item[0] == self.set_id:
                 self.setdatalist[i] = (item[0], item[1], int(item[2] * price_increase))
