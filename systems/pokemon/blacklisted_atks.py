@@ -1,0 +1,3 @@
+blcklist = ["Double-edge",
+            "Selfdestruct"
+            ]

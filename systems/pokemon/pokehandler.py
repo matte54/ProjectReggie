@@ -28,6 +28,15 @@ class Pokehandler:
         if os.path.isfile(f"{self.profiles_path}{self.userid}.json"):
             with open(f"{self.profiles_path}{self.userid}.json", "r") as f:
                 data = json.load(f)
+            # check for missing entries here
+            if not self.check_missing_keys(data):
+                log(f'[Pokemon] - {self.username} has missing profile keys...adding')
+                data["profile"]["battles_won"] = 0
+                data["profile"]["battles_lost"] = 0
+                data["profile"]["level"] = 1
+                data["profile"]["xp"] = 0
+                data["profile"]["xp_cap"] = 20
+                self.write_json(f"{self.profiles_path}{self.userid}.json", data)
             return data, f"{self.profiles_path}{self.userid}.json"
         # if it does not, create AND return
         else:
@@ -37,6 +46,11 @@ class Pokehandler:
                 "cards": 0,
                 "last": "",
                 "boosters_opened": 0,
+                "battles_won": 0,
+                "battles_lost": 0,
+                "level": 1,
+                "xp": 0,
+                "xp_cap": 20,
             }
             data["profile"] = blank_profile_dict
             data["sets"] = {}
@@ -57,3 +71,15 @@ class Pokehandler:
     def write_json(self, filepath, data):
         with open(filepath, "w", encoding="UTF-8") as f:
             json.dump(data, f, indent=4)
+
+    def check_missing_keys(self, data):
+        # changes to existing profiles checked here.. add to list
+        required_keys = ["battles_won", "battles_lost", "level", "xp", "xp_cap"]
+
+        if all(key in data["profile"] for key in required_keys):
+            # all keys present
+            return True
+        else:
+            # missing keys
+            return False
+

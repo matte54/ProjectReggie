@@ -3,6 +3,7 @@ import json
 import discord
 import random
 import time
+import string
 
 from datetime import datetime, timedelta
 
@@ -11,6 +12,7 @@ from systems.logger import debug_on, log
 from systems.varmanager import VarManager
 from systems.pokemon import pokemon
 from systems.pokemon import pokehandler
+from systems.pokemon import battle as bs
 
 from systems.pokemon.set_data import x as set_data
 from systems.pokemon.rarity_data import x as rarity_data
@@ -36,20 +38,23 @@ class Tcg:
         self.now = None
         self.pokemon = pokemon.PokemonTCG(self.client)
         self.pokehandler = pokehandler.Pokehandler(self.client)
+        self.bs = bs.Battle()
         self.varmanager = VarManager()
 
         self.set_id = None
         self.selected_cards = None
         self.userprofile_path = None
-        self.picking_underway = Tcg.picking_underway
+
+        self.battlelist = []
 
         self.subcommands = {
             "free": (self.free, False),
             "profile": (self.profile, False),
+            "battle": (self.battle, False),
             "q": (self.query, True),
             "buy": (self.buy, True),
             "sell": (self.sell, True),
-            "admin": (self.admin, True)
+            "admin": (self.admin, True),
         }
 
     async def command(self, message):
@@ -94,6 +99,106 @@ class Tcg:
                 id_data = json.load(f)
             if str(user_id) in id_data:
                 return id_data[str(user_id)]
+
+    async def battle(self):
+        player_data = []
+        # make sure user is not already signed up
+        if self.battlelist:
+            if self.username in self.battlelist[0]:
+                await self.message.channel.send(
+                    f'```yaml\n\nYou are already signed up for battle```')
+                return
+        battlecards, found_cards, cardpaths = await self.check_card_avail()
+        if not found_cards:
+            await self.message.channel.send(
+                f'```yaml\n\nYou dont own enough valid cards to battle```')
+            return
+        player_data.append(self.username)
+        player_data.append(battlecards)
+        self.battlelist.append(player_data)
+        await self.message.channel.send(
+            f'```yaml\n\n{self.username} signed up for a Pokémon battle!```')
+        log(f'[Pokemon] - {self.username} signed up to battle {len(self.battlelist)}/2 ready')
+        # get card images
+        img_list = await self.get_battle_images(cardpaths)
+        await self.message.channel.send(files=img_list)
+        if len(self.battlelist) < 2:
+            return
+        # 2 players are signed
+        fight = await self.bs.combat_loop(self.battlelist)
+        await self.message.channel.send(fight)
+        self.battlelist = []
+
+    async def check_card_avail(self):
+        cardlist = []
+
+        # Validate user profile and card count
+        if not self.userprofile["profile"].get("last", ""):
+            remaining = "NOW"
+        if self.userprofile["profile"]["cards"] < 3:
+            return cardlist, False
+
+        # Filter sets with cards
+        non_empty_bases = {base: values for base, values in self.userprofile["sets"].items() if values}
+        if not non_empty_bases:
+            return cardlist, False
+
+        seen_cards = set()
+        loopcounter = 0
+        max_iterations = 50
+        paths = []
+
+        while len(cardlist) < 3 and loopcounter < max_iterations:
+            loopcounter += 1
+
+            # Select random base and card
+            random_base = random.choice(list(non_empty_bases.keys()))
+            base_dict = non_empty_bases[random_base]
+            random_key = random.choice(list(base_dict.keys()))
+
+            # Avoid duplicate selections
+            if random_key in seen_cards:
+                continue
+            seen_cards.add(random_key)
+
+            # Build file path and load card data
+            setname = random_key.split('-')[0]
+            filepath = os.path.join('./data/pokemon/sets', setname, f'{random_key}.json')
+
+            try:
+                with open(filepath, 'r', encoding='UTF-8') as json_file:
+                    card_data = json.load(json_file)
+
+                # Exclude "Trainer" cards
+                if card_data["supertype"] == "Trainer":
+                    continue
+
+                # Append valid card to the list
+                cardlist.append(card_data)
+                paths.append(filepath.replace('sets', 'images').replace('.json', '.png'))
+
+            except FileNotFoundError:
+                continue  # Skip missing files
+
+        return cardlist, len(cardlist) == 3, paths
+
+    async def get_battle_images(self, imgpaths):
+        pokecard_img_list = []
+        for cardimage in imgpaths:
+            normalized_path = os.path.normpath(cardimage)
+            dir_path, filename = os.path.split(normalized_path)
+            parent_dir = os.path.dirname(dir_path)
+            new_dir_path = os.path.join(parent_dir, os.path.basename(dir_path), 'images')
+            new_path = os.path.join(new_dir_path, filename)
+            try:
+                pokecard_img_list.append(
+                    discord.File(new_path))
+            except FileNotFoundError:
+                # If the image is not found, use a default image
+                log(f'[Pokemon] - Error, {new_path} not found!')
+                pokecard_img_list.append(
+                    discord.File(f'./data/pokemon/default_card.png'))
+        return pokecard_img_list
 
     async def free(self):
         if Tcg.picking_underway:
@@ -511,4 +616,3 @@ class Tcg:
 
         await self.message.channel.send(
             f'```yaml\n\nAdmin command not recognized```')
-
