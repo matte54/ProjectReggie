@@ -181,7 +181,7 @@ class Battle:
             card_data = {"card": card, "hp": int(card["hp"])}
 
             # Find the best attack for the current card
-            if card["attacks"]:
+            if card.get("attacks"):
                 best_attack = max(
                     (attack for attack in card["attacks"] if attack["name"] not in blcklist),
                     key=lambda attack: self.extract_damage_value(attack['damage'])
@@ -205,7 +205,7 @@ class Battle:
             card_data = {"card": card, "hp": int(card["hp"])}
 
             # Find the best attack for the current card
-            if card["attacks"]:
+            if card.get("attacks"):
                 best_attack = max(
                     (attack for attack in card["attacks"] if attack["name"] not in blcklist),
                     key=lambda attack: self.extract_damage_value(attack['damage'])

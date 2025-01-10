@@ -125,9 +125,16 @@ class Tcg:
         if len(self.battlelist) < 2:
             return
         # 2 players are signed
-        fight = await self.bs.combat_loop(self.battlelist)
-        await self.message.channel.send(fight)
-        self.battlelist = []
+        try:
+            fight = await self.bs.combat_loop(self.battlelist)
+            await self.message.channel.send(fight)
+        except Exception as e:
+            log(f'[Pokemon] - an error has occurred: {e}')
+            self.battlelist = []  # clear the battle que
+            await self.message.channel.send(f'```yaml\n\nsomething went wrong, someone call Matte 😭 (reseting battle que)```')
+            raise  # Re-raises the caught exception
+
+        self.battlelist = []  # clear the battle que
 
     async def check_card_avail(self):
         cardlist = []
