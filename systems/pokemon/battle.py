@@ -222,6 +222,7 @@ class Battle:
 
     async def combat_loop(self, battlelist):
         combat_on = False
+        self.battlelog = f'```'  # reset battlelog
         await self.init_player_data(battlelist)
 
         # combat loop
