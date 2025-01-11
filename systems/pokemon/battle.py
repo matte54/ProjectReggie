@@ -17,7 +17,8 @@ class Battle:
     def __init__(self):
         self.player1_data = {}
         self.player2_data = {}
-        self.battlelog = f'```'
+        self.battlelog = f'```yaml\n\n'
+        self.log_list = []
 
     def extract_damage_value(self, damage, default=NONE_DAMAGE_DEFAULT):
         # If damage is None or not a string, convert it to string
@@ -222,7 +223,7 @@ class Battle:
 
     async def combat_loop(self, battlelist):
         combat_on = False
-        self.battlelog = f'```'  # reset battlelog
+        self.battlelog = f'```'  # initialize/reset battlelog
         await self.init_player_data(battlelist)
 
         # combat loop
@@ -230,7 +231,7 @@ class Battle:
         turn_order = [self.player1_data, self.player2_data]
         random.shuffle(turn_order)
         log(f'[Pokemon] - {turn_order[0]["player"]} goes first!')
-        await self.battlelogger(f'{turn_order[0]["player"]} goes first!')
+        await self.battlelogger(f'{turn_order[0]["player"]} goes first!', True, False)
         current_turn = 0
 
         # Initialize sent_out_cards dynamically based on player usernames
@@ -269,20 +270,33 @@ class Battle:
                 if len(defender["cards"]) == 0:
                     # If the defender has no cards left, the attacker wins
                     log(f'[Pokemon] - {defender["player"]} has no more cards left! {attacker["player"]} wins!')
-                    await self.battlelogger(f'{attacker["player"]} wins!')
+                    await self.battlelogger(f'{attacker["player"]} wins!', False, True)
                     combat_on = False
                     # send result end screen here
                     break
 
             # Switch turns by incrementing current_turn and using modulo to cycle through the players
             current_turn = (current_turn + 1) % len(turn_order)
-        self.battlelog += f'```'
         return self.battlelog
 
-    async def battlelogger(self, log_input):
-        if len(self.battlelog) > 1900:
-            log(f'[Pokemon] - battlelog exceeds 2000 chars, skipping...')
-            # skip if battlelog gets to long
-        else:
-            self.battlelog += f'{log_input}\n'
+    async def battlelogger(self, log_input, start=False, end=False):
+        if not start and not end:
+            self.log_list.append(f'{log_input}\n')
+            total_characters = sum(len(string) for string in self.log_list)
+        if start:
+            # first entry reset and add first input
+            self.log_list = []
+            self.log_list.append(f'{log_input}\n')
+        elif end:
+            # last entry
+            self.log_list.append(f'{log_input}')
+            self.log_list.append(f'```')
+            total_characters = sum(len(string) for string in self.log_list)
+            if total_characters > 1999:
+                log(f'[Pokemon][DEBUG] - battle log exceeding 2000 characters, removing attack lines')
+                self.log_list = [s for s in self.log_list if "->".lower() not in s.lower()]
+            for entry in self.log_list:
+                self.battlelog += entry
+
+
 
