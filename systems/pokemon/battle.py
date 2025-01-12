@@ -2,12 +2,10 @@ import random
 import json
 import os
 import re
-import asyncio
 
 from systems.logger import debug_on, log
 from systems.pokemon.effectiveness_data import type_effectiveness
 from systems.pokemon.blacklisted_atks import blcklist
-
 
 # configurable constants
 NONE_DAMAGE_DEFAULT = 10
@@ -15,10 +13,97 @@ NONE_DAMAGE_DEFAULT = 10
 
 class Battle:
     def __init__(self):
+        self.profiles_path = "./local/pokemon/profiles/"
         self.player1_data = {}
         self.player2_data = {}
         self.battlelog = f'```yaml\n\n'
         self.log_list = []
+
+    def get_profile(self, userid):
+        if os.path.isfile(f"{self.profiles_path}{userid}.json"):
+            with open(f"{self.profiles_path}{userid}.json", "r") as f:
+                data = json.load(f)
+        return data, f"{self.profiles_path}{userid}.json"
+
+    def get_user_id(self, username):
+        # input username get userid from database file
+        if os.path.exists(f'./data/etc/ids.json'):
+            with open(f'./data/etc/ids.json', "r") as f:
+                id_data = json.load(f)
+            match = [key for key, value in id_data.items() if value == username]
+            return int(match[0])
+
+    def write_json(self, filepath, data):
+        with open(filepath, "w", encoding="UTF-8") as f:
+            json.dump(data, f, indent=4)
+
+    async def handle_battle_outcome(self, winner, loser, winner_xp, loser_xp):
+        w_lvlup = None
+        l_lvlup = None
+        # load both profiles
+        winner_userid = self.get_user_id(winner)
+        winner_data, winner_path = self.get_profile(winner_userid)
+        loser_userid = self.get_user_id(loser)
+        loser_data, loser_path = self.get_profile(loser_userid)
+
+        # add stats
+        winner_data["profile"]["battles_won"] += 1
+        loser_data["profile"]["battles_lost"] += 1
+
+        # calculate experience gains
+        base_reward = 20
+        cap = 200
+
+        gap_factor = min(winner_xp, loser_xp) / max(winner_xp, loser_xp)
+        winner_reward = base_reward * (1 + gap_factor + loser_xp / winner_xp)
+        loser_reward = base_reward * (1 + gap_factor * (winner_xp / loser_xp))
+
+        # Cap the rewards
+        winner_reward = int(min(winner_reward, cap))
+        loser_reward = int(min(loser_reward, cap))
+
+        log(f'[Pokemon][DEBUG] - Winner {winner} had hand value: {winner_xp} and is rewarded {winner_reward}')
+        log(f'[Pokemon][DEBUG] - Loser {loser} had hand value: {loser_xp} and is rewarded {loser_reward}')
+
+        # handle xp to profiles
+        # winner
+        if winner_data["profile"]["xp"] + winner_reward >= winner_data["profile"]["xp_cap"]:
+            diffrence = (winner_data["profile"]["xp"] + winner_reward) - winner_data["profile"]["xp_cap"]
+            winner_data["profile"]["level"] += 1
+            winner_data["profile"]["xp"] = diffrence
+            winner_data["profile"]["xp_cap"] += (10 + winner_data["profile"]["level"])
+            w_lvlup = winner_data["profile"]["level"]
+        else:
+            winner_data["profile"]["xp"] += winner_reward
+
+        # loser
+        if loser_data["profile"]["xp"] + loser_reward >= loser_data["profile"]["xp_cap"]:
+            diffrence = (loser_data["profile"]["xp"] + loser_reward) - loser_data["profile"]["xp_cap"]
+            loser_data["profile"]["level"] += 1
+            loser_data["profile"]["xp"] = diffrence
+            loser_data["profile"]["xp_cap"] += (10 + loser_data["profile"]["level"])
+            l_lvlup = loser_data["profile"]["level"]
+        else:
+            loser_data["profile"]["xp"] += loser_reward
+
+        # prices here
+        pricemoney = random.randint(50, 250)
+        winner_data["profile"]["money"] += pricemoney
+
+        self.write_json(winner_path, winner_data)
+        self.write_json(loser_path, loser_data)
+
+        results_msg = f'```yaml\n\n'
+        results_msg += f'{winner} won ${pricemoney} and gained {winner_reward} xp\n'
+        results_msg += f'{loser} gained {loser_reward} xp\n'
+        if w_lvlup:
+            results_msg += f'{winner} leveled up! {winner} is now level {w_lvlup}\n'
+        if l_lvlup:
+            results_msg += f'{loser} leveled up! {loser} is now level {l_lvlup}\n'
+
+        results_msg += f'```'
+
+        return results_msg
 
     def extract_damage_value(self, damage, default=NONE_DAMAGE_DEFAULT):
         # If damage is None or not a string, convert it to string
@@ -176,6 +261,7 @@ class Battle:
         # Player 1 setup (handling each card separately)
         self.player1_data["player"] = battlelist[0][0]
         self.player1_data["cards"] = []
+        self.player1_data["card_values"] = 0
 
         # Iterate through each of Player 1's cards
         for card in player1_cards:
@@ -194,12 +280,14 @@ class Battle:
             card_data["attack"] = best_attack
             card_data["dmg"] = self.extract_damage_value(best_attack["damage"])
 
+            self.player1_data["card_values"] = + int(card_data["dmg"])  # add up dmg to get hand value
             # Append card data to the player's list of cards
             self.player1_data["cards"].append(card_data)
 
         # Player 2 setup (similar to Player 1)
         self.player2_data["player"] = battlelist[1][0]
         self.player2_data["cards"] = []
+        self.player2_data["card_values"] = 0
 
         # Iterate through each of Player 2's cards
         for card in player2_cards:
@@ -218,6 +306,7 @@ class Battle:
             card_data["attack"] = best_attack
             card_data["dmg"] = self.extract_damage_value(best_attack["damage"])
 
+            self.player2_data["card_values"] = + int(card_data["dmg"])  # add up dmg to get hand value
             # Append card data to the player's list of cards
             self.player2_data["cards"].append(card_data)
 
@@ -277,12 +366,13 @@ class Battle:
 
             # Switch turns by incrementing current_turn and using modulo to cycle through the players
             current_turn = (current_turn + 1) % len(turn_order)
-        return self.battlelog
+
+        stat_results = await self.handle_battle_outcome(attacker["player"], defender["player"], attacker["card_values"], defender["card_values"])
+        return self.battlelog, stat_results
 
     async def battlelogger(self, log_input, start=False, end=False):
         if not start and not end:
             self.log_list.append(f'{log_input}\n')
-            total_characters = sum(len(string) for string in self.log_list)
         if start:
             # first entry reset and add first input
             self.log_list = []

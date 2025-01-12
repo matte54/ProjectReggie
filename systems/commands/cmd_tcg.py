@@ -126,8 +126,9 @@ class Tcg:
             return
         # 2 players are signed
         try:
-            fight = await self.bs.combat_loop(self.battlelist)
+            fight, results = await self.bs.combat_loop(self.battlelist)
             await self.message.channel.send(fight)
+            await self.message.channel.send(results)
         except Exception as e:
             log(f'[Pokemon] - an error has occurred: {e}')
             self.battlelist = []  # clear the battle que
