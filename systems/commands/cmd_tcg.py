@@ -3,7 +3,6 @@ import json
 import discord
 import random
 import time
-import string
 
 from datetime import datetime, timedelta
 
@@ -46,6 +45,7 @@ class Tcg:
         self.userprofile_path = None
 
         self.battlelist = []
+        self.battletracker = {}
 
         self.subcommands = {
             "free": (self.free, False),
@@ -102,6 +102,12 @@ class Tcg:
 
     async def battle(self):
         player_data = []
+        # check if user is allowed any more battles today
+        if self.username in self.battletracker:
+            if self.battletracker[self.username] >= 3:
+                await self.message.channel.send(
+                    f'```yaml\n\nYou are not allowed any more battles today, come back tomorrow...```')
+                return
         # make sure user is not already signed up
         if self.battlelist:
             if self.username in self.battlelist[0]:
@@ -116,8 +122,13 @@ class Tcg:
         player_data.append(self.username)
         player_data.append(battlecards)
         self.battlelist.append(player_data)
+
+        # add a daily entry to battles for the user
+        self.battletracker[self.username] = self.battletracker.get(self.username, 0) + 1
+        log(f'[Pokemon][DEBUG] - {self.battletracker}')
+
         await self.message.channel.send(
-            f'```yaml\n\n{self.username} signed up for a Pokémon battle!```')
+            f'```yaml\n\n{self.username} signed up for a Pokémon battle!\nThis is battle {self.battletracker[self.username]}/3 allowed for you today today```')
         log(f'[Pokemon] - {self.username} signed up to battle {len(self.battlelist)}/2 ready')
         # get card images
         img_list = await self.get_battle_images(cardpaths)
@@ -132,7 +143,8 @@ class Tcg:
         except Exception as e:
             log(f'[Pokemon] - an error has occurred: {e}')
             self.battlelist = []  # clear the battle que
-            await self.message.channel.send(f'```yaml\n\nsomething went wrong, someone call Matte 😭 (reseting battle que)```')
+            await self.message.channel.send(f'```yaml\n\nsomething went wrong, someone call Matte 😭 (reseting battle '
+                                            f'que)```')
             raise  # Re-raises the caught exception
 
         self.battlelist = []  # clear the battle que
@@ -221,7 +233,8 @@ class Tcg:
                 minutes = remainder // 60
                 remaining = f"{int(hours)}h {int(minutes)}m"
 
-                await self.message.channel.send(f'```yaml\n\nYou have {remaining} left until your daily free booster pack...```')
+                await self.message.channel.send(f'```yaml\n\nYou have {remaining} left until your daily free booster '
+                                                f'pack...```')
                 log(f'[Pokemon] - {self.username} has {remaining} remaining on freebie')
                 return
 
@@ -282,9 +295,12 @@ class Tcg:
                 minutes = remainder // 60
                 remaining = f"{int(hours)}h {int(minutes)}m"
 
+        totalbattles = self.userprofile["profile"]["battles_won"] + self.userprofile["profile"]["battles_lost"]
+
         profilestring = f'```yaml\n\n'
         profilestring += f'***** {self.username.upper()}´S TCG PROFILE *****\n'
         profilestring += f'Money: ${self.userprofile["profile"]["money"]:.2f} Cards: {self.userprofile["profile"]["cards"]} Opened: {self.userprofile["profile"]["boosters_opened"]} Free: {remaining}\n'
+        profilestring += f'Lvl: {self.userprofile["profile"]["level"]} Xp: {int(self.userprofile["profile"]["xp"])}/{int(self.userprofile["profile"]["xp_cap"])} Battles: {totalbattles} W:{self.userprofile["profile"]["battles_won"]} L:{self.userprofile["profile"]["battles_lost"]}\n'
         profilestring += f'***** TOP 10 MOST VALUEABLE CARDS OWNED *****\n'
         profilestring += await self.find_best()
         profilestring += f'```'

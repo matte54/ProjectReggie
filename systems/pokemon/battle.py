@@ -71,7 +71,7 @@ class Battle:
             diffrence = (winner_data["profile"]["xp"] + winner_reward) - winner_data["profile"]["xp_cap"]
             winner_data["profile"]["level"] += 1
             winner_data["profile"]["xp"] = diffrence
-            winner_data["profile"]["xp_cap"] += (10 + winner_data["profile"]["level"])
+            winner_data["profile"]["xp_cap"] += (30 + winner_data["profile"]["level"])
             w_lvlup = winner_data["profile"]["level"]
         else:
             winner_data["profile"]["xp"] += winner_reward
@@ -81,7 +81,7 @@ class Battle:
             diffrence = (loser_data["profile"]["xp"] + loser_reward) - loser_data["profile"]["xp_cap"]
             loser_data["profile"]["level"] += 1
             loser_data["profile"]["xp"] = diffrence
-            loser_data["profile"]["xp_cap"] += (10 + loser_data["profile"]["level"])
+            loser_data["profile"]["xp_cap"] += (30 + loser_data["profile"]["level"])
             l_lvlup = loser_data["profile"]["level"]
         else:
             loser_data["profile"]["xp"] += loser_reward
