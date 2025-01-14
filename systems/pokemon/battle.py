@@ -281,6 +281,8 @@ class Battle:
             card_data["dmg"] = self.extract_damage_value(best_attack["damage"])
 
             self.player1_data["card_values"] = + int(card_data["dmg"])  # add up dmg to get hand value
+            if card_data["dmg"] > 125:
+                self.write_susattack(f'{card_data["attack"]["name"]} {card_data["dmg"]} dmg - {card["id"]}')
             # Append card data to the player's list of cards
             self.player1_data["cards"].append(card_data)
 
@@ -307,11 +309,14 @@ class Battle:
             card_data["dmg"] = self.extract_damage_value(best_attack["damage"])
 
             self.player2_data["card_values"] = + int(card_data["dmg"])  # add up dmg to get hand value
+            if card_data["dmg"] > 125:
+                self.write_susattack(f'{card_data["attack"]["name"]} {card_data["dmg"]} dmg - {card["id"]}')
             # Append card data to the player's list of cards
             self.player2_data["cards"].append(card_data)
 
     async def combat_loop(self, battlelist):
         combat_on = False
+        battle_loops = 0
         self.battlelog = f'```'  # initialize/reset battlelog
         await self.init_player_data(battlelist)
 
@@ -366,6 +371,10 @@ class Battle:
 
             # Switch turns by incrementing current_turn and using modulo to cycle through the players
             current_turn = (current_turn + 1) % len(turn_order)
+            battle_loops += 1
+            if battle_loops > 150:
+                await self.battlelogger(f'ERROR, infinite loop detected', False, True)
+                break
 
         stat_results = await self.handle_battle_outcome(attacker["player"], defender["player"], attacker["card_values"], defender["card_values"])
         return self.battlelog, stat_results
@@ -387,6 +396,11 @@ class Battle:
                 self.log_list = [s for s in self.log_list if "->".lower() not in s.lower()]
             for entry in self.log_list:
                 self.battlelog += entry
+
+    def write_susattack(self, text):
+        log(f'[Pokemon] - saving sus attack for later review -> susattacks.txt')
+        with open(f'./local/pokemon/susttacks.txt', "a") as file:
+            file.write(text + "\n")
 
 
 

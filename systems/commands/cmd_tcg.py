@@ -3,15 +3,19 @@ import json
 import discord
 import random
 import time
+import asyncio
 
 from datetime import datetime, timedelta
 
 from systems.logger import debug_on, log
 
 from systems.varmanager import VarManager
+from data.etc.admins import ADMINS
+
 from systems.pokemon import pokemon
 from systems.pokemon import pokehandler
 from systems.pokemon import battle as bs
+from systems.pokemon import channel_manager
 
 from systems.pokemon.set_data import x as set_data
 from systems.pokemon.rarity_data import x as rarity_data
@@ -19,6 +23,8 @@ from systems.pokemon.rarity_data import x as rarity_data
 
 class Tcg:
     picking_underway = False
+    battle_underway = False
+    battlelist = []
 
     def __init__(self, client):
         # define paths
@@ -37,15 +43,18 @@ class Tcg:
         self.now = None
         self.pokemon = pokemon.PokemonTCG(self.client)
         self.pokehandler = pokehandler.Pokehandler(self.client)
+        self.channelmanager = channel_manager.ChannelManager(self.client)
         self.bs = bs.Battle()
         self.varmanager = VarManager()
+        self.admins = ADMINS
 
         self.set_id = None
         self.selected_cards = None
         self.userprofile_path = None
+        self.pokemon_channels = None
 
-        self.battlelist = []
         self.battletracker = {}
+        self.battlelist = Tcg.battlelist
 
         self.subcommands = {
             "free": (self.free, False),
@@ -58,10 +67,16 @@ class Tcg:
         }
 
     async def command(self, message):
+        self.collect_channel_ids()
+        if message.channel.id not in self.pokemon_channels and message.author.id not in self.admins:
+            # channel does not allow pokemon activity, return
+            log(f'[Pokemon] - {message.channel.id} does not allow pokemon activity')
+            return
         self.now = datetime.now()
         self.message = message
         self.username = self.get_user_name(message.author.id)
         log(f'[Pokemon] - USER: {self.username}')
+
         self.userprofile, self.userprofile_path = self.pokehandler.get_profile(message)
         content = message.content.lower()
         # Parse command
@@ -87,11 +102,22 @@ class Tcg:
             await self.message.channel.send(f'```yaml\n\nSyntax error, this subcommand needs an additional argument```')
             return
 
+
         # Call the handler with or without subcommand2
         if needs_subcommand2:
             await handler(subcommand2)
         else:
             await handler()
+
+    def collect_channel_ids(self):
+        if self.varmanager.read("pokemon_channels"):
+            self.pokemon_channels = self.varmanager.read("pokemon_channels")
+
+    async def send_to_all(self, msg):
+        # send to this function to post to all pokemon channels
+        for channel in self.pokemon_channels:
+            ch = self.client.get_channel(channel)
+            await ch.send(msg)
 
     def get_user_name(self, user_id):
         if os.path.exists(f'./data/etc/ids.json'):
@@ -101,6 +127,9 @@ class Tcg:
                 return id_data[str(user_id)]
 
     async def battle(self):
+        if Tcg.battle_underway:
+            log(f"[Pokemon] - Battle already underway, ignoring request")
+            return
         player_data = []
         # check if user is allowed any more battles today
         if self.username in self.battletracker:
@@ -127,15 +156,21 @@ class Tcg:
         self.battletracker[self.username] = self.battletracker.get(self.username, 0) + 1
         log(f'[Pokemon][DEBUG] - {self.battletracker}')
 
-        await self.message.channel.send(
-            f'```yaml\n\n{self.username} signed up for a Pokémon battle!\nThis is battle {self.battletracker[self.username]}/3 allowed for you today today```')
+        await self.send_to_all(f'```yaml\n\n{self.username} signed up for a Pokémon battle!\nBattle {self.battletracker[self.username]}/3 allowed for {self.username} today```')
         log(f'[Pokemon] - {self.username} signed up to battle {len(self.battlelist)}/2 ready')
-        # get card images
-        img_list = await self.get_battle_images(cardpaths)
-        await self.message.channel.send(files=img_list)
+
+        # get card images and post to all pokechannels
+        await self.get_battle_images(cardpaths)
+
         if len(self.battlelist) < 2:
             return
+        Tcg.battle_underway = True
+        await asyncio.sleep(10)
         # 2 players are signed
+        await self.send_to_all(
+            f'```yaml\n\nBattle starts in 10s - {self.battlelist[0][0]} vs {self.battlelist[1][0]}```')
+        await asyncio.sleep(10)
+
         try:
             fight, results = await self.bs.combat_loop(self.battlelist)
             await self.message.channel.send(fight)
@@ -143,11 +178,13 @@ class Tcg:
         except Exception as e:
             log(f'[Pokemon] - an error has occurred: {e}')
             self.battlelist = []  # clear the battle que
-            await self.message.channel.send(f'```yaml\n\nsomething went wrong, someone call Matte 😭 (reseting battle '
+            await self.send_to_all(
+                f'```yaml\n\nsomething went wrong, someone call Matte 😭 (reseting battle '
                                             f'que)```')
             raise  # Re-raises the caught exception
 
-        self.battlelist = []  # clear the battle que
+        Tcg.battlelist = []  # clear the battle que
+        Tcg.battle_underway = False
 
     async def check_card_avail(self):
         cardlist = []
@@ -210,15 +247,18 @@ class Tcg:
             parent_dir = os.path.dirname(dir_path)
             new_dir_path = os.path.join(parent_dir, os.path.basename(dir_path), 'images')
             new_path = os.path.join(new_dir_path, filename)
+
             try:
-                pokecard_img_list.append(
-                    discord.File(new_path))
+                pokecard_img_list.append(new_path)
             except FileNotFoundError:
                 # If the image is not found, use a default image
                 log(f'[Pokemon] - Error, {new_path} not found!')
-                pokecard_img_list.append(
-                    discord.File(f'./data/pokemon/default_card.png'))
-        return pokecard_img_list
+                pokecard_img_list.append(f'./data/pokemon/default_card.png')
+        # send to all pokemon channels
+        for channel in self.pokemon_channels:
+            ch = self.client.get_channel(channel)
+            files = [discord.File(file_path) for file_path in pokecard_img_list]
+            await ch.send(files=files)
 
     async def free(self):
         if Tcg.picking_underway:
@@ -614,14 +654,13 @@ class Tcg:
                 f'```yaml\n\nCard not found```')
 
     async def admin(self, subcommand2):
-        # first make sure im the one issuing the command
-        if not self.message.author.id == 131955255989501953:
-            await self.message.channel.send(
-                f'```yaml\n\nUh uh uh , you didn´t say the magic word (you are not an admin)```')
-            log(f'[Pokemon] - {self.username} tried to get admin access and got denied')
-            return
-
+        # reset the free timer
         if subcommand2 == "reset":
+            # per command basis admin check
+            if not self.message.author.id == self.admins[0]:
+                log(f'[Pokemon] - {self.username} tried to get admin access and got denied')
+                return
+
             user_profiles_list = await self.find_json_files('./local/pokemon/profiles/')
             for profile in user_profiles_list:
                 with open(profile, "r") as f:
@@ -629,13 +668,32 @@ class Tcg:
                 profile_data["profile"]["last"] = ""
                 self.pokehandler.write_json(profile, profile_data)
             log(f'[Pokemon][ADMIN] - {self.username} reset all free pulls')
-            await self.message.channel.send(
-                f'```yaml\n\nADMIN {self.username} reset everyones free pack timer, pulls for all!```')
+            await self.send_to_all(f'```yaml\n\nADMIN {self.username} reset everyones free pack timer, pulls for all!```')
             return
 
         if subcommand2 == "test":
             # test section for debugging
+            if not self.message.author.id == self.admins[0]:
+                log(f'[Pokemon] - {self.username} tried to get admin access and got denied')
+                return
+
             await self.owned("bw1")
+            return
+
+        if subcommand2 == "enable":
+            if self.message.author.id not in self.admins:
+                log(f'[Pokemon] - {self.username} tried to get admin access and got denied')
+                return
+            await self.channelmanager.enable(self.message)
+            log(f'[Pokemon][ADMIN] - admin {self.username} ENABLED channel {self.message.channel.name}({self.message.channel.id}) for pokemon')
+            return
+
+        if subcommand2 == "disable":
+            if self.message.author.id not in self.admins:
+                log(f'[Pokemon] - {self.username} tried to get admin access and got denied')
+                return
+            await self.channelmanager.disable(self.message)
+            log(f'[Pokemon][ADMIN] - admin {self.username} DISABLED channel {self.message.channel.name}({self.message.channel.id}) for pokemon')
             return
 
         await self.message.channel.send(

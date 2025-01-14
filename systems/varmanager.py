@@ -26,7 +26,7 @@ class VarManager:
         if varname in data:
             return data[varname]
         else:
-            log(f'[ERROR] {varname} does not exist in vars.json')
+            log(f'[VARMANAGER] {varname} does not exist in vars.json')
             return None
             # raise ValueError(f'{varname} does not exist in vars.json')
 
