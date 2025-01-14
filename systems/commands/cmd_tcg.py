@@ -51,7 +51,7 @@ class Tcg:
         self.set_id = None
         self.selected_cards = None
         self.userprofile_path = None
-        self.pokemon_channels = None
+        self.pokemon_channels = []
 
         self.battletracker = {}
         self.battlelist = Tcg.battlelist
@@ -67,7 +67,7 @@ class Tcg:
         }
 
     async def command(self, message):
-        self.collect_channel_ids()
+        await self.collect_channel_ids()
         if message.channel.id not in self.pokemon_channels and message.author.id not in self.admins:
             # channel does not allow pokemon activity, return
             log(f'[Pokemon] - {message.channel.id} does not allow pokemon activity')
@@ -102,14 +102,13 @@ class Tcg:
             await self.message.channel.send(f'```yaml\n\nSyntax error, this subcommand needs an additional argument```')
             return
 
-
         # Call the handler with or without subcommand2
         if needs_subcommand2:
             await handler(subcommand2)
         else:
             await handler()
 
-    def collect_channel_ids(self):
+    async def collect_channel_ids(self):
         if self.varmanager.read("pokemon_channels"):
             self.pokemon_channels = self.varmanager.read("pokemon_channels")
 
