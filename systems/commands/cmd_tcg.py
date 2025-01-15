@@ -57,21 +57,22 @@ class Tcg:
         self.battlelist = Tcg.battlelist
 
         self.subcommands = {
-            "free": (self.free, False),
-            "profile": (self.profile, False),
-            "battle": (self.battle, False),
-            "q": (self.query, True),
-            "buy": (self.buy, True),
-            "sell": (self.sell, True),
-            "admin": (self.admin, True),
+            "free": (self.free, False, False),
+            "profile": (self.profile, False, False),
+            "battle": (self.battle, False, False),
+            "q": (self.query, True, False),
+            "buy": (self.buy, True, False),
+            "sell": (self.sell, True, False),
+            "admin": (self.admin, True, True),
         }
 
     async def command(self, message):
         await self.collect_channel_ids()
         if message.channel.id not in self.pokemon_channels and message.author.id not in self.admins:
-            # channel does not allow pokemon activity, return
+            # Channel does not allow Pokémon activity, return
             log(f'[Pokemon] - {message.channel.id} does not allow pokemon activity')
             return
+
         self.now = datetime.now()
         self.message = message
         self.username = self.get_user_name(message.author.id)
@@ -85,9 +86,10 @@ class Tcg:
             await self.message.channel.send(f'```yaml\n\nSyntax error, $tcg requires a subcommand```')
             return
 
-        # Extract subcommand1 and subcommand2 (if present)
+        # Extract subcommand1, subcommand2, and subcommand3 (if present)
         subcommand1 = components[0]
         subcommand2 = components[1] if len(components) > 1 else None
+        subcommand3 = components[2] if len(components) > 2 else None
 
         # Find the corresponding function for subcommand1
         handler_entry = self.subcommands.get(subcommand1)
@@ -95,15 +97,17 @@ class Tcg:
             await self.message.channel.send(f'```yaml\n\nSyntax error, unrecognized subcommand```')
             return
 
-        handler, needs_subcommand2 = handler_entry
+        handler, needs_subcommand2, has_optional_subcommand3 = handler_entry
 
         # Ensure subcommand2 is provided if required
         if needs_subcommand2 and subcommand2 is None:
             await self.message.channel.send(f'```yaml\n\nSyntax error, this subcommand needs an additional argument```')
             return
 
-        # Call the handler with or without subcommand2
-        if needs_subcommand2:
+        # Call the handler with or without subcommands
+        if has_optional_subcommand3:
+            await handler(subcommand2, subcommand3)  # Pass `subcommand3` even if it is `None`
+        elif needs_subcommand2:
             await handler(subcommand2)
         else:
             await handler()
@@ -126,63 +130,85 @@ class Tcg:
                 return id_data[str(user_id)]
 
     async def battle(self):
+        log(f'[Pokemon][DEBUG] - Battlelist has {len(Tcg.battlelist)} entries START OF SIGNUP')
         if Tcg.battle_underway:
             log(f"[Pokemon] - Battle already underway, ignoring request")
             return
+
         player_data = []
-        # check if user is allowed any more battles today
-        if self.username in self.battletracker:
-            if self.battletracker[self.username] >= 3:
-                await self.message.channel.send(
-                    f'```yaml\n\nYou are not allowed any more battles today, come back tomorrow...```')
-                return
-        # make sure user is not already signed up
-        if self.battlelist:
-            if self.username in self.battlelist[0]:
-                await self.message.channel.send(
-                    f'```yaml\n\nYou are already signed up for battle```')
-                return
+
+        if self.client.user.id == 327138137371574282:
+            # check if user is allowed any more battles today
+            if self.username in self.battletracker:
+                if self.battletracker[self.username] >= 3:
+                    await self.message.channel.send(
+                        f'```yaml\n\nYou are not allowed any more battles today, come back tomorrow...```')
+                    return
+
+            # make sure user is not already signed up
+            if Tcg.battlelist:
+                if self.username in Tcg.battlelist[0]:
+                    await self.message.channel.send(
+                        f'```yaml\n\nYou are already signed up for battle```')
+                    return
+        else:
+            log(f'[Pokemon] - client is {self.client.user.name} skipping signup rules')
+
+        # check if user has cards to battle
         battlecards, found_cards, cardpaths = await self.check_card_avail()
         if not found_cards:
             await self.message.channel.send(
                 f'```yaml\n\nYou dont own enough valid cards to battle```')
             return
+
+        # create player data and append to the battlelist
         player_data.append(self.username)
         player_data.append(battlecards)
-        self.battlelist.append(player_data)
+        Tcg.battlelist.append(player_data)
+        log(f'[Pokemon][DEBUG] - Battlelist has {len(Tcg.battlelist)} entries')
 
         # add a daily entry to battles for the user
         self.battletracker[self.username] = self.battletracker.get(self.username, 0) + 1
         log(f'[Pokemon][DEBUG] - {self.battletracker}')
 
-        await self.send_to_all(f'```yaml\n\n{self.username} signed up for a Pokémon battle!\nBattle {self.battletracker[self.username]}/3 allowed for {self.username} today```')
-        log(f'[Pokemon] - {self.username} signed up to battle {len(self.battlelist)}/2 ready')
+        signup_msg = f'```yaml\n\n{self.username} signed up for a Pokémon battle!\nBattle {self.battletracker[self.username]}/3 allowed for {self.username} today\n'
+        if len(Tcg.battlelist) < 2:
+            signup_msg += f'Use "$tcg battle" to challenge {self.username} to a pokémon battle!'
+        signup_msg += f'```'
+        await self.send_to_all(signup_msg)
+        log(f'[Pokemon] - {self.username} signed up to battle {len(Tcg.battlelist)}/2 ready')
 
         # get card images and post to all pokechannels
         await self.get_battle_images(cardpaths)
 
-        if len(self.battlelist) < 2:
+        # if only one player is signed up stop here
+        if len(Tcg.battlelist) < 2:
             return
+
+        # begin battle procedures
         Tcg.battle_underway = True
+
         await asyncio.sleep(10)
-        # 2 players are signed
         await self.send_to_all(
-            f'```yaml\n\nBattle starts in 10s - {self.battlelist[0][0]} vs {self.battlelist[1][0]}```')
+            f'```yaml\n\nBattle starts in 10s - {Tcg.battlelist[0][0]} vs {Tcg.battlelist[1][0]}```')
         await asyncio.sleep(10)
 
+        # try to block to catch battle exceptions for now
         try:
-            fight, results = await self.bs.combat_loop(self.battlelist)
-            await self.message.channel.send(fight)
-            await self.message.channel.send(results)
+            fight, results = await self.bs.combat_loop(Tcg.battlelist)
+            await self.send_to_all(fight)
+            await self.send_to_all(results)
         except Exception as e:
             log(f'[Pokemon] - an error has occurred: {e}')
-            self.battlelist = []  # clear the battle que
+            Tcg.battlelist = []  # clear the battle que
+            Tcg.battle_underway = False
             await self.send_to_all(
                 f'```yaml\n\nsomething went wrong, someone call Matte 😭 (reseting battle '
                                             f'que)```')
             raise  # Re-raises the caught exception
 
         Tcg.battlelist = []  # clear the battle que
+        log(f'[Pokemon][DEBUG] - Battlelist has {len(Tcg.battlelist)} entries (AFTER CLEAR)')
         Tcg.battle_underway = False
 
     async def check_card_avail(self):
@@ -652,7 +678,7 @@ class Tcg:
             await self.message.channel.send(
                 f'```yaml\n\nCard not found```')
 
-    async def admin(self, subcommand2):
+    async def admin(self, subcommand2, subcommand3=None):
         # reset the free timer
         if subcommand2 == "reset":
             # per command basis admin check
@@ -693,6 +719,10 @@ class Tcg:
                 return
             await self.channelmanager.disable(self.message)
             log(f'[Pokemon][ADMIN] - admin {self.username} DISABLED channel {self.message.channel.name}({self.message.channel.id}) for pokemon')
+            return
+
+        if subcommand2 == "all":
+            # give all active profiles "subcommand3" amount of money
             return
 
         await self.message.channel.send(

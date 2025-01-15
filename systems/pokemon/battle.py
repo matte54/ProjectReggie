@@ -87,14 +87,19 @@ class Battle:
             loser_data["profile"]["xp"] += loser_reward
 
         # prices here
-        pricemoney = random.randint(50, 250)
-        winner_data["profile"]["money"] += pricemoney
-
-        self.write_json(winner_path, winner_data)
-        self.write_json(loser_path, loser_data)
-
         results_msg = f'```yaml\n\n'
-        results_msg += f'{winner} won ${pricemoney} and gained {winner_reward} xp\n'
+        priceroll = bool(random.getrandbits(1))
+        if priceroll:
+            # money calculations with chances of high price
+            price_weight = random.random() ** 2
+            pricemoney = int(50 + (250 - 50) * price_weight)
+
+            winner_data["profile"]["money"] += pricemoney
+            results_msg += f'{winner} won ${pricemoney} and gained {winner_reward} xp\n'
+        else:
+            winner_data["profile"]["last"] = ""
+            results_msg += f'{winner} won a free random boosterpack and gained {winner_reward} xp\n'
+
         results_msg += f'{loser} gained {loser_reward} xp\n'
         if w_lvlup:
             results_msg += f'{winner} leveled up! {winner} is now level {w_lvlup}\n'
@@ -102,6 +107,9 @@ class Battle:
             results_msg += f'{loser} leveled up! {loser} is now level {l_lvlup}\n'
 
         results_msg += f'```'
+
+        self.write_json(winner_path, winner_data)
+        self.write_json(loser_path, loser_data)
 
         return results_msg
 
@@ -221,7 +229,7 @@ class Battle:
         # effectiveness calculations
         final_dmg, effect = await self.calculate_effectiveness(dmg, attacker_type, defender_type)
         log(f'[Pokemon][DEBUG] - {atkr["card"]["name"]}({atkr["hp"]}hp) uses {atkr["attack"]["name"]} -> {effect}{defr["card"]["name"]}({defr["hp"]}hp) takes {int(final_dmg)} damage (base {base_dmg}{modifier_string})')
-        await self.battlelogger(f'{atkr["card"]["name"]} {atkr["attack"]["name"]} -> {effect}{defr["card"]["name"]} {int(final_dmg)} dmg')
+        await self.battlelogger(f'{atkr["card"]["name"]}({atkr["hp"]}hp) {atkr["attack"]["name"]} -> {effect}{defr["card"]["name"]}({defr["hp"]}hp) -> {int(final_dmg)} dmg')
         defr["hp"] -= int(final_dmg)
 
         # Check if the defender is dead
@@ -393,7 +401,7 @@ class Battle:
             total_characters = sum(len(string) for string in self.log_list)
             if total_characters > 1999:
                 log(f'[Pokemon][DEBUG] - battle log exceeding 2000 characters, removing attack lines')
-                self.log_list = [s for s in self.log_list if "->".lower() not in s.lower()]
+                self.log_list = [s for s in self.log_list if ">".lower() not in s.lower()]
             for entry in self.log_list:
                 self.battlelog += entry
 
