@@ -229,7 +229,7 @@ class Battle:
         # effectiveness calculations
         final_dmg, effect = await self.calculate_effectiveness(dmg, attacker_type, defender_type)
         log(f'[Pokemon][DEBUG] - {atkr["card"]["name"]}({atkr["hp"]}hp) uses {atkr["attack"]["name"]} -> {effect}{defr["card"]["name"]}({defr["hp"]}hp) takes {int(final_dmg)} damage (base {base_dmg}{modifier_string})')
-        await self.battlelogger(f'{atkr["card"]["name"]}({atkr["hp"]}hp) {atkr["attack"]["name"]} -> {effect}{defr["card"]["name"]}({defr["hp"]}hp) -> {int(final_dmg)} dmg')
+        await self.battlelogger(f'{atkr["card"]["name"]}({atkr["hp"]}hp) uses {atkr["attack"]["name"]} -> {effect}{defr["card"]["name"]}({defr["hp"]}hp) takes {int(final_dmg)} dmg')
         defr["hp"] -= int(final_dmg)
 
         # Check if the defender is dead
@@ -385,7 +385,7 @@ class Battle:
                 break
 
         stat_results = await self.handle_battle_outcome(attacker["player"], defender["player"], attacker["card_values"], defender["card_values"])
-        return self.battlelog, stat_results
+        return self.battlelog, stat_results, self.log_list
 
     async def battlelogger(self, log_input, start=False, end=False):
         if not start and not end:
@@ -399,9 +399,10 @@ class Battle:
             self.log_list.append(f'{log_input}')
             self.log_list.append(f'```')
             total_characters = sum(len(string) for string in self.log_list)
-            if total_characters > 1999:
-                log(f'[Pokemon][DEBUG] - battle log exceeding 2000 characters, removing attack lines')
-                self.log_list = [s for s in self.log_list if ">".lower() not in s.lower()]
+            # disabled cause of rolling combat log
+            #if total_characters > 1999:
+            #    log(f'[Pokemon][DEBUG] - battle log exceeding 2000 characters, removing attack lines')
+            #    self.log_list = [s for s in self.log_list if ">".lower() not in s.lower()]
             for entry in self.log_list:
                 self.battlelog += entry
 

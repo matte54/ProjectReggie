@@ -195,9 +195,9 @@ class Tcg:
 
         # try to block to catch battle exceptions for now
         try:
-            fight, results = await self.bs.combat_loop(Tcg.battlelist)
-            await self.send_to_all(fight)
-            await self.send_to_all(results)
+            fight, results, log_list = await self.bs.combat_loop(Tcg.battlelist)
+            await self.rolling_combatlog(log_list)
+            #await self.send_to_all(fight)
         except Exception as e:
             log(f'[Pokemon] - an error has occurred: {e}')
             Tcg.battlelist = []  # clear the battle que
@@ -207,9 +207,46 @@ class Tcg:
                                             f'que)```')
             raise  # Re-raises the caught exception
 
+        await self.send_to_all(results)
         Tcg.battlelist = []  # clear the battle que
         log(f'[Pokemon][DEBUG] - Battlelist has {len(Tcg.battlelist)} entries (AFTER CLEAR)')
         Tcg.battle_underway = False
+
+    async def rolling_combatlog(self, loglist):
+        max_lines = 10  # Maximum lines to display in the log
+        time_between_lines = 3
+
+        loglist.pop(0)  # Remove the first element
+        loglist.pop(-1)  # Remove the last element
+
+        async def update_channel(channel_id):
+            ch = self.client.get_channel(channel_id)
+            rolling_log = []  # Each channel has its own rolling log
+
+            # Send the initial message
+            message = await ch.send(f'```yaml\n\nBattle begins!```')
+
+            try:
+                for entry in loglist:
+                    await asyncio.sleep(time_between_lines)  # Wait 5 seconds between updates
+
+                    # Add the next line from the predefined log to the rolling log
+                    rolling_log.append(entry)
+
+                    # Trim the rolling log if it exceeds the maximum number of lines
+                    if len(rolling_log) > max_lines:
+                        rolling_log.pop(0)
+
+                    # Update the message content
+                    new_content = "```yaml\n\n" + "".join(rolling_log) + '```'
+                    await message.edit(content=new_content)
+
+            except Exception as e:
+                print(f"An error occurred in channel {channel_id}: {e}")
+
+        # Run the update logic for each channel concurrently
+        tasks = [update_channel(channel) for channel in self.pokemon_channels]
+        await asyncio.gather(*tasks)
 
     async def check_card_avail(self):
         cardlist = []
