@@ -119,9 +119,12 @@ class Tcg:
 
     async def send_to_all(self, msg):
         # send to this function to post to all pokemon channels
+        messages = []
         for channel in self.pokemon_channels:
             ch = self.client.get_channel(channel)
-            await ch.send(msg)
+            x = await ch.send(msg)
+            messages.append(x)
+        return messages
 
     def get_user_name(self, user_id):
         if os.path.exists(f'./data/etc/ids.json'):
@@ -194,7 +197,8 @@ class Tcg:
 
             await asyncio.sleep(10)
             await self.send_to_all(
-                f'```yaml\n\nBattle starts in 10s - {Tcg.battlelist[0][0]} vs {Tcg.battlelist[1][0]}```')
+                f'```yaml\n\nBattle starts in 10s - {Tcg.battlelist[0][0]}(green) vs {Tcg.battlelist[1][0]}(red)```')
+
             await asyncio.sleep(10)
 
             # try to block to catch battle exceptions for now
@@ -726,6 +730,20 @@ class Tcg:
             await self.message.channel.send(
                 f'```yaml\n\nCard not found```')
 
+    async def create_thread(self, message, name):
+        try:
+            message = await self.message.channel.fetch_message(message.id)
+            thread = await message.create_thread(name=name, auto_archive_duration=60)
+            await message.channel.send(f"Thread '{thread.name}' created!")
+            await thread.send("Hello")
+
+            return thread
+
+        except discord.Forbidden:
+            await self.message.channel.send("I don't have permission to create threads.")
+        except discord.HTTPException as e:
+            await self.message.channel.send(f"Failed to create thread: {e}")
+
     async def admin(self, subcommand2, subcommand3=None):
         # reset the free timer
         if subcommand2 == "reset":
@@ -749,8 +767,6 @@ class Tcg:
             if not self.message.author.id == self.admins[0]:
                 log(f'[Pokemon] - {self.username} tried to get admin access and got denied')
                 return
-
-            await self.owned("bw1")
             return
 
         if subcommand2 == "enable":
