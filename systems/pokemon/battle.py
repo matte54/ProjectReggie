@@ -98,7 +98,7 @@ class Battle:
             results_msg += f'{winner} won ${pricemoney} and gained {winner_reward} xp\n'
         else:
             winner_data["profile"]["last"] = ""
-            results_msg += f'{winner} won a free random boosterpack and gained {winner_reward} xp\n'
+            results_msg += f'{winner} won a free random boosterpack(claim it with $tcg free) and gained {winner_reward} xp\n'
 
         results_msg += f'{loser} gained {loser_reward} xp\n'
         if w_lvlup:

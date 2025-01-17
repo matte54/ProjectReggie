@@ -10,6 +10,8 @@ from systems.pokemon.set_data import x as set_data
 from systems.pokemon.rarity_data import x as rarity_data
 from systems.pokemon import pokehandler
 
+class CardError(Exception):
+    pass
 
 class PokemonTCG:
     def __init__(self, client):
@@ -131,6 +133,9 @@ class PokemonTCG:
 
         if debug_on():
             log(f'[Pokemon][DEBUG] - {len(self.selected_cards)} cards picked')
+
+        if len(self.selected_cards) < 10:
+            raise CardError(f'Not enough cards selected {len(self.selected_cards)}')
 
         for card in self.selected_cards:
             self.card_list.append((card["id"], card["rarity"], card["name"]))

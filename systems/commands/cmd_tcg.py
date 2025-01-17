@@ -25,6 +25,7 @@ class Tcg:
     picking_underway = False
     battle_underway = False
     battlelist = []
+    battle_lock = asyncio.Lock()
 
     def __init__(self, client):
         # define paths
@@ -130,6 +131,7 @@ class Tcg:
                 return id_data[str(user_id)]
 
     async def battle(self):
+        log(f'[Pokemon][DEBUG] - Battle instance {id(self)} initiated by {self.username}')
         log(f'[Pokemon][DEBUG] - Battlelist has {len(Tcg.battlelist)} entries START OF SIGNUP')
         if Tcg.battle_underway:
             log(f"[Pokemon] - Battle already underway, ignoring request")
@@ -185,32 +187,33 @@ class Tcg:
         if len(Tcg.battlelist) < 2:
             return
 
-        # begin battle procedures
-        Tcg.battle_underway = True
+        async with Tcg.battle_lock:
+            # begin battle procedures
+            Tcg.battle_underway = True
 
-        await asyncio.sleep(10)
-        await self.send_to_all(
-            f'```yaml\n\nBattle starts in 10s - {Tcg.battlelist[0][0]} vs {Tcg.battlelist[1][0]}```')
-        await asyncio.sleep(10)
-
-        # try to block to catch battle exceptions for now
-        try:
-            fight, results, log_list = await self.bs.combat_loop(Tcg.battlelist)
-            await self.rolling_combatlog(log_list)
-            #await self.send_to_all(fight)
-        except Exception as e:
-            log(f'[Pokemon] - an error has occurred: {e}')
-            Tcg.battlelist = []  # clear the battle que
-            Tcg.battle_underway = False
+            await asyncio.sleep(10)
             await self.send_to_all(
-                f'```yaml\n\nsomething went wrong, someone call Matte 😭 (reseting battle '
-                                            f'que)```')
-            raise  # Re-raises the caught exception
+                f'```yaml\n\nBattle starts in 10s - {Tcg.battlelist[0][0]} vs {Tcg.battlelist[1][0]}```')
+            await asyncio.sleep(10)
 
-        await self.send_to_all(results)
-        Tcg.battlelist = []  # clear the battle que
-        log(f'[Pokemon][DEBUG] - Battlelist has {len(Tcg.battlelist)} entries (AFTER CLEAR)')
-        Tcg.battle_underway = False
+            # try to block to catch battle exceptions for now
+            try:
+                fight, results, log_list = await self.bs.combat_loop(Tcg.battlelist)
+                await self.rolling_combatlog(log_list)
+                #await self.send_to_all(fight)
+            except Exception as e:
+                log(f'[Pokemon] - an error has occurred: {e}')
+                Tcg.battlelist = []  # clear the battle que
+                Tcg.battle_underway = False
+                await self.send_to_all(
+                    f'```yaml\n\nsomething went wrong, someone call Matte 😭 (reseting battle '
+                                                f'que)```')
+                raise  # Re-raises the caught exception
+
+            await self.send_to_all(results)
+            Tcg.battlelist = []  # clear the battle que
+            log(f'[Pokemon][DEBUG] - Battlelist has {len(Tcg.battlelist)} entries (AFTER CLEAR)')
+            Tcg.battle_underway = False
 
     async def rolling_combatlog(self, loglist):
         max_lines = 10  # Maximum lines to display in the log
@@ -367,8 +370,13 @@ class Tcg:
         claimstring += '```'
 
         await self.message.channel.send(claimstring)
-
-        self.selected_cards, card_img_list = await self.pokemon.process_input(self.set_id)
+        try:
+            self.selected_cards, card_img_list = await self.pokemon.process_input(self.set_id)
+        except Exception as e:
+            await self.send_to_all(
+                f'```yaml\n\nsomething went wrong, someone call Matte 😭 (reseting)```')
+            Tcg.picking_underway = False
+            raise  # Re-raises the caught exception
 
         await self.message.channel.send(files=card_img_list)
 
@@ -518,7 +526,13 @@ class Tcg:
             await self.message.channel.send(f'```yaml\n\nNot enough money, set cost is ${value} you only have ${self.userprofile["profile"]["money"]}```')
             return
 
-        self.selected_cards, card_img_list = await self.pokemon.process_input(subcommand2)
+        try:
+            self.selected_cards, card_img_list = await self.pokemon.process_input(subcommand2)
+        except Exception as e:
+            await self.send_to_all(
+                f'```yaml\n\nsomething went wrong, someone call Matte 😭 (reseting)```')
+            raise  # Re-raises the caught exception
+
         if not self.selected_cards:
             await self.message.channel.send(f'```yaml\n\nSet not found```')
             return
