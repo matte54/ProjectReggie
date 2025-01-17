@@ -226,16 +226,24 @@ class Battle:
         else:
             modifier_string = f''
 
+        print(atkr["color"])
         # effectiveness calculations
         final_dmg, effect = await self.calculate_effectiveness(dmg, attacker_type, defender_type)
         log(f'[Pokemon][DEBUG] - {atkr["card"]["name"]}({atkr["hp"]}hp) uses {atkr["attack"]["name"]} -> {effect}{defr["card"]["name"]}({defr["hp"]}hp) takes {int(final_dmg)} damage (base {base_dmg}{modifier_string})')
-        await self.battlelogger(f'{atkr["card"]["name"]}({atkr["hp"]}hp) uses {atkr["attack"]["name"]} -> {effect}{defr["card"]["name"]}({defr["hp"]}hp) takes {int(final_dmg)} dmg')
+        if atkr["color"] == "green":
+            await self.battlelogger(f'+ {atkr["card"]["name"]}({atkr["hp"]}hp) uses {atkr["attack"]["name"]} -> {effect}{defr["card"]["name"]}({defr["hp"]}hp) takes {int(final_dmg)} dmg')
+        else:
+            await self.battlelogger(
+                f'- {atkr["card"]["name"]}({atkr["hp"]}hp) uses {atkr["attack"]["name"]} -> {effect}{defr["card"]["name"]}({defr["hp"]}hp) takes {int(final_dmg)} dmg')
         defr["hp"] -= int(final_dmg)
 
         # Check if the defender is dead
         if defr["hp"] <= 0:
             log(f'[Pokemon] - {defr["card"]["name"]} fainted!')
-            await self.battlelogger(f'{defr["card"]["name"]} fainted!')
+            if defr["color"] == "green":
+                await self.battlelogger(f'+ {defr["card"]["name"]} fainted!')
+            else:
+                await self.battlelogger(f'- {defr["card"]["name"]} fainted!')
             return False  # If enemy is dead, return False
         return True  # If enemy is still alive, return True
 
@@ -270,10 +278,11 @@ class Battle:
         self.player1_data["player"] = battlelist[0][0]
         self.player1_data["cards"] = []
         self.player1_data["card_values"] = 0
+        self.player1_data["color"] = "green"
 
         # Iterate through each of Player 1's cards
         for card in player1_cards:
-            card_data = {"card": card, "hp": int(card["hp"])}
+            card_data = {"card": card, "hp": int(card["hp"]), "color": 'green'}
 
             # Find the best attack for the current card
             if card.get("attacks"):
@@ -298,10 +307,11 @@ class Battle:
         self.player2_data["player"] = battlelist[1][0]
         self.player2_data["cards"] = []
         self.player2_data["card_values"] = 0
+        self.player2_data["color"] = "red"
 
         # Iterate through each of Player 2's cards
         for card in player2_cards:
-            card_data = {"card": card, "hp": int(card["hp"])}
+            card_data = {"card": card, "hp": int(card["hp"]), "color": 'red'}
 
             # Find the best attack for the current card
             if card.get("attacks"):
@@ -325,7 +335,7 @@ class Battle:
     async def combat_loop(self, battlelist):
         combat_on = False
         battle_loops = 0
-        self.battlelog = f'```'  # initialize/reset battlelog
+        #self.battlelog = f'```diff'  # initialize/reset battlelog
         await self.init_player_data(battlelist)
 
         # combat loop
@@ -333,7 +343,10 @@ class Battle:
         turn_order = [self.player1_data, self.player2_data]
         random.shuffle(turn_order)
         log(f'[Pokemon] - {turn_order[0]["player"]} goes first!')
-        await self.battlelogger(f'{turn_order[0]["player"]} goes first!', True, False)
+        if turn_order[0]["color"] == "green":
+            await self.battlelogger(f'+ {turn_order[0]["player"]} goes first!', True, False)
+        else:
+            await self.battlelogger(f'- {turn_order[0]["player"]} goes first!', True, False)
         current_turn = 0
 
         # Initialize sent_out_cards dynamically based on player usernames
@@ -343,7 +356,10 @@ class Battle:
         for player_data in turn_order:
             active_card = player_data["cards"][0]  # Start with the first card for each player
             log(f'[Pokemon] - {player_data["player"]} sends out {active_card["card"]["name"]}!')
-            await self.battlelogger(f'{player_data["player"]} sends out {active_card["card"]["name"]}!')
+            if player_data["color"] == "green":
+                await self.battlelogger(f'+ {player_data["player"]} sends out {active_card["card"]["name"]}!')
+            else:
+                await self.battlelogger(f'- {player_data["player"]} sends out {active_card["card"]["name"]}!')
             sent_out_cards[player_data["player"]].append(active_card["card"]["name"])
 
         while combat_on:
@@ -358,7 +374,10 @@ class Battle:
             # Print message if the card is being sent out for the first time
             if active_attacker_card["card"]["name"] not in sent_out_cards[attacker["player"]]:
                 log(f'[Pokemon] - {attacker["player"]} sends out {active_attacker_card["card"]["name"]}!')
-                await self.battlelogger(f'{attacker["player"]} sends out {active_attacker_card["card"]["name"]}!')
+                if attacker["color"] == "green":
+                    await self.battlelogger(f'+ {attacker["player"]} sends out {active_attacker_card["card"]["name"]}!')
+                else:
+                    await self.battlelogger(f'- {attacker["player"]} sends out {active_attacker_card["card"]["name"]}!')
                 sent_out_cards[attacker["player"]].append(active_attacker_card["card"]["name"])
 
             # Perform the attack using the active attacker card and defender card
@@ -372,7 +391,10 @@ class Battle:
                 if len(defender["cards"]) == 0:
                     # If the defender has no cards left, the attacker wins
                     log(f'[Pokemon] - {defender["player"]} has no more cards left! {attacker["player"]} wins!')
-                    await self.battlelogger(f'{attacker["player"]} wins!', False, True)
+                    if attacker["color"] == "green":
+                        await self.battlelogger(f'+ {attacker["player"]} wins!', False, True)
+                    else:
+                        await self.battlelogger(f'- {attacker["player"]} wins!', False, True)
                     combat_on = False
                     # send result end screen here
                     break
@@ -390,14 +412,13 @@ class Battle:
     async def battlelogger(self, log_input, start=False, end=False):
         if not start and not end:
             self.log_list.append(f'{log_input}\n')
-        if start:
+        if start and not end:
             # first entry reset and add first input
             self.log_list = []
             self.log_list.append(f'{log_input}\n')
-        elif end:
+        if end and not start:
             # last entry
             self.log_list.append(f'{log_input}')
-            self.log_list.append(f'```')
             total_characters = sum(len(string) for string in self.log_list)
             # disabled cause of rolling combat log
             #if total_characters > 1999:

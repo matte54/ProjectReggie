@@ -201,7 +201,6 @@ class Tcg:
             try:
                 fight, results, log_list = await self.bs.combat_loop(Tcg.battlelist)
                 await self.rolling_combatlog(log_list)
-                #await self.send_to_all(fight)
             except Exception as e:
                 log(f'[Pokemon] - an error has occurred: {e}')
                 Tcg.battlelist = []  # clear the battle que
@@ -220,15 +219,12 @@ class Tcg:
         max_lines = 10  # Maximum lines to display in the log
         time_between_lines = 3
 
-        loglist.pop(0)  # Remove the first element
-        loglist.pop(-1)  # Remove the last element
-
         async def update_channel(channel_id):
             ch = self.client.get_channel(channel_id)
             rolling_log = []  # Each channel has its own rolling log
 
             # Send the initial message
-            message = await ch.send(f'```yaml\n\nBattle begins!```')
+            message = await ch.send(f'```diff\n\nBattle begins!```')
 
             try:
                 for entry in loglist:
@@ -242,7 +238,7 @@ class Tcg:
                         rolling_log.pop(0)
 
                     # Update the message content
-                    new_content = "```yaml\n\n" + "".join(rolling_log) + '```'
+                    new_content = "```diff\n\n" + "".join(rolling_log) + '```'
                     await message.edit(content=new_content)
 
             except Exception as e:
