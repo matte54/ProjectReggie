@@ -187,6 +187,7 @@ class Tcg:
         if len(Tcg.battlelist) < 2:
             return
 
+        # attempt using async to have 1 battle and 1 battle only.. damn objects
         async with Tcg.battle_lock:
             # begin battle procedures
             Tcg.battle_underway = True
