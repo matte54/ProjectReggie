@@ -24,6 +24,7 @@ from systems.pokemon.rarity_data import x as rarity_data
 class Tcg:
     picking_underway = False
     battle_underway = False
+    signup_underway = False
     battlelist = []
     battle_lock = asyncio.Lock()
 
@@ -134,12 +135,20 @@ class Tcg:
                 return id_data[str(user_id)]
 
     async def battle(self):
+        if Tcg.signup_underway:
+            log(f"[Pokemon] - Signup in progress, ignoring request")
+            await self.message.channel.send(
+                f'```yaml\n\nProcessing, please try again in a few seconds```')
+            return
         log(f'[Pokemon][DEBUG] - Battle instance {id(self)} initiated by {self.username}')
         log(f'[Pokemon][DEBUG] - Battlelist has {len(Tcg.battlelist)} entries START OF SIGNUP')
         if Tcg.battle_underway:
             log(f"[Pokemon] - Battle already underway, ignoring request")
+            await self.message.channel.send(
+                f'```yaml\n\nBattle currently underway, please wait for it to finish (if this is permanent call Matte)```')
             return
 
+        Tcg.signup_underway = True
         player_data = []
 
         if self.client.user.id == 327138137371574282:
@@ -148,6 +157,7 @@ class Tcg:
                 if self.battletracker[self.username] >= 3:
                     await self.message.channel.send(
                         f'```yaml\n\nYou are not allowed any more battles today, come back tomorrow...```')
+                    Tcg.signup_underway = False
                     return
 
             # make sure user is not already signed up
@@ -155,6 +165,7 @@ class Tcg:
                 if self.username in Tcg.battlelist[0]:
                     await self.message.channel.send(
                         f'```yaml\n\nYou are already signed up for battle```')
+                    Tcg.signup_underway = False
                     return
         else:
             log(f'[Pokemon] - client is {self.client.user.name} skipping signup rules')
@@ -164,6 +175,7 @@ class Tcg:
         if not found_cards:
             await self.message.channel.send(
                 f'```yaml\n\nYou dont own enough valid cards to battle```')
+            Tcg.signup_underway = False
             return
 
         # create player data and append to the battlelist
@@ -188,8 +200,10 @@ class Tcg:
 
         # if only one player is signed up stop here
         if len(Tcg.battlelist) < 2:
+            Tcg.signup_underway = False
             return
-
+        await asyncio.sleep(3)
+        Tcg.signup_underway = False
         # attempt using async to have 1 battle and 1 battle only.. damn objects
         async with Tcg.battle_lock:
             # begin battle procedures

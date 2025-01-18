@@ -165,50 +165,28 @@ class Battle:
         e = ""
         return base_damage, e
 
-    async def weak_n_res(self, atkrtype, defrcard):
-        """
-        this works kinda but keeping it simple to not overpower stuff for now...
-        # Helper function to parse the value string
-        def parse_value(value):
-            if isinstance(value, str):
-                # Replace non-standard operators
-                value = value.replace('×', '*')  # Replace '×' with '*'
-                value = value.replace('÷', '/')  # Replace '÷' with '/'
-
-                # Handle cases like "*2", "/3", etc.
-                # If the value starts with an operator like * or /, we add a 1 at the start
-                # to handle operations like "*2", "/3"
-                if value.startswith(('*', '/')):  # Starts with multiplication or division
-                    value = '1' + value  # Add 1 before the operator to make it a valid expression
-
-                # Now we try to safely evaluate the string as an arithmetic operation
-                try:
-                    return float(eval(value))  # Safely evaluate the expression
-                except Exception as e:
-                    print(f"Error parsing value {value}: {e}")
-                    return 1  # Default to 1 if parsing fails
-
-            return value  # If already numeric, return it directly
-        """
+    async def weak_n_res(self, atkrtype, defrcard, dmg):
         # Weakness and resistance check
         if "weaknesses" in defrcard:
             for weakness in defrcard["weaknesses"]:
                 if atkrtype == weakness["type"]:
-                    #value = parse_value(weakness["value"])
-                    #dmg *= value  # Multiply damage for weakness
-                    modifier = random.randint(1, 3)
-                    log(f'[Pokemon][DEBUG] - {defrcard["name"]} is weak against: {atkrtype} + {modifier} base damage')
-                    return int(modifier)
+                    dmg = dmg * 1.5
+                    log(f'[Pokemon][DEBUG] - {defrcard["name"]} is weak against: {atkrtype}')
+                    weak = True
+                    resi = False
+                    return int(dmg), weak, resi
         if "resistances" in defrcard:
             for resistance in defrcard["resistances"]:
                 if atkrtype == resistance["type"]:
-                    #value = parse_value(resistance["value"])
-                    #dmg /= value  # Divide damage for resistance
-                    modifier = random.randint(-3, -1)
-                    log(f'[Pokemon][DEBUG] - {defrcard["name"]} is resistant against: {atkrtype} - {modifier} base damage')
-                    return int(modifier)
+                    dmg = dmg / 0.5
+                    log(f'[Pokemon][DEBUG] - {defrcard["name"]} is resistant against: {atkrtype}')
+                    weak = False
+                    resi = True
+                    return int(dmg), weak, resi
 
-        return 0
+        weak = False
+        resi = False
+        return dmg, weak, resi
 
     async def attack(self, atkr, defr):
         base_dmg = atkr["dmg"]  # base damage
@@ -217,24 +195,16 @@ class Battle:
         defender_type = defr["card"]["types"][0]
 
         # resistances and weakness check
-        modifier = await self.weak_n_res(attacker_type, defr["card"])
-        dmg += modifier
-        if modifier < 0:
-            modifier_string = f'{modifier}'
-        elif modifier > 0:
-            modifier_string = f'+{modifier}'
-        else:
-            modifier_string = f''
+        dmg, weak, resi, = await self.weak_n_res(attacker_type, defr["card"], dmg)
 
-        print(atkr["color"])
         # effectiveness calculations
         final_dmg, effect = await self.calculate_effectiveness(dmg, attacker_type, defender_type)
-        log(f'[Pokemon][DEBUG] - {atkr["card"]["name"]}({atkr["hp"]}hp) uses {atkr["attack"]["name"]} -> {effect}{defr["card"]["name"]}({defr["hp"]}hp) takes {int(final_dmg)} damage (base {base_dmg}{modifier_string})')
+        log(f'[Pokemon][DEBUG] - {atkr["card"]["name"]}({atkr["hp"]}hp) uses {atkr["attack"]["name"]} -> {effect}{defr["card"]["name"]}({defr["hp"]}hp) takes {int(final_dmg)} damage (base {base_dmg})')
         if atkr["color"] == "green":
-            await self.battlelogger(f'+ {atkr["card"]["name"]}({atkr["hp"]}hp) uses {atkr["attack"]["name"]} -> {effect}{defr["card"]["name"]}({defr["hp"]}hp) takes {int(final_dmg)} dmg')
+            await self.battlelogger(f'+ {atkr["card"]["name"]}({atkr["hp"]}hp) uses {atkr["attack"]["name"]} {"+" if weak else "-" if resi else ""}> {effect}{defr["card"]["name"]}({defr["hp"]}hp) takes {int(final_dmg)}({base_dmg}) dmg')
         else:
             await self.battlelogger(
-                f'- {atkr["card"]["name"]}({atkr["hp"]}hp) uses {atkr["attack"]["name"]} -> {effect}{defr["card"]["name"]}({defr["hp"]}hp) takes {int(final_dmg)} dmg')
+                f'- {atkr["card"]["name"]}({atkr["hp"]}hp) uses {atkr["attack"]["name"]} {"+" if weak else "-" if resi else ""}> {effect}{defr["card"]["name"]}({defr["hp"]}hp) takes {int(final_dmg)}({base_dmg}) dmg')
         defr["hp"] -= int(final_dmg)
 
         # Check if the defender is dead
