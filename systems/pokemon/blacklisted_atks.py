@@ -1,3 +1,0 @@
-blcklist = ["Double-edge",
-            "Selfdestruct"
-            ]

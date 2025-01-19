@@ -5,7 +5,9 @@ import re
 
 from systems.logger import debug_on, log
 from systems.pokemon.effectiveness_data import type_effectiveness
-from systems.pokemon.blacklisted_atks import blcklist
+from systems.pokemon.halfed_atks import halfed
+from systems.pokemon.threeforths_atks import threeforths
+from systems.pokemon.whitelisted import whitelist
 
 # configurable constants
 NONE_DAMAGE_DEFAULT = 10
@@ -257,7 +259,7 @@ class Battle:
             # Find the best attack for the current card
             if card.get("attacks"):
                 best_attack = max(
-                    (attack for attack in card["attacks"] if attack["name"] not in blcklist),
+                    (attack for attack in card["attacks"]),
                     key=lambda attack: self.extract_damage_value(attack['damage'])
                 )
             else:
@@ -267,9 +269,20 @@ class Battle:
             card_data["attack"] = best_attack
             card_data["dmg"] = self.extract_damage_value(best_attack["damage"])
 
+            # reduced list changes to attacks
+            if card_data["attack"]["name"] in halfed:
+                card_data["dmg"] = int(card_data["dmg"] / 2)
+                card_data["attack"]["name"] = card_data["attack"]["name"] + "(½)"
+            if card_data["attack"]["name"] in threeforths:
+                card_data["dmg"] = int(card_data["dmg"] * 3 / 4)
+                card_data["attack"]["name"] = card_data["attack"]["name"] + "(¾)"
+
             self.player1_data["card_values"] = + int(card_data["dmg"])  # add up dmg to get hand value
-            if card_data["dmg"] > 125:
+
+            # add high damage attack to audit file if not in whitelist and not already handled
+            if card_data["dmg"] > 125 and card_data["attack"]["name"] not in threeforths and card_data["attack"]["name"] not in halfed and card_data["attack"]["name"] not in whitelist:
                 self.write_susattack(f'{card_data["attack"]["name"]} {card_data["dmg"]} dmg - {card["id"]}')
+
             # Append card data to the player's list of cards
             self.player1_data["cards"].append(card_data)
 
@@ -286,7 +299,7 @@ class Battle:
             # Find the best attack for the current card
             if card.get("attacks"):
                 best_attack = max(
-                    (attack for attack in card["attacks"] if attack["name"] not in blcklist),
+                    (attack for attack in card["attacks"]),
                     key=lambda attack: self.extract_damage_value(attack['damage'])
                 )
             else:
@@ -296,9 +309,20 @@ class Battle:
             card_data["attack"] = best_attack
             card_data["dmg"] = self.extract_damage_value(best_attack["damage"])
 
+            # reduced list changes to attacks
+            if card_data["attack"]["name"] in halfed:
+                card_data["dmg"] = int(card_data["dmg"] / 2)
+                card_data["attack"]["name"] = card_data["attack"]["name"] + "(½)"
+            if card_data["attack"]["name"] in threeforths:
+                card_data["dmg"] = int(card_data["dmg"] * 3 / 4)
+                card_data["attack"]["name"] = card_data["attack"]["name"] + "(¾)"
+
             self.player2_data["card_values"] = + int(card_data["dmg"])  # add up dmg to get hand value
-            if card_data["dmg"] > 125:
+
+            # add high damage attack to audit file if not in whitelist and not already handled
+            if card_data["dmg"] > 125 and card_data["attack"]["name"] not in threeforths and card_data["attack"]["name"] not in halfed and card_data["attack"]["name"] not in whitelist:
                 self.write_susattack(f'{card_data["attack"]["name"]} {card_data["dmg"]} dmg - {card["id"]}')
+
             # Append card data to the player's list of cards
             self.player2_data["cards"].append(card_data)
 

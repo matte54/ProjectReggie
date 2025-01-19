@@ -1,0 +1,15 @@
+halfed = ["Double-edge",
+          "Selfdestruct",
+          "Phoenix Burn",
+          "Giga Impact",
+          "Iron Bash",
+          "Tropical Hour-GX",
+          "Final Blowup",
+          "Steam Blast",
+          "Max Pyro Ball",
+          "Crown Opal",
+          "Rock Blaster",
+          "Buster Tail",
+          "Fulgurite",
+          "Explosive Vortex"
+          ]
