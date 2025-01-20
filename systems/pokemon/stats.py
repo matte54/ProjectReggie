@@ -24,7 +24,10 @@ class TCGStats:
                 if str(user_id) in id_data:
                     return id_data[str(user_id)]
 
-        def update_top_3(stat_list, name, value):
+        def update_top_3(stat_list, name, value, decimals=None):
+            if decimals is not None:
+                value = round(value, decimals)
+
             stat_list.append({"name": name, "value": value})
             stat_list.sort(key=lambda x: x["value"], reverse=True)
             # Keep only the top 3
@@ -42,7 +45,7 @@ class TCGStats:
 
                         # Update stats for each category
                         update_top_3(stats["highest_level"], name, profile_data.get("level", 0))
-                        update_top_3(stats["money"], name, profile_data.get("money", 0))
+                        update_top_3(stats["money"], name, profile_data.get("money", 0), decimals=2)
                         update_top_3(stats["battles_won"], name, profile_data.get("battles_won", 0))
                         update_top_3(stats["battles_lost"], name, profile_data.get("battles_lost", 0))
                         update_top_3(stats["cards_owned"], name, profile_data.get("cards", 0))
