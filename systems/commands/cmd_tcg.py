@@ -16,6 +16,7 @@ from systems.pokemon import pokemon
 from systems.pokemon import pokehandler
 from systems.pokemon import battle as bs
 from systems.pokemon import channel_manager
+from systems.pokemon import stats
 
 from systems.pokemon.set_data import x as set_data
 from systems.pokemon.rarity_data import x as rarity_data
@@ -46,6 +47,7 @@ class Tcg:
         self.pokemon = pokemon.PokemonTCG(self.client)
         self.pokehandler = pokehandler.Pokehandler(self.client)
         self.channelmanager = channel_manager.ChannelManager(self.client)
+        self.stats_generator = stats.TCGStats()
         self.bs = bs.Battle()
         self.varmanager = VarManager()
         self.admins = ADMINS
@@ -61,6 +63,8 @@ class Tcg:
         self.subcommands = {
             "free": (self.free, False, False),
             "profile": (self.profile, False, False),
+            "help": (self.help, False, False),
+            "stats": (self.stats, False, False),
             "battle": (self.battle, False, False),
             "q": (self.query, True, False),
             "buy": (self.buy, True, False),
@@ -758,6 +762,20 @@ class Tcg:
         except discord.HTTPException as e:
             await self.message.channel.send(f"Failed to create thread: {e}")
 
+    async def help(self):
+        # load and post help file
+        helptext = f'```yaml\n\n'
+        with open('./data/pokemon/help.txt', 'r', encoding='UTF-8') as file:
+            for line in file:
+                helptext += f'{line}\n'
+        helptext += '```'
+        await self.message.channel.send(helptext)
+
+    async def stats(self):
+        # stats generator command
+        report = self.stats_generator.stats()
+        await self.message.channel.send(report)
+
     async def admin(self, subcommand2, subcommand3=None):
         # reset the free timer
         if subcommand2 == "reset":
@@ -799,8 +817,27 @@ class Tcg:
             log(f'[Pokemon][ADMIN] - admin {self.username} DISABLED channel {self.message.channel.name}({self.message.channel.id}) for pokemon')
             return
 
-        if subcommand2 == "all":
-            # give all active profiles "subcommand3" amount of money
+        if subcommand2 == "give":
+            # per command basis admin check
+            if not self.message.author.id == self.admins[0]:
+                log(f'[Pokemon] - {self.username} tried to get admin access and got denied')
+                return
+            if subcommand3 is None:
+                return
+            try:
+                given_money = int(subcommand3)
+            except ValueError:
+                log(f'[Pokemon][ADMIN] - {subcommand3} is not a integer')
+                return
+
+            user_profiles_list = await self.find_json_files('./local/pokemon/profiles/')
+            for profile in user_profiles_list:
+                with open(profile, "r") as f:
+                    profile_data = json.load(f)
+                profile_data["profile"]["money"] += given_money
+                self.pokehandler.write_json(profile, profile_data)
+            log(f'[Pokemon][ADMIN] - {self.username} gave everyone ${given_money}')
+            await self.send_to_all(f'```yaml\n\nADMIN {self.username} gave everyone a price of ${given_money}```')
             return
 
         await self.message.channel.send(
