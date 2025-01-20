@@ -17,6 +17,7 @@ from systems.pokemon import pokehandler
 from systems.pokemon import battle as bs
 from systems.pokemon import channel_manager
 from systems.pokemon import stats
+from systems.pokemon import activity_tracker
 
 from systems.pokemon.set_data import x as set_data
 from systems.pokemon.rarity_data import x as rarity_data
@@ -48,6 +49,7 @@ class Tcg:
         self.pokehandler = pokehandler.Pokehandler(self.client)
         self.channelmanager = channel_manager.ChannelManager(self.client)
         self.stats_generator = stats.TCGStats()
+        self.activity = activity_tracker.Tracker()
         self.bs = bs.Battle()
         self.varmanager = VarManager()
         self.admins = ADMINS
@@ -72,6 +74,8 @@ class Tcg:
             "admin": (self.admin, True, True),
         }
 
+        self.activity.startup()
+
     async def command(self, message):
         await self.collect_channel_ids()
         if message.channel.id not in self.pokemon_channels and message.author.id not in self.admins:
@@ -83,6 +87,7 @@ class Tcg:
         self.message = message
         self.username = self.get_user_name(message.author.id)
         log(f'[Pokemon] - USER: {self.username}')
+        self.activity.add_activity(message.author.id, str(self.now.isoformat()))
 
         self.userprofile, self.userprofile_path = self.pokehandler.get_profile(message)
         content = message.content.lower()
@@ -773,6 +778,7 @@ class Tcg:
 
     async def stats(self):
         # stats generator command
+        log(f'[Pokemon] - {self.username} - lists pokémon stats')
         report = self.stats_generator.stats()
         await self.message.channel.send(report)
 
@@ -799,6 +805,7 @@ class Tcg:
             if not self.message.author.id == self.admins[0]:
                 log(f'[Pokemon] - {self.username} tried to get admin access and got denied')
                 return
+            self.activity.read_activity()
             return
 
         if subcommand2 == "enable":
