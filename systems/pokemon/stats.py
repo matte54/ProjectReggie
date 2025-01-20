@@ -11,10 +11,11 @@ class TCGStats:
         stats = {
             "highest_level": [],
             "money": [],
+            "best_battlers": [],
             "battles_won": [],
             "battles_lost": [],
             "cards_owned": [],
-            "packs_opened": []
+            "packs_opened": [],
         }
 
         def get_user_name(user_id):
@@ -50,6 +51,15 @@ class TCGStats:
                         update_top_3(stats["battles_lost"], name, profile_data.get("battles_lost", 0))
                         update_top_3(stats["cards_owned"], name, profile_data.get("cards", 0))
                         update_top_3(stats["packs_opened"], name, profile_data.get("boosters_opened", 0))
+
+                        # Calculate W/L ratio and update best battler stat
+                        battles_won = profile_data.get("battles_won", 0)
+                        battles_lost = profile_data.get("battles_lost", 0)
+                        if battles_lost > 0:  # Avoid division by zero
+                            w_l_ratio = battles_won / battles_lost
+                            update_top_3(stats["best_battlers"], name, w_l_ratio, decimals=2)
+                        elif battles_won > 0:  # Perfect win record (no losses)
+                            update_top_3(stats["best_battlers"], name, float('inf'))
 
                     except json.JSONDecodeError:
                         print(f"Error decoding {file_name}. Skipping...")
