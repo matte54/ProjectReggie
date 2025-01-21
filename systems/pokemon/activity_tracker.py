@@ -40,8 +40,10 @@ class Tracker:
                 active_users_yesterday.append(userid)
 
         log(f"[Pokemon] - {active_users_yesterday}")
+        return active_users_yesterday
 
     def startup(self):
+        # just here to create the object at startup for init to run
         log(f"[Pokemon] - Init activity")
 
     def write_json(self, filepath, data):

@@ -16,6 +16,7 @@ class TCGStats:
             "battles_lost": [],
             "cards_owned": [],
             "packs_opened": [],
+            "valueable_cards": []
         }
 
         def get_user_name(user_id):
@@ -60,6 +61,27 @@ class TCGStats:
                             update_top_3(stats["best_battlers"], name, w_l_ratio, decimals=2)
                         elif battles_won > 0:  # Perfect win record (no losses)
                             update_top_3(stats["best_battlers"], name, float('inf'))
+
+                        # find most valueable card owned
+                        highest_value = float('-inf')
+                        highest_key = None
+
+                        # Iterate through each nested dictionary in 'sets'
+                        for set_name, cards in profile["sets"].items():
+                            if cards:  # Check if the dictionary is not empty
+                                # Find the key with the maximum value in the current dictionary
+                                max_key = max(cards, key=cards.get)
+                                max_value = cards[max_key]
+
+                                # Update the highest value and key if this value is larger
+                                if max_value > highest_value:
+                                    highest_value = max_value
+                                    highest_key = max_key
+                        setname = highest_key.rsplit("-", 1)[0]
+                        with open(f'./data/pokemon/sets/{setname}/{highest_key}.json', 'r') as f:
+                            card_data = json.load(f)
+                        pokemonname = card_data["name"]
+                        update_top_3(stats["valueable_cards"], f'{name} - {pokemonname}({highest_key})', highest_value, decimals=2)
 
                     except json.JSONDecodeError:
                         print(f"Error decoding {file_name}. Skipping...")
