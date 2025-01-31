@@ -8,5 +8,14 @@ threeforths = ["Rampaging Fang",
                "Psychic Loop",
                "Canyon Axe",
                "Hydro Kick",
-               "Bright Horns"
+               "Bright Horns",
+               "Max Discharge",
+               "Heavy Slam",
+               "Wild Impact",
+               "Earthquake",
+               "Heavy Stomp",
+               "Spiky Knuckle",
+               "Blue Surge-GX",
+               "G-Max Pulverization",
+               "Max Heat Burst"
                ]

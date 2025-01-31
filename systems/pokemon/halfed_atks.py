@@ -11,5 +11,9 @@ halfed = ["Double-edge",
           "Rock Blaster",
           "Buster Tail",
           "Fulgurite",
-          "Explosive Vortex"
+          "Explosive Vortex",
+          "G-Max Wildfire",
+          "Max Thunder and Lightning",
+          "Leaf Guard",
+          "Explosion"
           ]
