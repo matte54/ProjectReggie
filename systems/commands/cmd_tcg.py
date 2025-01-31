@@ -575,8 +575,11 @@ class Tcg:
         # post card images
         await self.message.channel.send(files=card_img_list)
         summary_message = await self.handle_cards(value)
-        await self.setbroker()  # adjust set values
+
+        price_msg = await self.setbroker()  # adjust set values
+
         await self.message.channel.send(summary_message)
+        await self.send_to_all(price_msg)
 
         time.sleep(3)  # extra wait time for disk to spin up for getting images
         Tcg.picking_underway = False  # set class var between objects
@@ -588,7 +591,7 @@ class Tcg:
             if item[0] == self.set_id:
                 self.setdatalist[i] = (item[0], item[1], int(item[2] * price_increase))
                 log(f'[Pokemon] - Increasing price of set {item[0]} from ${item[2]} to ${self.setdatalist[i][2]}')
-                break
+                return f'```yaml\n\nThe store increased the price of set {item[0]} from ${item[2]} to ${self.setdatalist[i][2]}(for the day)```'
 
     async def handle_cards(self, set_cost):
         # define and zero catch info

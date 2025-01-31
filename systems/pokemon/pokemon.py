@@ -10,8 +10,10 @@ from systems.pokemon.set_data import x as set_data
 from systems.pokemon.rarity_data import x as rarity_data
 from systems.pokemon import pokehandler
 
+
 class CardError(Exception):
     pass
+
 
 class PokemonTCG:
     def __init__(self, client):
