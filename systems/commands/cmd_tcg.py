@@ -561,6 +561,10 @@ class Tcg:
             log(f"[Pokemon] - Picking already underway, ignoring request")
             return
 
+        if not any(packs[0] == subcommand2 for packs in self.setdatalist):
+            await self.message.channel.send(f'```yaml\n\nSet not found```')
+            return
+
         # get the set value
         for item in self.setdatalist:
             if item[0] == subcommand2:
