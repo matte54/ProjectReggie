@@ -4,6 +4,7 @@ import discord
 import random
 import time
 import asyncio
+import pickle
 
 from datetime import datetime, timedelta
 
@@ -37,7 +38,15 @@ class Tcg:
         self.images_path = "./data/pokemon/images/"
         self.profiles_path = "./local/pokemon/profiles/"
 
-        self.setdatalist = set_data
+        # load setdata pkl file if exists
+        if os.path.exists('./local/pokemon/setdata.pkl'):
+            with open('./local/pokemon/setdata.pkl', 'rb') as file:
+                self.setdatalist = pickle.load(file)
+            log(f'[Pokemon] - loading saved local setdata')
+        else:
+            self.setdatalist = set_data
+            log(f'[Pokemon] - loading default setdata')
+
         self.raritydatalist = rarity_data
 
         self.client = client
@@ -83,6 +92,10 @@ class Tcg:
             log(f'[Pokemon] - {message.channel.id} does not allow pokemon activity')
             return
 
+        if os.path.exists('./local/pokemon/setdata.pkl'):
+            with open('./local/pokemon/setdata.pkl', 'rb') as file:
+                self.setdatalist = pickle.load(file)
+
         self.now = datetime.now()
         self.message = message
         self.username = self.get_user_name(message.author.id)
@@ -126,6 +139,11 @@ class Tcg:
     async def collect_channel_ids(self):
         if self.varmanager.read("pokemon_channels"):
             self.pokemon_channels = self.varmanager.read("pokemon_channels")
+
+    async def save_setdata(self):
+        with open('./local/pokemon/setdata.pkl', 'wb') as file:
+            pickle.dump(self.setdatalist, file)
+        log(f'[Pokemon] - saved setdata.pkl')
 
     async def send_to_all(self, msg):
         # send to this function to post to all pokemon channels
@@ -478,11 +496,16 @@ class Tcg:
                     break
             if match_found:
                 cards_owned, cards_total, id_list = await self.owned(subcommand2)
-                print(id_list)
                 with open(f'{self.setdata_path}{subcommand2}_setdata.json', "r") as f:
                     data = json.load(f)
+
+                for item in self.setdatalist:
+                    if item[0] == subcommand2:
+                        price = item[2]
+                        break
+
                 await self.message.channel.send(
-                    f'```yaml\n\n{data["series"]} - {data["name"]}({subcommand2})\n'
+                    f'```yaml\n\n{data["series"]} - {data["name"]}({subcommand2}) ${price}\n'
                     f'Set contains {data["total"]} total cards, released {data["releaseDate"]}```')
                 await self.message.author.send(f'```yaml\n\n*These are the cards you own in the {subcommand2} set*\n\n{id_list}```')
                 return
@@ -591,7 +614,8 @@ class Tcg:
             if item[0] == self.set_id:
                 self.setdatalist[i] = (item[0], item[1], int(item[2] * price_increase))
                 log(f'[Pokemon] - Increasing price of set {item[0]} from ${item[2]} to ${self.setdatalist[i][2]}')
-                return f'```yaml\n\nThe store increased the price of set {item[0]} from ${item[2]} to ${self.setdatalist[i][2]}(for the day)```'
+                await self.save_setdata()  # save price increase to local file
+                return f'```yaml\n\nThe store increased the price of set {item[0]} from ${item[2]} to ${self.setdatalist[i][2]}```'
 
     async def handle_cards(self, set_cost):
         # define and zero catch info
@@ -808,7 +832,7 @@ class Tcg:
             if not self.message.author.id == self.admins[0]:
                 log(f'[Pokemon] - {self.username} tried to get admin access and got denied')
                 return
-            self.activity.read_activity()
+            await self.save_setdata()
             return
 
         if subcommand2 == "enable":
