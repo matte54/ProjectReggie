@@ -60,7 +60,7 @@ class Pokemoneconomy:
 
                 # Check if the third element is a number
                 if isinstance(sub_modified[2], (int, float)):
-                    pricedrop = random.randint(5, 30)  # Random adjustment amount
+                    pricedrop = random.randint(5, 15)  # Random adjustment amount
 
                     if sub_modified[2] > sub_default[2]:  # If value is above default, decrease it
                         new_value = max(sub_modified[2] - pricedrop, sub_default[2])
@@ -76,7 +76,7 @@ class Pokemoneconomy:
                     # Update the list in place
                     self.setdatalist[i] = [sub_modified[0], sub_modified[1], new_value]
 
-        await self.save_setdata()
+                await self.save_setdata()
 
     async def set_sale(self):
         highvalue_sets = [item for item in self.setdatalist if item[2] >= 100]
