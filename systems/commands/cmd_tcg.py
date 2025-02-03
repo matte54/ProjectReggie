@@ -19,6 +19,7 @@ from systems.pokemon import battle as bs
 from systems.pokemon import channel_manager
 from systems.pokemon import stats
 from systems.pokemon import activity_tracker
+from tasks.pokemon_economy import Pokemoneconomy
 
 from systems.pokemon.set_data import x as set_data
 from systems.pokemon.rarity_data import x as rarity_data
@@ -62,6 +63,7 @@ class Tcg:
         self.bs = bs.Battle()
         self.varmanager = VarManager()
         self.admins = ADMINS
+        self.economy = Pokemoneconomy(self.client)
 
         self.set_id = None
         self.selected_cards = None
@@ -604,12 +606,28 @@ class Tcg:
         summary_message = await self.handle_cards(value)
 
         price_msg = await self.setbroker()  # adjust set values
+        await self.purchase_records(subcommand2)  # add purchase records entry
 
         await self.message.channel.send(summary_message)
         await self.send_to_all(price_msg)
 
         time.sleep(3)  # extra wait time for disk to spin up for getting images
         Tcg.picking_underway = False  # set class var between objects
+
+    async def purchase_records(self, setid):
+        # create records file if not exists
+        if not os.path.exists(f'./local/pokemon/purchase_records.json'):
+            with open(f'./local/pokemon/purchase_records.json', "w") as file:
+                json.dump({}, file)
+
+        # open json records
+        with open(f'./local/pokemon/purchase_records.json', "r") as f:
+            records_data = json.load(f)
+
+        # add key if needed and do +1
+        records_data[setid] = records_data.get(setid, 0) + 1
+
+        self.pokehandler.write_json(f'./local/pokemon/purchase_records.json', records_data)
 
     async def setbroker(self):
         # increasing prices of sets
@@ -836,7 +854,22 @@ class Tcg:
             if not self.message.author.id == self.admins[0]:
                 log(f'[Pokemon] - {self.username} tried to get admin access and got denied')
                 return
-            await self.save_setdata()
+            return
+
+        if subcommand2 == "sale":
+            # test section for debugging
+            if not self.message.author.id == self.admins[0]:
+                log(f'[Pokemon] - {self.username} tried to get admin access and got denied')
+                return
+            await self.economy.set_sale()
+            return
+
+        if subcommand2 == "markup":
+            # test section for debugging
+            if not self.message.author.id == self.admins[0]:
+                log(f'[Pokemon] - {self.username} tried to get admin access and got denied')
+                return
+            await self.economy.set_hike()
             return
 
         if subcommand2 == "enable":

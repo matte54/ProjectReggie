@@ -79,16 +79,33 @@ class Pokemoneconomy:
                 await self.save_setdata()
 
     async def set_sale(self):
-        highvalue_sets = [item for item in self.setdatalist if item[2] >= 100]
-        sale_set_data = random.choice(highvalue_sets)
+        await self.collect_channel_ids()
+
+        with open(f'./local/pokemon/purchase_records.json', 'r') as json_file:
+            records_data = json.load(json_file)
+
+        # Consider every set in self.setdatalist as 0 if it's not in records_data
+        all_sets_with_purchases = {item[0]: records_data.get(item[0], 0) for item in self.setdatalist}
+
+        # Find the lowest purchase count
+        min_purchases = min(all_sets_with_purchases.values(), default=0)
+
+        # Get all sets that match this lowest purchase count
+        low_purchase_sets = [item for item in self.setdatalist if all_sets_with_purchases[item[0]] == min_purchases]
+
+
+        # Use weighted random choice, favoring lower purchase counts (inverted weights)
+        weights = [1 / (all_sets_with_purchases[item[0]] + 1) for item in
+                   low_purchase_sets]  # +1 to avoid division by zero
+
+        sale_set_data = random.choices(low_purchase_sets, weights=weights, k=1)[0]
 
         setid = sale_set_data[0]
         setprice = sale_set_data[2]
         sale_percent = random.randint(40, 85)
 
         sale = (sale_percent / 100) * setprice
-
-        sale_set_data[2] = (int(setprice - sale))
+        sale_set_data[2] = int(setprice - sale)
 
         with open(f'./data/pokemon/setdata/{setid}_setdata.json', 'r') as json_file:
             setdata = json.load(json_file)
@@ -98,16 +115,46 @@ class Pokemoneconomy:
         await self.send_to_all(f'```yaml\n\nThere is a {sale_percent}% SALE on {setid} , get a {setdata["name"]} boosterpack for ${sale_set_data[2]}\n```')
 
     async def set_hike(self):
-        highvalue_sets = [item for item in self.setdatalist if item[2] >= 100]
-        hike_set_data = random.choice(highvalue_sets)
+        await self.collect_channel_ids()
+
+        with open(f'./local/pokemon/purchase_records.json', 'r') as json_file:
+            records_data = json.load(json_file)
+
+        if not records_data:
+            log(f'[Pokemon][Economy] - No sets for markup found')
+            return
+
+        # Map all sets in self.setdatalist with their recorded purchases (default 0)
+        all_sets_with_purchases = {item[0]: records_data.get(item[0], 0) for item in self.setdatalist}
+
+        # Count how many sets have more than 0 purchases
+        sets_with_purchases = [item for item in all_sets_with_purchases if all_sets_with_purchases[item] > 0]
+
+        # If there are fewer than 5 sets with purchases, consider sets with 0 purchases
+        if len(sets_with_purchases) < 5:
+            eligible_sets = list(self.setdatalist)  # Include all sets, including those with 0 purchases
+        else:
+            eligible_sets = [item for item in self.setdatalist if all_sets_with_purchases.get(item[0], 0) > 0]
+
+        # Assign weights based on purchase count (higher purchase = higher weight)
+        weights = [2 ** all_sets_with_purchases[item[0]] if all_sets_with_purchases[item[0]] > 0 else 1 for item in
+                   eligible_sets]
+
+        # Debug output for eligible sets and weights
+        log(f'[Pokemon][Economy] - Eligible Sets for markup: {[item[0] for item in eligible_sets]}')
+
+        #for set_item, weight in zip(eligible_sets, weights):
+        #    print(f"Set: {set_item[0]}, Purchases: {all_sets_with_purchases[set_item[0]]}, Weight: {weight}")
+
+        # Pick a set using weighted random selection
+        hike_set_data = list(random.choices(eligible_sets, weights=weights, k=1)[0])
 
         setid = hike_set_data[0]
         setprice = hike_set_data[2]
         hike_percent = random.randint(40, 85)
 
         hike = (hike_percent / 100) * setprice
-
-        hike_set_data[2] = (int(setprice + hike))
+        hike_set_data[2] = int(setprice + hike)
 
         with open(f'./data/pokemon/setdata/{setid}_setdata.json', 'r') as json_file:
             setdata = json.load(json_file)
