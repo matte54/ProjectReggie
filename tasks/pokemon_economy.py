@@ -60,7 +60,7 @@ class Pokemoneconomy:
 
                 # Check if the third element is a number
                 if isinstance(sub_modified[2], (int, float)):
-                    pricedrop = random.randint(5, 15)  # Random adjustment amount
+                    pricedrop = random.randint(1, 3)  # Random adjustment amount
 
                     if sub_modified[2] > sub_default[2]:  # If value is above default, decrease it
                         new_value = max(sub_modified[2] - pricedrop, sub_default[2])
