@@ -48,6 +48,10 @@ class Pokemoneconomy:
             pickle.dump(self.setdatalist, file)
         log(f'[Pokemon] - saved setdata.pkl')
 
+    def write_json(self, filepath, data):
+        with open(filepath, "w", encoding="UTF-8") as f:
+            json.dump(data, f, indent=4)
+
     async def change_check(self):
         if os.path.exists('./local/pokemon/setdata.pkl'):
             with open('./local/pokemon/setdata.pkl', 'rb') as file:
@@ -159,8 +163,16 @@ class Pokemoneconomy:
         with open(f'./data/pokemon/setdata/{setid}_setdata.json', 'r') as json_file:
             setdata = json.load(json_file)
 
-        await self.save_setdata()
+        # remove 1 entry from purchase records if markuped
+        if setid in records_data:
+            if records_data[setid] > 0:
+                records_data[setid] -= 1
+        else:
+            records_data[setid] = 0
+        self.write_json(f'./local/pokemon/purchase_records.json', records_data)
 
+        await self.save_setdata()
+        log(f'[Pokemon][Economy] - setting {hike_percent}% MARKUP on {setid} now costs ${hike_set_data[2]}')
         await self.send_to_all(
             f'```yaml\n\nThe store sets a {hike_percent}% MARKUP on {setid}, {setdata["name"]} boosterpack now costs ${hike_set_data[2]}\n```')
 
