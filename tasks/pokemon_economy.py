@@ -35,12 +35,29 @@ class Pokemoneconomy:
             self.pokemon_channels = self.varmanager.read("pokemon_channels")
 
     async def send_to_all(self, msg):
-        # send to this function to post to all pokemon channels
+        max_retries = 3
+        delay = 2
         messages = []
-        for channel in self.pokemon_channels:
-            ch = self.client.get_channel(channel)
-            x = await ch.send(msg)
-            messages.append(x)
+
+        for channel_id in self.pokemon_channels:
+            for attempt in range(max_retries):
+                ch = self.client.get_channel(channel_id)
+
+                if ch is None:
+                    log(f'[Pokemon]- Channel {channel_id} not found. Retrying in {delay * (2 ** attempt)}s...')
+                else:
+                    try:
+                        x = await ch.send(msg)
+                        messages.append(x)
+                        break  # Successfully sent, exit retry loop
+                    except (discord.HTTPException, discord.Forbidden, discord.NotFound) as e:
+                        log(f'[Pokemon]- Error sending message (attempt {attempt + 1}/{max_retries}): {e}')
+
+                await asyncio.sleep(delay * (2 ** attempt))
+
+            else:  # This else runs only if all retries fail
+                log(f'[Pokemon]- Failed to send message to {channel_id} after {max_retries} retries.')
+
         return messages
 
     async def save_setdata(self):
