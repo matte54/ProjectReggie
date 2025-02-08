@@ -12,6 +12,7 @@ from systems.pokemon.whitelisted import whitelist
 # configurable constants
 NONE_DAMAGE_DEFAULT = 10
 
+debug_on = False
 
 class Battle:
     def __init__(self):
@@ -64,8 +65,8 @@ class Battle:
         winner_reward = int(min(winner_reward, cap))
         loser_reward = int(min(loser_reward, cap))
 
-        log(f'[Pokemon][DEBUG] - Winner {winner} had hand value: {winner_xp} and is rewarded {winner_reward}')
-        log(f'[Pokemon][DEBUG] - Loser {loser} had hand value: {loser_xp} and is rewarded {loser_reward}')
+        log(f'[Pokemon] - Winner {winner} had hand value: {winner_xp} and is rewarded {winner_reward}')
+        log(f'[Pokemon] - Loser {loser} had hand value: {loser_xp} and is rewarded {loser_reward}')
 
         # handle xp to profiles
         # winner
@@ -173,7 +174,8 @@ class Battle:
             for weakness in defrcard["weaknesses"]:
                 if atkrtype == weakness["type"]:
                     dmg = dmg * 1.5
-                    log(f'[Pokemon][DEBUG] - {defrcard["name"]} is weak against: {atkrtype}')
+                    if debug_on:
+                        log(f'[Pokemon][DEBUG] - {defrcard["name"]} is weak against: {atkrtype}')
                     weak = True
                     resi = False
                     return int(dmg), weak, resi
@@ -181,7 +183,8 @@ class Battle:
             for resistance in defrcard["resistances"]:
                 if atkrtype == resistance["type"]:
                     dmg = dmg / 0.5
-                    log(f'[Pokemon][DEBUG] - {defrcard["name"]} is resistant against: {atkrtype}')
+                    if debug_on:
+                        log(f'[Pokemon][DEBUG] - {defrcard["name"]} is resistant against: {atkrtype}')
                     weak = False
                     resi = True
                     return int(dmg), weak, resi
@@ -201,7 +204,8 @@ class Battle:
 
         # effectiveness calculations
         final_dmg, effect = await self.calculate_effectiveness(dmg, attacker_type, defender_type)
-        log(f'[Pokemon][DEBUG] - {atkr["card"]["name"]}({atkr["hp"]}hp) uses {atkr["attack"]["name"]} -> {effect}{defr["card"]["name"]}({defr["hp"]}hp) takes {int(final_dmg)} damage (base {base_dmg})')
+        if debug_on:
+            log(f'[Pokemon][DEBUG] - {atkr["card"]["name"]}({atkr["hp"]}hp) uses {atkr["attack"]["name"]} -> {effect}{defr["card"]["name"]}({defr["hp"]}hp) takes {int(final_dmg)} damage (base {base_dmg})')
         if atkr["color"] == "green":
             await self.battlelogger(f'+ {atkr["card"]["name"]}({atkr["hp"]}hp) uses {atkr["attack"]["name"]} {"+" if weak else "-" if resi else ""}> {effect}{defr["card"]["name"]}({defr["hp"]}hp) takes {int(final_dmg)}({base_dmg}) dmg')
         else:
@@ -384,7 +388,7 @@ class Battle:
                 # send message to chat when a pokemon has fainted
                 if len(defender["cards"]) == 0:
                     # If the defender has no cards left, the attacker wins
-                    log(f'[Pokemon] - {defender["player"]} has no more cards left! {attacker["player"]} wins!')
+                    log(f'[Pokemon] - {attacker["player"]} wins!')
                     if attacker["color"] == "green":
                         await self.battlelogger(f'+ {attacker["player"]} wins!', False, True)
                     else:

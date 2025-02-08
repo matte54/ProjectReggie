@@ -139,10 +139,13 @@ class PokemonTCG:
         if len(self.selected_cards) < 10:
             raise CardError(f'Not enough cards selected {len(self.selected_cards)}')
 
+        cardids_in_pull = []
         for card in self.selected_cards:
             self.card_list.append((card["id"], card["rarity"], card["name"]))
             if debug_on():
-                log(f'[Pokemon][DEBUG] - {card["name"]}({card["id"]}) - {card["rarity"]}')
+                cardids_in_pull.append(card["id"])
+
+        log(f'[Pokemon][DEBUG] - cards pulled {cardids_in_pull}')
 
         # rarity sorting test
         rarity_dict = {item[0].lower(): item[1] for item in self.raritydata}

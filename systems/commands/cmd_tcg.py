@@ -321,7 +321,7 @@ class Tcg:
                     await message.edit(content=new_content)
 
             except Exception as e:
-                print(f"An error occurred in channel {channel_id}: {e}")
+                log(f'[Pokemon] - an error occurred in channel {channel_id}: {e}')
 
         # Run the update logic for each channel concurrently
         tasks = [update_channel(channel) for channel in self.pokemon_channels]
@@ -721,14 +721,14 @@ class Tcg:
                 new += 1
                 self.userprofile["sets"][self.set_id][card_id] = sell_price
                 self.userprofile["profile"]["cards"] += 1
-                log(f"[Pokemon] - Added '{name}' ID {card_id} to {self.username}s profile.")
+                #log(f"[Pokemon] - Added '{name}' ID {card_id} to {self.username}s profile.")
 
         # round off all money here before write
         #self.userprofile["profile"]["money"] = round(self.userprofile["profile"]["money"], 2)
 
         # Write updated profile to disk
         self.pokehandler.write_json(self.userprofile_path, self.userprofile)
-        log(f"[Pokemon] - Updated profile written to {self.userprofile_path}!")
+        #log(f"[Pokemon] - Updated profile written to {self.userprofile_path}!")
         if income > 0.0:
             log(f"[Pokemon] - {self.username} earned {round(income, 2)} from dupes")
 
@@ -779,7 +779,7 @@ class Tcg:
         self.userprofile["profile"]["money"] += round(value, 2)
 
         self.pokehandler.write_json(self.userprofile_path, self.userprofile)
-        log(f'[Pokemon] - {self.username} now has ${self.userprofile["profile"]["money"]} - Wrote {self.userprofile_path}!')
+        #log(f'[Pokemon] - {self.username} now has ${self.userprofile["profile"]["money"]:.2f} - Wrote {self.userprofile_path}!')
 
     async def find_json_files(self, directory):
         json_files = []
