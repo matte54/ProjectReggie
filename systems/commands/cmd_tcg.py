@@ -109,7 +109,7 @@ class Tcg:
         # Parse command
         components = content.lstrip("$tcg").split()
         if len(components) < 1:
-            await self.message.channel.send(f'```yaml\n\nSyntax error, $tcg requires a subcommand```')
+            await self.send_msg(self.message.channel.id, f'```yaml\n\nSyntax error, $tcg requires a subcommand```')
             return
 
         # Extract subcommand1, subcommand2, and subcommand3 (if present)
@@ -120,14 +120,14 @@ class Tcg:
         # Find the corresponding function for subcommand1
         handler_entry = self.subcommands.get(subcommand1)
         if handler_entry is None:
-            await self.message.channel.send(f'```yaml\n\nSyntax error, unrecognized subcommand```')
+            await self.send_msg(self.message.channel.id, f'```yaml\n\nSyntax error, unrecognized subcommand```')
             return
 
         handler, needs_subcommand2, has_optional_subcommand3 = handler_entry
 
         # Ensure subcommand2 is provided if required
         if needs_subcommand2 and subcommand2 is None:
-            await self.message.channel.send(f'```yaml\n\nSyntax error, this subcommand needs an additional argument```')
+            await self.send_msg(self.message.channel.id, f'```yaml\n\nSyntax error, this subcommand needs an additional argument```')
             return
 
         # Call the handler with or without subcommands
@@ -148,7 +148,6 @@ class Tcg:
         log(f'[Pokemon] - saved setdata.pkl')
 
     async def send_msg(self, channel_id, msg):
-        # testing
         max_retries = 3
         delay = 2
         for attempt in range(max_retries):
@@ -204,15 +203,13 @@ class Tcg:
     async def battle(self):
         if Tcg.signup_underway:
             log(f"[Pokemon] - Signup in progress, ignoring request")
-            await self.message.channel.send(
-                f'```yaml\n\nProcessing, please try again in a few seconds```')
+            await self.send_msg(self.message.channel.id, f'```yaml\n\nProcessing, please try again in a few seconds```')
             return
         log(f'[Pokemon][DEBUG] - Battle instance {id(self)} initiated by {self.username}')
         log(f'[Pokemon][DEBUG] - Battlelist has {len(Tcg.battlelist)} entries START OF SIGNUP')
         if Tcg.battle_underway:
             log(f"[Pokemon] - Battle already underway, ignoring request")
-            await self.message.channel.send(
-                f'```yaml\n\nBattle currently underway, please wait for it to finish (if this is permanent call Matte)```')
+            await self.send_msg(self.message.channel.id, f'```yaml\n\nBattle currently underway, please wait for it to finish (if this is permanent call Matte)```')
             return
 
         Tcg.signup_underway = True
@@ -222,16 +219,14 @@ class Tcg:
             # check if user is allowed any more battles today
             if self.username in self.battletracker:
                 if self.battletracker[self.username] >= 3:
-                    await self.message.channel.send(
-                        f'```yaml\n\nYou are not allowed any more battles today, come back tomorrow...```')
+                    await self.send_msg(self.message.channel.id, f'```yaml\n\nYou are not allowed any more battles today, come back tomorrow...```')
                     Tcg.signup_underway = False
                     return
 
             # make sure user is not already signed up
             if Tcg.battlelist:
                 if self.username in Tcg.battlelist[0]:
-                    await self.message.channel.send(
-                        f'```yaml\n\nYou are already signed up for battle```')
+                    await self.send_msg(self.message.channel.id, f'```yaml\n\nYou are already signed up for battle```')
                     Tcg.signup_underway = False
                     return
         else:
@@ -240,8 +235,7 @@ class Tcg:
         # check if user has cards to battle
         battlecards, found_cards, cardpaths = await self.check_card_avail()
         if not found_cards:
-            await self.message.channel.send(
-                f'```yaml\n\nYou dont own enough valid cards to battle```')
+            await self.send_msg(self.message.channel.id, f'```yaml\n\nYou dont own enough valid cards to battle```')
             Tcg.signup_underway = False
             return
 
@@ -420,7 +414,7 @@ class Tcg:
                 minutes = remainder // 60
                 remaining = f"{int(hours)}h {int(minutes)}m"
 
-                await self.message.channel.send(f'```yaml\n\nYou have {remaining} left until your daily free booster '
+                await self.send_msg(self.message.channel.id, f'```yaml\n\nYou have {remaining} left until your daily free booster '
                                                 f'pack...```')
                 log(f'[Pokemon] - {self.username} has {remaining} remaining on freebie')
                 return
@@ -432,7 +426,7 @@ class Tcg:
             with open(f'{self.setdata_path}{self.set_id}_setdata.json', "r") as f:
                 data = json.load(f)
         else:
-            await self.message.channel.send(f'```yaml\n\nSet files not found (missing data)```')
+            await self.send_msg(self.message.channel.id, f'```yaml\n\nSet files not found (missing data)```')
             log(f'[Pokemon] - {self.setdata_path}{self.set_id}_setdata.json does not exist!')
             return
 
@@ -451,7 +445,7 @@ class Tcg:
             claimstring += '\nThis set is a rare (more valueable) pull!'
         claimstring += '```'
 
-        await self.message.channel.send(claimstring)
+        await self.send_msg(self.message.channel.id, claimstring)
         try:
             self.selected_cards, card_img_list = await self.pokemon.process_input(self.set_id)
         except Exception as e:
@@ -465,7 +459,7 @@ class Tcg:
         self.userprofile["profile"]["last"] = str(self.now.isoformat())
         summary_message = await self.handle_cards(0)
 
-        await self.message.channel.send(summary_message)
+        await self.send_msg(self.message.channel.id, summary_message)
 
         time.sleep(3)
         Tcg.picking_underway = False  # set class var between objects
@@ -496,7 +490,7 @@ class Tcg:
         profilestring += f'***** TOP 10 MOST VALUEABLE CARDS OWNED *****\n'
         profilestring += await self.find_best()
         profilestring += f'```'
-        await self.message.channel.send(profilestring)
+        await self.send_msg(self.message.channel.id, profilestring)
 
     async def find_best(self):
         best_string = f''
@@ -544,13 +538,13 @@ class Tcg:
                         price = item[2]
                         break
 
-                await self.message.channel.send(
+                await self.send_msg(self.message.channel.id,
                     f'```yaml\n\n{data["series"]} - {data["name"]}({subcommand2}) ${price}\n'
                     f'Set contains {data["total"]} total cards, released {data["releaseDate"]}```')
                 await self.message.author.send(f'```yaml\n\n*These are the cards you own in the {subcommand2} set*\n\n{id_list}```')
                 return
             else:
-                await self.message.channel.send(f'```yaml\n\nSet not found```')
+                await self.send_msg(self.message.channel.id, f'```yaml\n\nSet not found```')
                 return
 
         if "-" in subcommand2:
@@ -563,7 +557,7 @@ class Tcg:
                     break
 
             if not set_match_found:
-                await self.message.channel.send(f'```yaml\n\nSet not found```')
+                await self.send_msg(self.message.channel.id, f'```yaml\n\nSet not found```')
                 return
 
             card_found = False
@@ -588,12 +582,12 @@ class Tcg:
 
                 try:
                     check = self.userprofile['sets'][set_id][f'{set_id}-{card_id}']
-                    await self.message.channel.send(f'```yaml\n\nCard value: ${card_value} - {self.username} owns this card!```')
+                    await self.send_msg(self.message.channel.id, f'```yaml\n\nCard value: ${card_value} - {self.username} owns this card!```')
                 except KeyError:
-                    await self.message.channel.send(f'```yaml\n\nCard value: ${card_value} - {self.username} does not own this card.```')
+                    await self.send_msg(self.message.channel.id, f'```yaml\n\nCard value: ${card_value} - {self.username} does not own this card.```')
 
             else:
-                await self.message.channel.send(f'```yaml\n\ncard not found```')
+                await self.send_msg(self.message.channel.id, f'```yaml\n\ncard not found```')
                 return
 
     async def buy(self, subcommand2):
@@ -602,7 +596,7 @@ class Tcg:
             return
 
         if not any(packs[0] == subcommand2 for packs in self.setdatalist):
-            await self.message.channel.send(f'```yaml\n\nSet not found```')
+            await self.send_msg(self.message.channel.id, f'```yaml\n\nSet not found```')
             return
 
         # get the set value
@@ -614,7 +608,7 @@ class Tcg:
         if self.userprofile["profile"]["money"] < value:
             # user cant afford the set
             log(f"[Pokemon] - {self.username}s can not afford the set.")
-            await self.message.channel.send(f'```yaml\n\nNot enough money, set cost is ${value} you only have ${self.userprofile["profile"]["money"]}```')
+            await self.send_msg(self.message.channel.id, f'```yaml\n\nNot enough money, set cost is ${value} you only have ${self.userprofile["profile"]["money"]}```')
             return
 
         try:
@@ -625,7 +619,7 @@ class Tcg:
             raise  # Re-raises the caught exception
 
         if not self.selected_cards:
-            await self.message.channel.send(f'```yaml\n\nSet not found```')
+            await self.send_msg(self.message.channel.id, f'```yaml\n\nSet not found```')
             return
         self.set_id = subcommand2
 
@@ -636,7 +630,7 @@ class Tcg:
         Tcg.picking_underway = True  # set class var between objects
 
         log(f'[Pokemon] - {self.username} buys the "{subcommand2}" boosterpack')
-        await self.message.channel.send(
+        await self.send_msg(self.message.channel.id,
             f'```yaml\n\n{self.username} BUYS a booster pack (10 cards) - ${value}\n{data["series"]} - {data["name"]}({subcommand2})\n'
             f'Set contains {data["total"]} total cards, released {data["releaseDate"]}```')
         # post card images
@@ -646,7 +640,7 @@ class Tcg:
         price_msg = await self.setbroker()  # adjust set values
         await self.purchase_records(subcommand2)  # add purchase records entry
 
-        await self.message.channel.send(summary_message)
+        await self.send_msg(self.message.channel.id, summary_message)
         await self.send_to_all(price_msg)
 
         time.sleep(3)  # extra wait time for disk to spin up for getting images
@@ -798,7 +792,7 @@ class Tcg:
     async def sell(self, subcommand2):
         if "-" not in subcommand2:
             log(f'[Pokemon] - invalid card id')
-            await self.message.channel.send(f'```yaml\n\nNot a valid CARD ID```')
+            await self.send_msg(self.message.channel.id, f'```yaml\n\nNot a valid CARD ID```')
             return
         set_match_found = False
         set_id, card_id = subcommand2.split("-")
@@ -809,7 +803,7 @@ class Tcg:
 
         if not set_match_found:
             log(f'[Pokemon] - set not found')
-            await self.message.channel.send(f'```yaml\n\nSet not found```')
+            await self.send_msg(self.message.channel.id, f'```yaml\n\nSet not found```')
             return
 
         card_found = False
@@ -826,33 +820,31 @@ class Tcg:
             pokemon_name = card_data["name"]
             try:
                 check = self.userprofile['sets'][set_id][f'{set_id}-{card_id}']
-                await self.message.channel.send(
+                await self.send_msg(self.message.channel.id,
                     f'```yaml\n\n{self.username} SOLD "{pokemon_name}" ({subcommand2}) card for ${card_value}```')
                 del self.userprofile['sets'][set_id][f'{set_id}-{card_id}']
                 await self.money_handler(card_value)
                 log(f"[Pokemon] - {self.username} sold {pokemon_name}-{subcommand2} for {card_value}")
             except KeyError:
                 log(f'[Pokemon] - {self.username} does not own this card')
-                await self.message.channel.send(
-                    f'```yaml\n\nYou do not own this card```')
+                await self.send_msg(self.message.channel.id, f'```yaml\n\nYou do not own this card```')
         else:
             log(f'[Pokemon] - Card not found')
-            await self.message.channel.send(
-                f'```yaml\n\nCard not found```')
+            await self.send_msg(self.message.channel.id, f'```yaml\n\nCard not found```')
 
     async def create_thread(self, message, name):
         try:
             message = await self.message.channel.fetch_message(message.id)
             thread = await message.create_thread(name=name, auto_archive_duration=60)
-            await message.channel.send(f"Thread '{thread.name}' created!")
+            await self.send_msg(self.message.channel.id, f"Thread '{thread.name}' created!")
             await thread.send("Hello")
 
             return thread
 
         except discord.Forbidden:
-            await self.message.channel.send("I don't have permission to create threads.")
+            await self.send_msg(self.message.channel.id, "I don't have permission to create threads.")
         except discord.HTTPException as e:
-            await self.message.channel.send(f"Failed to create thread: {e}")
+            await self.send_msg(self.message.channel.id, f"Failed to create thread: {e}")
 
     async def help(self):
         # load and post help file
@@ -861,13 +853,13 @@ class Tcg:
             for line in file:
                 helptext += f'{line}\n'
         helptext += '```'
-        await self.message.channel.send(helptext)
+        await self.send_msg(self.message.channel.id, helptext)
 
     async def stats(self):
         # stats generator command
         log(f'[Pokemon] - {self.username} - lists pokémon stats')
         report = self.stats_generator.stats()
-        await self.message.channel.send(report)
+        await self.send_msg(self.message.channel.id, report)
 
     async def admin(self, subcommand2, subcommand3=None):
         # reset the free timer

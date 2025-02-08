@@ -3,6 +3,7 @@ import asyncio
 import os
 import pickle
 import random
+import discord
 
 
 from systems.logger import log
@@ -74,6 +75,7 @@ class Pokemoneconomy:
             with open('./local/pokemon/setdata.pkl', 'rb') as file:
                 self.setdatalist = pickle.load(file)
 
+        changeslist = []
         differences = []
         for i, (sub_default, sub_modified) in enumerate(zip(self.setdatalist_default, self.setdatalist)):
             if sub_default != sub_modified:
@@ -85,11 +87,11 @@ class Pokemoneconomy:
 
                     if sub_modified[2] > sub_default[2]:  # If value is above default, decrease it
                         new_value = max(sub_modified[2] - pricedrop, sub_default[2])
-                        log(f'[Pokemon][Economy]- Incremental (${pricedrop}) price decrease of set: {sub_modified[0]}')
+                        changeslist.append(f'{sub_modified[0]}: -{pricedrop}')
 
                     elif sub_modified[2] < sub_default[2]:  # If value is below default, increase it
                         new_value = min(sub_modified[2] + pricedrop, sub_default[2])
-                        log(f'[Pokemon][Economy]- Incremental (${pricedrop}) price increase of set: {sub_modified[0]}')
+                        changeslist.append(f'{sub_modified[0]}: +{pricedrop}')
 
                     else:
                         new_value = sub_modified[2]  # No change needed
@@ -98,6 +100,9 @@ class Pokemoneconomy:
                     self.setdatalist[i] = [sub_modified[0], sub_modified[1], new_value]
 
                 await self.save_setdata()
+
+        if changeslist:
+            log(f'[Pokemon][Economy] - adjusted setprices: {changeslist}')
 
     async def set_sale(self):
         await self.collect_channel_ids()
@@ -113,7 +118,6 @@ class Pokemoneconomy:
 
         # Get all sets that match this lowest purchase count
         low_purchase_sets = [item for item in self.setdatalist if all_sets_with_purchases[item[0]] == min_purchases]
-
 
         # Use weighted random choice, favoring lower purchase counts (inverted weights)
         weights = [1 / (all_sets_with_purchases[item[0]] + 1) for item in
