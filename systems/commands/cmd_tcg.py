@@ -19,6 +19,7 @@ from systems.pokemon import battle as bs
 from systems.pokemon import channel_manager
 from systems.pokemon import stats
 from systems.pokemon import activity_tracker
+from systems.pokemon import thread_handler
 from tasks.pokemon_economy import Pokemoneconomy
 
 from systems.pokemon.set_data import x as set_data
@@ -62,6 +63,7 @@ class Tcg:
         self.activity = activity_tracker.Tracker()
         self.bs = bs.Battle()
         self.varmanager = VarManager()
+        self.thread_handler = thread_handler.Threader(self.client)
         self.admins = ADMINS
         self.economy = Pokemoneconomy(self.client)
 
@@ -83,6 +85,7 @@ class Tcg:
             "buy": (self.buy, True, False),
             "sell": (self.sell, True, False),
             "admin": (self.admin, True, True),
+            "feedback": (self.feedback, False, False),
         }
 
         self.activity.startup()
@@ -199,6 +202,15 @@ class Tcg:
                 id_data = json.load(f)
             if str(user_id) in id_data:
                 return id_data[str(user_id)]
+
+    async def feedback(self):
+        user = await self.client.fetch_user(131955255989501953)
+        if user:
+            try:
+                cleaned = self.message.content.removeprefix("$tcg feedback ")
+                await user.send(f'```yaml\n\nFeedback from {self.username}:\n\n{cleaned}```')
+            except discord.Forbidden:
+                log(f"[Pokemon] - Error sending matte feedback msg")
 
     async def battle(self):
         if Tcg.signup_underway:
@@ -454,12 +466,14 @@ class Tcg:
             Tcg.picking_underway = False
             raise  # Re-raises the caught exception
 
-        await self.message.channel.send(files=card_img_list)
+        await self.thread_handler.handle_thread(self.message, self.username, card_img_list, f' ')
+        #await self.message.channel.send(files=card_img_list)
 
         self.userprofile["profile"]["last"] = str(self.now.isoformat())
         summary_message = await self.handle_cards(0)
 
-        await self.send_msg(self.message.channel.id, summary_message)
+        await self.thread_handler.handle_thread(self.message, self.username, summary_message)
+        #await self.send_msg(self.message.channel.id, summary_message)
 
         time.sleep(3)
         Tcg.picking_underway = False  # set class var between objects
@@ -490,7 +504,8 @@ class Tcg:
         profilestring += f'***** TOP 10 MOST VALUEABLE CARDS OWNED *****\n'
         profilestring += await self.find_best()
         profilestring += f'```'
-        await self.send_msg(self.message.channel.id, profilestring)
+        await self.thread_handler.handle_thread(self.message, self.username, profilestring, f' ')
+        #await self.send_msg(self.message.channel.id, profilestring)
 
     async def find_best(self):
         best_string = f''
@@ -634,13 +649,15 @@ class Tcg:
             f'```yaml\n\n{self.username} BUYS a booster pack (10 cards) - ${value}\n{data["series"]} - {data["name"]}({subcommand2})\n'
             f'Set contains {data["total"]} total cards, released {data["releaseDate"]}```')
         # post card images
-        await self.message.channel.send(files=card_img_list)
+        await self.thread_handler.handle_thread(self.message, self.username, card_img_list, ' ')
+        #await self.message.channel.send(files=card_img_list)
         summary_message = await self.handle_cards(value)
 
         price_msg = await self.setbroker()  # adjust set values
         await self.purchase_records(subcommand2)  # add purchase records entry
 
-        await self.send_msg(self.message.channel.id, summary_message)
+        await self.thread_handler.handle_thread(self.message, self.username, summary_message)
+        #await self.send_msg(self.message.channel.id, summary_message)
         await self.send_to_all(price_msg)
 
         time.sleep(3)  # extra wait time for disk to spin up for getting images
@@ -832,20 +849,6 @@ class Tcg:
             log(f'[Pokemon] - Card not found')
             await self.send_msg(self.message.channel.id, f'```yaml\n\nCard not found```')
 
-    async def create_thread(self, message, name):
-        try:
-            message = await self.message.channel.fetch_message(message.id)
-            thread = await message.create_thread(name=name, auto_archive_duration=60)
-            await self.send_msg(self.message.channel.id, f"Thread '{thread.name}' created!")
-            await thread.send("Hello")
-
-            return thread
-
-        except discord.Forbidden:
-            await self.send_msg(self.message.channel.id, "I don't have permission to create threads.")
-        except discord.HTTPException as e:
-            await self.send_msg(self.message.channel.id, f"Failed to create thread: {e}")
-
     async def help(self):
         # load and post help file
         helptext = f'```yaml\n\n'
@@ -853,13 +856,16 @@ class Tcg:
             for line in file:
                 helptext += f'{line}\n'
         helptext += '```'
-        await self.send_msg(self.message.channel.id, helptext)
+
+        await self.thread_handler.handle_thread(self.message, self.username, helptext, 'Here is the help documentation')
 
     async def stats(self):
         # stats generator command
         log(f'[Pokemon] - {self.username} - lists pokémon stats')
         report = self.stats_generator.stats()
-        await self.send_msg(self.message.channel.id, report)
+
+        iso_str = self.now.strftime("%Y-%m-%d %H:%M")
+        await self.thread_handler.handle_thread(self.message, self.username, report, f'Here are the stats')
 
     async def admin(self, subcommand2, subcommand3=None):
         # reset the free timer
@@ -884,7 +890,7 @@ class Tcg:
             if not self.message.author.id == self.admins[0]:
                 log(f'[Pokemon] - {self.username} tried to get admin access and got denied')
                 return
-            await self.send_msg(self.message.channel.id, "blerp")
+            await self.thread_handler.create_thread(self.message, "Test thread")
             return
 
         if subcommand2 == "sale":

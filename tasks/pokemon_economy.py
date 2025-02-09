@@ -99,9 +99,9 @@ class Pokemoneconomy:
                     # Update the list in place
                     self.setdatalist[i] = [sub_modified[0], sub_modified[1], new_value]
 
-                await self.save_setdata()
 
         if changeslist:
+            await self.save_setdata()
             log(f'[Pokemon][Economy] - adjusted setprices: {changeslist}')
 
     async def set_sale(self):
