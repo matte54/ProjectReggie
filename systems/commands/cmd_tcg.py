@@ -533,7 +533,8 @@ class Tcg:
                 setstring += f'{x[0]}(${x[2]})\n'
             setstring += f'```'
             # string is a mile long so send DM for now...
-            await self.message.author.send(setstring)
+            await self.thread_handler.handle_thread(self.message, self.username, setstring, 'Sets available:')
+            #await self.message.author.send(setstring)
             return
 
         if "-" not in subcommand2:
@@ -556,7 +557,8 @@ class Tcg:
                 await self.send_msg(self.message.channel.id,
                     f'```yaml\n\n{data["series"]} - {data["name"]}({subcommand2}) ${price}\n'
                     f'Set contains {data["total"]} total cards, released {data["releaseDate"]}```')
-                await self.message.author.send(f'```yaml\n\n*These are the cards you own in the {subcommand2} set*\n\n{id_list}```')
+                await self.thread_handler.handle_thread(self.message, self.username, f'```yaml\n\n*These are the cards you own in the {subcommand2} set*\n\n{id_list}```')
+                #await self.message.author.send(f'```yaml\n\n*These are the cards you own in the {subcommand2} set*\n\n{id_list}```')
                 return
             else:
                 await self.send_msg(self.message.channel.id, f'```yaml\n\nSet not found```')
