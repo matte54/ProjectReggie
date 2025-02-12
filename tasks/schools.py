@@ -60,7 +60,7 @@ class Schools:
                     other_time_difference = datetime.datetime.now() - datetime.datetime.fromisoformat(
                         self.varmanager.read("school")[2])
                     if other_time_difference >= datetime.timedelta(minutes=self.school_length):
-                        oldvariable = self.varmanager.read("school")
+                        oldvariable = list(self.varmanager.read("school"))
                         oldvariable[0] = False
                         oldvariable[1] = None
                         self.varmanager.write("school", oldvariable)
