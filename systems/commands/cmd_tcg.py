@@ -57,6 +57,7 @@ class Tcg:
         self.client = client
         self.message = None
         self.username = None
+        self.userid = None
         self.userprofile = None
         self.now = None
         self.pokemon = pokemon.PokemonTCG(self.client)
@@ -111,6 +112,7 @@ class Tcg:
 
         self.now = datetime.now()
         self.message = message
+        self.userid = str(message.author.id)
         self.username = self.get_user_name(message.author.id)
         log(f'[Pokemon] - USER: {self.username}')
         self.activity.add_activity(message.author.id, str(self.now.isoformat()))
@@ -311,7 +313,10 @@ class Tcg:
             # try to block to catch battle exceptions for now
             try:
                 fight, results, log_list = await self.bs.combat_loop(Tcg.battlelist)
-                await self.rolling_combatlog(log_list)
+                if self.client.user.id == 327138137371574282:
+                    await self.rolling_combatlog(log_list)
+                else:
+                    log(f'[Pokemon] - debug client active, skipping rolling combat')
             except Exception as e:
                 log(f'[Pokemon] - an error has occurred: {e}')
                 Tcg.battlelist = []  # clear the battle que
@@ -549,6 +554,12 @@ class Tcg:
 
         await self.thread_handler.handle_thread(self.message, self.username, card_img_list, f' ')
         #await self.message.channel.send(files=card_img_list)
+
+        if Tcg.event_underway:
+            cardids_for_stats = []
+            for card_dict in self.selected_cards:
+                cardids_for_stats.append(card_dict["id"])
+            await self.event.stats(self.userid, cards=cardids_for_stats, pack=1)
 
         if self.userprofile["profile"]["price"]:
             self.userprofile["profile"]["price"] = False
@@ -980,7 +991,6 @@ class Tcg:
             if not self.message.author.id == self.admins[0]:
                 log(f'[Pokemon] - {self.username} tried to get admin access and got denied')
                 return
-            await self.thread_handler.create_thread(self.message, "Test thread")
             return
 
         if subcommand2 == "sale":
@@ -1047,7 +1057,7 @@ class Tcg:
                     profile_data = json.load(f)
                 profile_data["profile"]["last"] = ""
                 self.pokehandler.write_json(profile, profile_data)
-            log(f'[Pokemon] - resetting free pulls')
+            log(f'[Pokemon] - reseting free pulls')
 
             await self.send_to_all(f'```yaml\n\nEvent: {self.eventname} ({subcommand3})\njust begun! with {event_data["total"]} available cards!\nFree packs and battles will only include cards from this set.\nBuying packs is disabled during the event.\nBattle que, daily battle limit and free pulls has been reset!\n\nGood luck!```')
             return
@@ -1059,10 +1069,9 @@ class Tcg:
             if not Tcg.event_underway:
                 await self.send_msg(self.message.channel.id, f'```yaml\n\nThere is no ongoing event```')
                 return
-            await self.event.stop_event()
 
-            await self.send_to_all(
-                f'```yaml\n\nThe {self.eventname} event has ended!\nWell played!\nBattle que and daily battle limit has been reset!```')
+            event_summary_text = await self.event.stop_event()
+            await self.send_to_all(event_summary_text)
 
             # clear battle que and daily list
             Tcg.battlelist = []

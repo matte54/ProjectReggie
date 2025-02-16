@@ -9,10 +9,14 @@ from systems.pokemon.halfed_atks import halfed
 from systems.pokemon.threeforths_atks import threeforths
 from systems.pokemon.whitelisted import whitelist
 
+from systems.pokemon.event import Eventmanager
+from systems.varmanager import VarManager
+
 # configurable constants
 NONE_DAMAGE_DEFAULT = 10
 
 debug_on = False
+
 
 class Battle:
     def __init__(self):
@@ -21,6 +25,8 @@ class Battle:
         self.player2_data = {}
         self.battlelog = f'```yaml\n\n'
         self.log_list = []
+        self.event = Eventmanager()
+        self.varmanager = VarManager()
 
     def get_profile(self, userid):
         if os.path.isfile(f"{self.profiles_path}{userid}.json"):
@@ -52,6 +58,11 @@ class Battle:
         # add stats
         winner_data["profile"]["battles_won"] += 1
         loser_data["profile"]["battles_lost"] += 1
+
+        # event stats
+        if self.varmanager.read("pokemon_event"):
+            await self.event.stats(winner_userid, battle_won=1)
+            await self.event.stats(loser_userid, battle_lost=1)
 
         # calculate experience gains
         base_reward = 20
