@@ -31,11 +31,7 @@ class Pokehandler:
             # check for missing entries here
             if not self.check_missing_keys(data):
                 log(f'[Pokemon] - {self.username} has missing profile keys...adding')
-                data["profile"]["battles_won"] = 0
-                data["profile"]["battles_lost"] = 0
-                data["profile"]["level"] = 1
-                data["profile"]["xp"] = 0
-                data["profile"]["xp_cap"] = 20
+                data["profile"]["price"] = False
                 self.write_json(f"{self.profiles_path}{self.userid}.json", data)
             return data, f"{self.profiles_path}{self.userid}.json"
         # if it does not, create AND return
@@ -45,6 +41,7 @@ class Pokehandler:
                 "money": 0.0,
                 "cards": 0,
                 "last": "",
+                "price": False,
                 "boosters_opened": 0,
                 "battles_won": 0,
                 "battles_lost": 0,
@@ -74,7 +71,7 @@ class Pokehandler:
 
     def check_missing_keys(self, data):
         # changes to existing profiles checked here.. add to list
-        required_keys = ["battles_won", "battles_lost", "level", "xp", "xp_cap"]
+        required_keys = ["price"]
 
         if all(key in data["profile"] for key in required_keys):
             # all keys present

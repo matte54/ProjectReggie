@@ -20,16 +20,19 @@ from systems.pokemon import channel_manager
 from systems.pokemon import stats
 from systems.pokemon import activity_tracker
 from systems.pokemon import thread_handler
+from systems.pokemon import event
 from tasks.pokemon_economy import Pokemoneconomy
 
 from systems.pokemon.set_data import x as set_data
 from systems.pokemon.rarity_data import x as rarity_data
+from systems.pokemon.event_names import prefixes, suffixes
 
 
 class Tcg:
     picking_underway = False
     battle_underway = False
     signup_underway = False
+    event_underway = None
     battlelist = []
     battle_lock = asyncio.Lock()
 
@@ -66,11 +69,13 @@ class Tcg:
         self.thread_handler = thread_handler.Threader(self.client)
         self.admins = ADMINS
         self.economy = Pokemoneconomy(self.client)
+        self.event = event.Eventmanager()
 
         self.set_id = None
         self.selected_cards = None
         self.userprofile_path = None
         self.pokemon_channels = []
+        self.eventname = ""
 
         self.battletracker = {}
         self.battlelist = Tcg.battlelist
@@ -100,6 +105,9 @@ class Tcg:
         if os.path.exists('./local/pokemon/setdata.pkl'):
             with open('./local/pokemon/setdata.pkl', 'rb') as file:
                 self.setdatalist = pickle.load(file)
+
+        Tcg.event_underway = self.varmanager.read("pokemon_event")
+        self.eventname = self.varmanager.read("pokemon_event_name")
 
         self.now = datetime.now()
         self.message = message
@@ -245,7 +253,13 @@ class Tcg:
             log(f'[Pokemon] - client is {self.client.user.name} skipping signup rules')
 
         # check if user has cards to battle
-        battlecards, found_cards, cardpaths = await self.check_card_avail()
+        if Tcg.event_underway:
+            # lookup cards for only event set
+            battlecards, found_cards, cardpaths = await self.check_card_avail_event()
+        else:
+            # random battle cards
+            battlecards, found_cards, cardpaths = await self.check_card_avail()
+
         if not found_cards:
             await self.send_msg(self.message.channel.id, f'```yaml\n\nYou dont own enough valid cards to battle```')
             Tcg.signup_underway = False
@@ -262,6 +276,8 @@ class Tcg:
         log(f'[Pokemon][DEBUG] - {self.battletracker}')
 
         signup_msg = f'```yaml\n\n{self.username} signed up for a Pokémon battle!\nBattle {self.battletracker[self.username]}/3 allowed for {self.username} today\n'
+        if Tcg.event_underway:
+            signup_msg += f'\nThis battle is for the {self.eventname} event!'
         if len(Tcg.battlelist) < 2:
             signup_msg += f'Use "$tcg battle" to challenge {self.username} to a pokémon battle!'
         signup_msg += f'```'
@@ -283,8 +299,12 @@ class Tcg:
             Tcg.battle_underway = True
 
             await asyncio.sleep(10)
-            await self.send_to_all(
-                f'```yaml\n\nBattle starts in 10s - {Tcg.battlelist[0][0]}(green) vs {Tcg.battlelist[1][0]}(red)```')
+            if Tcg.event_underway:
+                await self.send_to_all(
+                    f'```yaml\n\n{self.eventname} battle starts in 10s - {Tcg.battlelist[0][0]}(green) vs {Tcg.battlelist[1][0]}(red)```')
+            else:
+                await self.send_to_all(
+                    f'```yaml\n\nBattle starts in 10s - {Tcg.battlelist[0][0]}(green) vs {Tcg.battlelist[1][0]}(red)```')
 
             await asyncio.sleep(10)
 
@@ -338,6 +358,54 @@ class Tcg:
         # Run the update logic for each channel concurrently
         tasks = [update_channel(channel) for channel in self.pokemon_channels]
         await asyncio.gather(*tasks)
+
+    async def check_card_avail_event(self):
+        cardlist = []
+
+        # Validate user profile and card count
+        if self.userprofile["profile"]["cards"] < 3:
+            return cardlist, False
+
+        # Check if the specified set exists and has cards
+        base_dict = self.userprofile["sets"].get(Tcg.event_underway, {})
+        if not base_dict:
+            return cardlist, False
+
+        seen_cards = set()
+        loopcounter = 0
+        max_iterations = 50
+        paths = []
+
+        while len(cardlist) < 3 and loopcounter < max_iterations:
+            loopcounter += 1
+
+            # Select random card from the specified set
+            random_key = random.choice(list(base_dict.keys()))
+
+            # Avoid duplicate selections
+            if random_key in seen_cards:
+                continue
+            seen_cards.add(random_key)
+
+            # Build file path and load card data
+            filepath = os.path.join('./data/pokemon/sets', Tcg.event_underway, f'{random_key}.json')
+
+            try:
+                with open(filepath, 'r', encoding='UTF-8') as json_file:
+                    card_data = json.load(json_file)
+
+                # Exclude "Trainer" cards
+                if card_data.get("supertype") == "Trainer":
+                    continue
+
+                # Append valid card to the list
+                cardlist.append(card_data)
+                paths.append(filepath.replace('sets', 'images').replace('.json', '.png'))
+
+            except FileNotFoundError:
+                continue  # Skip missing files
+
+        return cardlist, len(cardlist) == 3, paths
 
     async def check_card_avail(self):
         cardlist = []
@@ -418,21 +486,29 @@ class Tcg:
             log(f"[Pokemon] - Picking already underway, ignoring request")
             return
         # check time stamp
-        if self.userprofile["profile"]["last"]:  # protection against a new profile without a time value
-            time_since_last_pull = self.now - datetime.fromisoformat(self.userprofile["profile"]["last"])
-            if not time_since_last_pull > timedelta(hours=24):
-                remaining_time = timedelta(hours=24) - time_since_last_pull
-                hours, remainder = divmod(remaining_time.total_seconds(), 3600)
-                minutes = remainder // 60
-                remaining = f"{int(hours)}h {int(minutes)}m"
+        if self.userprofile["profile"]["price"]:
+            pass
+        else:
+            if self.userprofile["profile"]["last"]:  # protection against a new profile without a time value
+                time_since_last_pull = self.now - datetime.fromisoformat(self.userprofile["profile"]["last"])
+                if not time_since_last_pull > timedelta(hours=24):
+                    remaining_time = timedelta(hours=24) - time_since_last_pull
+                    hours, remainder = divmod(remaining_time.total_seconds(), 3600)
+                    minutes = remainder // 60
+                    remaining = f"{int(hours)}h {int(minutes)}m"
 
-                await self.send_msg(self.message.channel.id, f'```yaml\n\nYou have {remaining} left until your daily free booster '
-                                                f'pack...```')
-                log(f'[Pokemon] - {self.username} has {remaining} remaining on freebie')
-                return
+                    await self.send_msg(self.message.channel.id, f'```yaml\n\nYou have {remaining} left until your daily free booster '
+                                                    f'pack...```')
+                    log(f'[Pokemon] - {self.username} has {remaining} remaining on freebie')
+                    return
 
         value = None
-        self.set_id, rarityindex = await self.pokemon.pick_random_set()
+
+        if Tcg.event_underway:
+            self.set_id = Tcg.event_underway
+            rarityindex = 100
+        else:
+            self.set_id, rarityindex = await self.pokemon.pick_random_set()
 
         if os.path.exists(f'{self.setdata_path}{self.set_id}_setdata.json'):
             with open(f'{self.setdata_path}{self.set_id}_setdata.json', "r") as f:
@@ -451,10 +527,15 @@ class Tcg:
 
         log(f'[Pokemon] - {self.username} claims their daily free boosterpack')
 
-        claimstring = f'```yaml\n\n{self.username} opens their daily FREE booster pack (10 cards) - ${value}\n{data["series"]} - {data["name"]}({self.set_id})\n'
+        if self.userprofile["profile"]["price"]:
+            claimstring = f'```yaml\n\n{self.username} claims their battle winning price booster pack (10 cards) - ${value}\n{data["series"]} - {data["name"]}({self.set_id})\n'
+        else:
+            claimstring = f'```yaml\n\n{self.username} opens their daily FREE booster pack (10 cards) - ${value}\n{data["series"]} - {data["name"]}({self.set_id})\n'
         claimstring += f'Set contains {data["total"]} total cards, released {data["releaseDate"]}'
+        if Tcg.event_underway:
+            claimstring += f'\nThis pull is for the {self.eventname} event!'
         if rarityindex < 0.4:
-            claimstring += '\nThis set is a rare (more valueable) pull!'
+            claimstring += f'\nThis set is a rare (more valueable) pull!'
         claimstring += '```'
 
         await self.send_msg(self.message.channel.id, claimstring)
@@ -469,7 +550,10 @@ class Tcg:
         await self.thread_handler.handle_thread(self.message, self.username, card_img_list, f' ')
         #await self.message.channel.send(files=card_img_list)
 
-        self.userprofile["profile"]["last"] = str(self.now.isoformat())
+        if self.userprofile["profile"]["price"]:
+            self.userprofile["profile"]["price"] = False
+        else:
+            self.userprofile["profile"]["last"] = str(self.now.isoformat())
         summary_message = await self.handle_cards(0)
 
         await self.thread_handler.handle_thread(self.message, self.username, summary_message)
@@ -608,6 +692,10 @@ class Tcg:
                 return
 
     async def buy(self, subcommand2):
+        if Tcg.event_underway:
+            await self.send_msg(self.message.channel.id, f'```yaml\n\n{self.eventname} is currently ongoing\nBuying sets is not allowed during an event```')
+            return
+
         if Tcg.picking_underway:
             log(f"[Pokemon] - Picking already underway, ignoring request")
             return
@@ -925,6 +1013,64 @@ class Tcg:
                 return
             await self.channelmanager.disable(self.message)
             log(f'[Pokemon][ADMIN] - admin {self.username} DISABLED channel {self.message.channel.name}({self.message.channel.id}) for pokemon')
+            return
+
+        if subcommand2 == "event":
+            if not self.message.author.id == self.admins[0]:
+                log(f'[Pokemon] - {self.username} tried to get admin access and got denied')
+                return
+            if subcommand3 is None:
+                return
+            if Tcg.event_underway:
+                await self.send_msg(self.message.channel.id, f'```yaml\n\nEvent already ongoing```')
+                return
+            # event starter
+            event_data = await self.event.start_event(subcommand3)
+            if not event_data:
+                await self.send_msg(self.message.channel.id, f'```yaml\n\nset id not found```')
+                return
+
+            # name event and store
+            self.eventname = f'{random.choice(prefixes)} {event_data["name"]} {random.choice(suffixes)}'
+            self.varmanager.write("pokemon_event_name", self.eventname)
+            log(f'[Pokemon] - Starting event "{self.eventname}"')
+
+            # clear battle que and daily list
+            Tcg.battlelist = []
+            self.battletracker = {}
+            log(f'[Pokemon] - clearing battle que/list')
+
+            # reset free pulls
+            user_profiles_list = await self.find_json_files('./local/pokemon/profiles/')
+            for profile in user_profiles_list:
+                with open(profile, "r") as f:
+                    profile_data = json.load(f)
+                profile_data["profile"]["last"] = ""
+                self.pokehandler.write_json(profile, profile_data)
+            log(f'[Pokemon] - resetting free pulls')
+
+            await self.send_to_all(f'```yaml\n\nEvent: {self.eventname} ({subcommand3})\njust begun! with {event_data["total"]} available cards!\nFree packs and battles will only include cards from this set.\nBuying packs is disabled during the event.\nBattle que, daily battle limit and free pulls has been reset!\n\nGood luck!```')
+            return
+
+        if subcommand2 == "!event":
+            if not self.message.author.id == self.admins[0]:
+                log(f'[Pokemon] - {self.username} tried to get admin access and got denied')
+                return
+            if not Tcg.event_underway:
+                await self.send_msg(self.message.channel.id, f'```yaml\n\nThere is no ongoing event```')
+                return
+            await self.event.stop_event()
+
+            await self.send_to_all(
+                f'```yaml\n\nThe {self.eventname} event has ended!\nWell played!\nBattle que and daily battle limit has been reset!```')
+
+            # clear battle que and daily list
+            Tcg.battlelist = []
+            self.battletracker = {}
+            log(f'[Pokemon] - clearing battle que/list')
+
+            self.eventname = ""
+            self.varmanager.write("pokemon_event_name", "")
             return
 
         if subcommand2 == "give":
