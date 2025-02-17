@@ -8,7 +8,7 @@ from systems.varmanager import VarManager
 class Guildstats:
     def __init__(self):
         self.varmanager = VarManager()
-        self.re_pattern = re.compile(r'<:(.*?):')
+        self.re_pattern = re.compile(r'<a?:([a-zA-Z0-9_]+):')
 
     def get_user_name(self, user_id):
         if os.path.exists(f'./data/etc/ids.json'):
