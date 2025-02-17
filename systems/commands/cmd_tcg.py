@@ -369,12 +369,12 @@ class Tcg:
 
         # Validate user profile and card count
         if self.userprofile["profile"]["cards"] < 3:
-            return cardlist, False
+            return cardlist, False, []
 
         # Check if the specified set exists and has cards
         base_dict = self.userprofile["sets"].get(Tcg.event_underway, {})
         if not base_dict:
-            return cardlist, False
+            return cardlist, False, []
 
         seen_cards = set()
         loopcounter = 0
@@ -419,12 +419,12 @@ class Tcg:
         if not self.userprofile["profile"].get("last", ""):
             remaining = "NOW"
         if self.userprofile["profile"]["cards"] < 3:
-            return cardlist, False
+            return cardlist, False, []
 
         # Filter sets with cards
         non_empty_bases = {base: values for base, values in self.userprofile["sets"].items() if values}
         if not non_empty_bases:
-            return cardlist, False
+            return cardlist, False, []
 
         seen_cards = set()
         loopcounter = 0
