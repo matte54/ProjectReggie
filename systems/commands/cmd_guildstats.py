@@ -47,40 +47,52 @@ class Guildstats:
 
             stat_str += f'\nTop 5 most active users this month\n'
             limit = 0
-            for i in user_monthly_sorted_dict_descending:
-                username_str = self.get_user_name(i)
-                stat_str += username_str + ' - ' + str(user_monthly_sorted_dict_descending[i]) + '\n'
-                limit += 1
-                if limit == 5:
-                    break
+            if not user_monthly_sorted_dict_descending:
+                stat_str += "None available.\n"
+            else:
+                for i in user_monthly_sorted_dict_descending:
+                    username_str = self.get_user_name(i)
+                    stat_str += username_str + ' - ' + str(user_monthly_sorted_dict_descending[i]) + '\n'
+                    limit += 1
+                    if limit == 5:
+                        break
 
             stat_str += f'\nTop 5 most active users of all time\n'
             limit = 0
-            for i in user_alltime_sorted_dict_descending:
-                username_str = self.get_user_name(i)
-                stat_str += username_str + ' - ' + str(user_alltime_sorted_dict_descending[i]) + '\n'
-                limit += 1
-                if limit == 5:
-                    break
+            if not user_alltime_sorted_dict_descending:
+                stat_str += "None available.\n"
+            else:
+                for i in user_alltime_sorted_dict_descending:
+                    username_str = self.get_user_name(i)
+                    stat_str += username_str + ' - ' + str(user_alltime_sorted_dict_descending[i]) + '\n'
+                    limit += 1
+                    if limit == 5:
+                        break
 
             # add emoji lists keep it to 5 here or will be a long message
             stat_str += f'\nTop 5 used emojis this month\n'
             limit = 0
-            for i in emoji_monthly_sorted_dict_descending:
-                just_name = self.re_pattern.findall(i)
-                stat_str += just_name[0] + ' - ' + str(emoji_monthly_sorted_dict_descending[i]) + '\n'
-                limit += 1
-                if limit == 5:
-                    break
+            if not emoji_monthly_sorted_dict_descending:
+                stat_str += "None available.\n"
+            else:
+                for i in emoji_monthly_sorted_dict_descending:
+                    just_name = self.re_pattern.findall(i)
+                    stat_str += just_name[0] + ' - ' + str(emoji_monthly_sorted_dict_descending[i]) + '\n'
+                    limit += 1
+                    if limit == 5:
+                        break
 
             stat_str += f'\nTop 5 used emojis of all time\n'
             limit = 0
-            for i in emoji_alltime_sorted_dict_descending:
-                just_name = self.re_pattern.findall(i)
-                stat_str += just_name[0] + ' - ' + str(emoji_alltime_sorted_dict_descending[i]) + '\n'
-                limit += 1
-                if limit == 5:
-                    break
+            if not emoji_alltime_sorted_dict_descending:
+                stat_str += "None available.\n"
+            else:
+                for i in emoji_alltime_sorted_dict_descending:
+                    just_name = self.re_pattern.findall(i)
+                    stat_str += just_name[0] + ' - ' + str(emoji_alltime_sorted_dict_descending[i]) + '\n'
+                    limit += 1
+                    if limit == 5:
+                        break
 
             await message.channel.send(f'```yaml\n\n{stat_str}```')
 

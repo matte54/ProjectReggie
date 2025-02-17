@@ -39,21 +39,27 @@ class Stats:
 
             stat_str += f'\nTop 10 used emojis this month\n'
             limit = 0
-            for i in monthly_sorted_dict_descending:
-                just_name = self.re_pattern.findall(i)
-                stat_str += just_name[0] + ' - ' + str(monthly_sorted_dict_descending[i]) + '\n'
-                limit += 1
-                if limit == 10:
-                    break
+            if not monthly_sorted_dict_descending:
+                stat_str += "None available.\n"
+            else:
+                for i in monthly_sorted_dict_descending:
+                    just_name = self.re_pattern.findall(i)
+                    stat_str += just_name[0] + ' - ' + str(monthly_sorted_dict_descending[i]) + '\n'
+                    limit += 1
+                    if limit == 10:
+                        break
 
             stat_str += f'\nTop 10 used emojis of all time\n'
             limit = 0
-            for i in alltime_sorted_dict_descending:
-                just_name = self.re_pattern.findall(i)
-                stat_str += just_name[0] + ' - ' + str(alltime_sorted_dict_descending[i]) + '\n'
-                limit += 1
-                if limit == 10:
-                    break
+            if not alltime_sorted_dict_descending:
+                stat_str += "None available.\n"
+            else:
+                for i in alltime_sorted_dict_descending:
+                    just_name = self.re_pattern.findall(i)
+                    stat_str += just_name[0] + ' - ' + str(alltime_sorted_dict_descending[i]) + '\n'
+                    limit += 1
+                    if limit == 10:
+                        break
 
             await message.channel.send(f'```yaml\n\n{stat_str}```')
 

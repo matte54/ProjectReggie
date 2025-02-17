@@ -37,6 +37,7 @@ from tasks.fishing_gear_keeper import FishingGearHandler
 from tasks.schools import Schools
 from tasks.pokemonrewards import Pokemonrewards
 from tasks.pokemon_economy import Pokemoneconomy
+from tasks.pokemon_event import Pokemoneventhandler
 
 # banditlife tasks
 from systems.banditlife.areamanager import Areamanager
@@ -63,6 +64,7 @@ class Woodhouse(discord.Client):
         self.schools = Schools(self)
         self.pokemonrewards = Pokemonrewards(self)
         self.pokemoneconomy = Pokemoneconomy(self)
+        self.pokemonevents = Pokemoneventhandler(self)
         # testing banditstuff
         #self.areamanger = Areamanager()
 
@@ -99,6 +101,7 @@ class Woodhouse(discord.Client):
         self.loop.create_task(self.schools.main_loop())
         self.loop.create_task(self.pokemonrewards.main())
         self.loop.create_task(self.pokemoneconomy.main())
+        self.loop.create_task(self.pokemonevents.main())
 
     async def on_ready(self):
         log(f"Discord.py API version: {discord.__version__}")

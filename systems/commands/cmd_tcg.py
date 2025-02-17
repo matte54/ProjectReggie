@@ -1059,7 +1059,21 @@ class Tcg:
                 self.pokehandler.write_json(profile, profile_data)
             log(f'[Pokemon] - reseting free pulls')
 
-            await self.send_to_all(f'```yaml\n\nEvent: {self.eventname} ({subcommand3})\njust begun! with {event_data["total"]} available cards!\nFree packs and battles will only include cards from this set.\nBuying packs is disabled during the event.\nBattle que, daily battle limit and free pulls has been reset!\n\nGood luck!```')
+            event_announcement = f"""```yaml
+
+            🎉 **{self.eventname} ({subcommand3}) Has Begun!** 🎉
+
+            📂 **Available Cards:** {event_data["total"]}  
+            🃏 **Set Exclusive:** All free packs and battles feature only cards from this set!  
+            🚫 **Packs Purchase Disabled:**  
+            ♟️ **Resets Applied:** Battle queue, daily battle limits, and free pulls have been reset!
+
+            🔥 **Get ready, Trainers!** Test your luck, and collect 'em all!
+
+            💥 Good luck and have fun! 💥
+            ```"""
+
+            await self.send_to_all(event_announcement)
             return
 
         if subcommand2 == "!event":

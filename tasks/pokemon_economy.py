@@ -99,7 +99,6 @@ class Pokemoneconomy:
                     # Update the list in place
                     self.setdatalist[i] = [sub_modified[0], sub_modified[1], new_value]
 
-
         if changeslist:
             await self.save_setdata()
             log(f'[Pokemon][Economy] - adjusted setprices: {changeslist}')
@@ -201,7 +200,7 @@ class Pokemoneconomy:
         await self.collect_channel_ids()
 
         await asyncio.sleep(10)
-        log(f'[Pokemon]- Initilizing pokémon economy')
+        log(f'[Pokemon][Economy] - Initilizing')
         while self.run:
 
             self.iteration += 1  # Increase iteration count

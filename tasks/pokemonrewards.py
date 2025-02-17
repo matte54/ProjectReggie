@@ -70,7 +70,7 @@ class Pokemonrewards:
     async def rewards(self):
         rewardstring = f'```yaml\n\n** Daily activity rewards **\nrewards for active players (level based)\n'
         id_list = self.activitytracker.read_activity()
-        log(f'[Pokemon]- Giving out activity rewards to {id_list}')
+        log(f'[Pokemon][Rewards] - Giving out activity rewards to {id_list}')
         for userid in id_list:
             name = self.get_user_name(userid)
             with open(f'{self.profiles_path}{userid}.json', "r", encoding='UTF-8') as f:
@@ -89,7 +89,7 @@ class Pokemonrewards:
     async def main(self):
         await self.collect_channel_ids()
         await asyncio.sleep(10)
-        log(f'[Pokemon]- Initilizing pokémon task')
+        log(f'[Pokemon][Rewards]- Initilizing')
         while self.run:
             now = datetime.now()
             if now.hour == TARGETHOUR and not self.rewarded:
