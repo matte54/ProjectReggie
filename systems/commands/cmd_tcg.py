@@ -7,6 +7,7 @@ import asyncio
 import pickle
 
 from datetime import datetime, timedelta
+from collections import Counter
 
 from systems.logger import debug_on, log
 
@@ -80,6 +81,7 @@ class Tcg:
 
         self.battletracker = {}
         self.battlelist = Tcg.battlelist
+        self.battle_card_subtypes = []
 
         self.subcommands = {
             "free": (self.free, False, False),
@@ -431,6 +433,15 @@ class Tcg:
         max_iterations = 50
         paths = []
 
+        # Store and clear existing subtypes
+        if self.battle_card_subtypes:
+            selected_subtypes = Counter(self.battle_card_subtypes)  # Track subtype occurrences
+            self.battle_card_subtypes = []  # Reset for next round
+            log(f'[Pokemon][DEBUG] - player2 is selecting cards, trying to match subtypes: {dict(selected_subtypes)}')
+        else:
+            selected_subtypes = Counter()  # Player 1 picks randomly
+            log(f'[Pokemon][DEBUG] - player1 is selecting cards randomly.')
+
         while len(cardlist) < 3 and loopcounter < max_iterations:
             loopcounter += 1
 
@@ -456,13 +467,35 @@ class Tcg:
                 if card_data["supertype"] == "Trainer":
                     continue
 
+                card_subtypes = card_data.get("subtypes", [])
+
+                # Player 2: Try to match subtypes from Player 1
+                matching_subtypes = [s for s in card_subtypes if selected_subtypes[s] > 0]
+
+                if selected_subtypes and not matching_subtypes:
+                    continue  # Skip if no matching subtypes are found
+
                 # Append valid card to the list
                 cardlist.append(card_data)
+                self.battle_card_subtypes.extend(card_subtypes)
                 paths.append(filepath.replace('sets', 'images').replace('.json', '.png'))
+
+                # Print picked card details
+                log(f'[Pokemon][DEBUG] - selected: {card_data["name"]} | Subtypes: {card_data["subtypes"]}')
+
+                # Remove only ONE instance of each matched subtype instead of all at once
+                for subtype in matching_subtypes:
+                    selected_subtypes[subtype] -= 1
+                    if selected_subtypes[subtype] <= 0:
+                        del selected_subtypes[subtype]  # Remove completely if count reaches 0
+
+                if matching_subtypes:
+                    log(f'[Pokemon][DEBUG] - Matched subtypes: {matching_subtypes}')
 
             except FileNotFoundError:
                 continue  # Skip missing files
 
+        log(f'[Pokemon][DEBUG] - players final subtypes: {self.battle_card_subtypes}')
         return cardlist, len(cardlist) == 3, paths
 
     async def get_battle_images(self, imgpaths):
@@ -703,8 +736,8 @@ class Tcg:
                 return
 
     async def buy(self, subcommand2):
-        if Tcg.event_underway:
-            await self.send_msg(self.message.channel.id, f'```yaml\n\n{self.eventname} is currently ongoing\nBuying sets is not allowed during an event```')
+        if subcommand2 == Tcg.event_underway:
+            await self.send_msg(self.message.channel.id, f'```yaml\n\n{self.eventname} is currently ongoing\nBuying boosterpacks from that set is currently disabled```')
             return
 
         if Tcg.picking_underway:
@@ -1065,7 +1098,6 @@ class Tcg:
 
             📂 **Available Cards:** {event_data["total"]}  
             🃏 **Set Exclusive:** All free packs and battles feature only cards from this set!  
-            🚫 **Packs Purchase Disabled:**  
             ♟️ **Resets Applied:** Battle queue, daily battle limits, and free pulls have been reset!
 
             🔥 **Get ready, Trainers!** Test your luck, and collect 'em all!
