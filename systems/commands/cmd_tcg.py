@@ -330,6 +330,7 @@ class Tcg:
 
             await self.send_to_all(results)
             Tcg.battlelist = []  # clear the battle que
+            self.battle_card_subtypes = []  # clear subtype list
             log(f'[Pokemon][DEBUG] - Battlelist has {len(Tcg.battlelist)} entries (AFTER CLEAR)')
             Tcg.battle_underway = False
 
