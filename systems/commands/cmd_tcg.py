@@ -22,11 +22,15 @@ from systems.pokemon import stats
 from systems.pokemon import activity_tracker
 from systems.pokemon import thread_handler
 from systems.pokemon import event
-from tasks.pokemon_economy import Pokemoneconomy
+from systems.pokemon import daily_modfier
 
 from systems.pokemon.set_data import x as set_data
 from systems.pokemon.rarity_data import x as rarity_data
 from systems.pokemon.event_names import prefixes, suffixes
+
+from tasks.msg_retryer import Msgretry
+from tasks.pokemon_chansey import Chanseypick
+from tasks.pokemon_economy import Pokemoneconomy
 
 
 class Tcg:
@@ -36,6 +40,7 @@ class Tcg:
     event_underway = None
     battlelist = []
     battle_lock = asyncio.Lock()
+    modifier = None
 
     def __init__(self, client):
         # define paths
@@ -72,6 +77,9 @@ class Tcg:
         self.admins = ADMINS
         self.economy = Pokemoneconomy(self.client)
         self.event = event.Eventmanager()
+        self.chansey = Chanseypick(self.client)
+        self.daily_modifier = daily_modfier.DailyModifier()
+        self.msg_retry = Msgretry
 
         self.set_id = None
         self.selected_cards = None
@@ -97,6 +105,7 @@ class Tcg:
         }
 
         self.activity.startup()
+        Tcg.modifier = self.daily_modifier.startup_modifier()
 
     async def command(self, message):
         await self.collect_channel_ids()
@@ -181,6 +190,7 @@ class Tcg:
 
         else:  # This else runs only if all retries fail
             log(f'[Pokemon]- Failed to send message to {channel_id} after {max_retries} retries.')
+            await self.msg_retry.store_msg(self, msg, channel_id)
 
     async def send_to_all(self, msg):
         max_retries = 3
@@ -205,6 +215,7 @@ class Tcg:
 
             else:  # This else runs only if all retries fail
                 log(f'[Pokemon]- Failed to send message to {channel_id} after {max_retries} retries.')
+                await self.msg_retry.store_msg(self, msg, channel_id)
 
         return messages
 
@@ -241,8 +252,9 @@ class Tcg:
 
         if self.client.user.id == 327138137371574282:
             # check if user is allowed any more battles today
+            battle_limit = 6 if Tcg.modifier == "battles" else 3
             if self.username in self.battletracker:
-                if self.battletracker[self.username] >= 3:
+                if self.battletracker[self.username] >= battle_limit:
                     await self.send_msg(self.message.channel.id, f'```yaml\n\nYou are not allowed any more battles today, come back tomorrow...```')
                     Tcg.signup_underway = False
                     return
@@ -255,6 +267,7 @@ class Tcg:
                     return
         else:
             log(f'[Pokemon] - client is {self.client.user.name} skipping signup rules')
+            battle_limit = 100
 
         # check if user has cards to battle
         if Tcg.event_underway:
@@ -279,7 +292,7 @@ class Tcg:
         self.battletracker[self.username] = self.battletracker.get(self.username, 0) + 1
         log(f'[Pokemon][DEBUG] - {self.battletracker}')
 
-        signup_msg = f'```yaml\n\n{self.username} signed up for a Pokémon battle!\nBattle {self.battletracker[self.username]}/3 allowed for {self.username} today\n'
+        signup_msg = f'```yaml\n\n{self.username} signed up for a Pokémon battle!\nBattle {self.battletracker[self.username]}/{battle_limit} allowed for {self.username} today\n'
         if Tcg.event_underway:
             signup_msg += f'\nThis battle is for the {self.eventname} event!'
         if len(Tcg.battlelist) < 2:
@@ -496,6 +509,40 @@ class Tcg:
             except FileNotFoundError:
                 continue  # Skip missing files
 
+        # Fallback mechanism: ensure at least 3 cards
+        if len(cardlist) < 3:
+            log(f'[Pokemon][DEBUG] - Fallback activated: Selecting any non-Trainer cards to reach 3')
+
+            all_available_cards = [
+                (base, key) for base, values in non_empty_bases.items() for key in values.keys()
+            ]
+            random.shuffle(all_available_cards)  # Shuffle to ensure randomness
+
+            for base, key in all_available_cards:
+                if len(cardlist) >= 3:
+                    break  # Stop once we reach 3 cards
+                if key in seen_cards:
+                    continue  # Avoid duplicates
+
+                # Load fallback card data
+                setname = key.split('-')[0]
+                filepath = os.path.join('./data/pokemon/sets', setname, f'{key}.json')
+
+                try:
+                    with open(filepath, 'r', encoding='UTF-8') as json_file:
+                        card_data = json.load(json_file)
+
+                    if card_data["supertype"] == "Trainer":
+                        continue  # Skip Trainer cards
+
+                    # Append fallback card
+                    cardlist.append(card_data)
+                    paths.append(filepath.replace('sets', 'images').replace('.json', '.png'))
+                    log(f'[Pokemon][DEBUG] - Fallback selected: {card_data["name"]}')
+
+                except FileNotFoundError:
+                    continue  # Skip missing files
+
         log(f'[Pokemon][DEBUG] - players final subtypes: {self.battle_card_subtypes}')
         return cardlist, len(cardlist) == 3, paths
 
@@ -530,8 +577,9 @@ class Tcg:
         else:
             if self.userprofile["profile"]["last"]:  # protection against a new profile without a time value
                 time_since_last_pull = self.now - datetime.fromisoformat(self.userprofile["profile"]["last"])
-                if not time_since_last_pull > timedelta(hours=24):
-                    remaining_time = timedelta(hours=24) - time_since_last_pull
+                cooldown_hours = 12 if Tcg.modifier == "pulls" else 24
+                if not time_since_last_pull > timedelta(hours=cooldown_hours):
+                    remaining_time = timedelta(hours=cooldown_hours) - time_since_last_pull
                     hours, remainder = divmod(remaining_time.total_seconds(), 3600)
                     minutes = remainder // 60
                     remaining = f"{int(hours)}h {int(minutes)}m"
@@ -928,7 +976,11 @@ class Tcg:
         return cards_owned, cards_in_set, id_list
 
     async def money_handler(self, value):
-        self.userprofile["profile"]["money"] += round(value, 2)
+        if Tcg.modifier == "money":
+            # double money modifier
+            self.userprofile["profile"]["money"] += round(value * 2, 2)
+        else:
+            self.userprofile["profile"]["money"] += round(value, 2)
 
         self.pokehandler.write_json(self.userprofile_path, self.userprofile)
         #log(f'[Pokemon] - {self.username} now has ${self.userprofile["profile"]["money"]:.2f} - Wrote {self.userprofile_path}!')
@@ -1025,6 +1077,14 @@ class Tcg:
             if not self.message.author.id == self.admins[0]:
                 log(f'[Pokemon] - {self.username} tried to get admin access and got denied')
                 return
+            return
+
+        if subcommand2 == "chansey":
+            # trigger chansey event
+            if not self.message.author.id == self.admins[0]:
+                log(f'[Pokemon] - {self.username} tried to get admin access and got denied')
+                return
+            await self.chansey.trigger_event_manually()
             return
 
         if subcommand2 == "sale":

@@ -20,24 +20,27 @@ class Pokehandler:
         self.username = None
         self.current_profile = None
 
-    def get_profile(self, message):
-        self.userid = message.author.id
-        self.username = self.get_user_name(message.author.id)
+    def get_profile(self, message, chansey=None):
+        if chansey:
+            self.userid = chansey
+            self.username = self.get_user_name(chansey)
+        else:
+            self.userid = message.author.id
+            self.username = self.get_user_name(message.author.id)
         now = datetime.datetime.now()
         # if profile exists load and return
         if os.path.isfile(f"{self.profiles_path}{self.userid}.json"):
             with open(f"{self.profiles_path}{self.userid}.json", "r") as f:
                 data = json.load(f)
             # check for missing entries here
-            if not self.check_missing_keys(data):
-                log(f'[Pokemon] - {self.username} has missing profile keys...adding')
-                data["profile"]["price"] = False
-                self.write_json(f"{self.profiles_path}{self.userid}.json", data)
+            self.check_missing_keys(data)
+
             return data, f"{self.profiles_path}{self.userid}.json"
         # if it does not, create AND return
         else:
             data = {}
             blank_profile_dict = {
+                "username": self.username,
                 "money": 0.0,
                 "cards": 0,
                 "last": "",
@@ -45,6 +48,7 @@ class Pokehandler:
                 "boosters_opened": 0,
                 "battles_won": 0,
                 "battles_lost": 0,
+                "chansey_picks": 0,
                 "level": 1,
                 "xp": 0,
                 "xp_cap": 20,
@@ -70,13 +74,43 @@ class Pokehandler:
             json.dump(data, f, indent=4)
 
     def check_missing_keys(self, data):
-        # changes to existing profiles checked here.. add to list
-        required_keys = ["price"]
+        required_keys = [
+             "username",
+             "money",
+             "cards",
+             "last",
+             "price",
+             "boosters_opened",
+             "battles_won",
+             "battles_lost",
+             "chansey_picks",
+             "level",
+             "xp",
+             "xp_cap"
+             ]
+        default_values = {
+            "username": self.username,
+            "money": 0.0,
+            "cards": 0,
+            "last": "",
+            "price": False,
+            "boosters_opened": 0,
+            "battles_won": 0,
+            "battles_lost": 0,
+            "chansey_picks": 0,
+            "level": 1,
+            "xp": 0,
+            "xp_cap": 20,
+        }
 
-        if all(key in data["profile"] for key in required_keys):
-            # all keys present
-            return True
-        else:
-            # missing keys
-            return False
+        # Find missing keys
+        missing_keys = [key for key in required_keys if key not in data["profile"]]
+
+        if missing_keys:  # Only proceed if there are missing keys
+            for key in missing_keys:
+                data["profile"][key] = default_values.get(key, None)
+
+            log(f'[Pokemon] - {self.username} has missing profile keys... adding {missing_keys}')
+            self.write_json(f"{self.profiles_path}{self.userid}.json", data)
+
 

@@ -7,6 +7,7 @@ from datetime import datetime
 from systems.logger import log
 from systems.varmanager import VarManager
 from systems.pokemon import activity_tracker
+from systems.pokemon import daily_modfier
 
 
 TARGETHOUR = 00
@@ -23,6 +24,7 @@ class Pokemonrewards:
         self.current_hour = None
         self.rewarded = False
         self.pokemon_channels = None
+        self.modifier = daily_modfier.DailyModifier()
 
         self.profiles_path = './local/pokemon/profiles/'
 
@@ -68,7 +70,9 @@ class Pokemonrewards:
                 return id_data[str(user_id)]
 
     async def rewards(self):
-        rewardstring = f'```yaml\n\n** Daily activity rewards **\nrewards for active players (level based)\n'
+        mod_string = self.describe_modifier()
+        rewardstring = f"```yaml\n\nWelcome to a new day of Pokémon\n{f', Todays modifier is: {mod_string}' if mod_string else ''}"
+        rewardstring += f'```yaml\n\n** Daily activity rewards **\nrewards for active players (level based)\n'
         id_list = self.activitytracker.read_activity()
         log(f'[Pokemon][Rewards] - Giving out activity rewards to {id_list}')
         for userid in id_list:
@@ -85,6 +89,19 @@ class Pokemonrewards:
         rewardstring += f'```'
 
         return rewardstring
+
+    async def describe_modifier(self):
+        i = self.modifier.read_modifier()
+        if i == "default":
+            return ""
+        if i == "battles":
+            return "battle limit X2"
+        if i == "xp":
+            return "XP X2"
+        if i == "pulls":
+            return "Free pull ½ CD"
+        if i == "money":
+            return "Money X2"
 
     async def main(self):
         await self.collect_channel_ids()

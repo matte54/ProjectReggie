@@ -8,6 +8,7 @@ from systems.pokemon.effectiveness_data import type_effectiveness
 from systems.pokemon.halfed_atks import halfed
 from systems.pokemon.threeforths_atks import threeforths
 from systems.pokemon.whitelisted import whitelist
+from systems.pokemon import daily_modfier
 
 from systems.pokemon.event import Eventmanager
 from systems.varmanager import VarManager
@@ -27,6 +28,7 @@ class Battle:
         self.log_list = []
         self.event = Eventmanager()
         self.varmanager = VarManager()
+        self.modifier = daily_modfier.DailyModifier()
 
     def get_profile(self, userid):
         if os.path.isfile(f"{self.profiles_path}{userid}.json"):
@@ -47,6 +49,7 @@ class Battle:
             json.dump(data, f, indent=4)
 
     async def handle_battle_outcome(self, winner, loser, winner_xp, loser_xp):
+        current_mod = self.modifier.read_modifier()
         w_lvlup = None
         l_lvlup = None
         # load both profiles
@@ -75,6 +78,11 @@ class Battle:
         # Cap the rewards
         winner_reward = int(min(winner_reward, cap))
         loser_reward = int(min(loser_reward, cap))
+
+        if current_mod == "xp":
+            # double xp modifier
+            winner_reward = int(winner_reward * 2)
+            loser_reward = int(loser_reward * 2)
 
         log(f'[Pokemon] - Winner {winner} had hand value: {winner_xp} and is rewarded {winner_reward}')
         log(f'[Pokemon] - Loser {loser} had hand value: {loser_xp} and is rewarded {loser_reward}')
@@ -107,6 +115,8 @@ class Battle:
             # money calculations with chances of high price
             price_weight = random.random() ** 2
             pricemoney = int(50 + (250 - 50) * price_weight)
+            if current_mod == "money":
+                pricemoney = int(pricemoney * 2)
 
             winner_data["profile"]["money"] += pricemoney
             results_msg += f'{winner} won ${pricemoney} and gained {winner_reward} xp\n'
