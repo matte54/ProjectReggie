@@ -71,8 +71,8 @@ class Pokemonrewards:
 
     async def rewards(self):
         mod_string = self.describe_modifier()
-        rewardstring = f"```yaml\n\nWelcome to a new day of Pokémon\n{f', Todays modifier is: {mod_string}' if mod_string else ''}"
-        rewardstring += f'```yaml\n\n** Daily activity rewards **\nrewards for active players (level based)\n'
+        rewardstring = f"```yaml\n\nWelcome to a new day of Pokémon!{f'Todays modifier is: {mod_string}' if mod_string else ''}\n"
+        rewardstring += f'** Daily activity rewards **\nrewards for active players (level based)\n'
         id_list = self.activitytracker.read_activity()
         log(f'[Pokemon][Rewards] - Giving out activity rewards to {id_list}')
         for userid in id_list:
