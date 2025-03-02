@@ -3,11 +3,12 @@ import discord
 import random
 import os
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from systems.logger import log
 from systems.varmanager import VarManager
 from systems.pokemon import pokehandler
+from systems.pokemon import daily_modfier
 
 from systems.pokemon.rarity_data import x
 
@@ -26,6 +27,7 @@ class Chanseypick:
             self.client = client
             self.varmanager = VarManager()
             self.pokehandler = pokehandler.Pokehandler(self.client)
+            self.modifier = daily_modfier.DailyModifier()
 
             self.pokemon_channels = []
             self.rarity_data = x
@@ -35,6 +37,7 @@ class Chanseypick:
             self.chansey_final = None
             self.reaction_time = 300
             self.rare_threshold = 0.3
+            self.trigger_times = None
 
             self._initialized = True  # Mark as initialized
 
@@ -43,13 +46,20 @@ class Chanseypick:
         log(f'[Pokemon][Chansey] - Initilizing')
         await self.collect_channel_ids()
         self.rarity_weights = {rarity: weight for rarity, weight, blank in self.rarity_data}
+        current_mod = self.modifier.read_modifier()
+        if current_mod == "chansey":
+            self.trigger_times = self.generate_trigger_times(12, 2)
+        else:
+            self.trigger_times = self.generate_trigger_times()
 
         while True:
             now = datetime.now()
-            current_hour = now.hour
-
-            if current_hour in {3, 15} or self.manual_trigger.is_set():
-                self.manual_trigger.clear()
+            if now >= self.trigger_times[0] or self.manual_trigger.is_set():
+                if self.manual_trigger.is_set():
+                    self.manual_trigger.clear()
+                else:
+                    self.trigger_times.pop(0)
+                    log(f'[Pokemon][Chansey] - Triggering Chansey event! {len(self.trigger_times)} events left today')
                 msg_objs = await self.start_chansey()
                 users_who_reacted = await self.monitor_reactions(msg_objs)  # Track reactions
                 await self.handle_reaction_results(users_who_reacted)  # Handle results after time expires
@@ -219,6 +229,34 @@ class Chanseypick:
     async def collect_channel_ids(self):
         if self.varmanager.read("pokemon_channels"):
             self.pokemon_channels = self.varmanager.read("pokemon_channels")
+
+    def generate_trigger_times(self, n=6, min_gap_hours=3):
+        """Generate n random times within the next 24 hours, with at least min_gap_hours between them."""
+        now = datetime.now()
+        end_time = now + timedelta(hours=24)  # Limit triggers to within the next 24 hours
+        trigger_times = []
+
+        # Start the first trigger at a random time within the next hour
+        next_time = now + timedelta(seconds=random.randint(0, 3600))
+
+        for _ in range(n):
+            if next_time > end_time:
+                break  # Stop if we exceed the 24-hour limit
+
+            trigger_times.append(next_time)
+
+            # Ensure the next trigger is at least `min_gap_hours` later
+            next_min_time = next_time + timedelta(hours=min_gap_hours)
+
+            # Pick a random time between next_min_time and end_time, but keep it within bounds
+            if next_min_time > end_time:
+                break  # Stop if the next trigger would exceed the 24-hour period
+
+            remaining_time = (end_time - next_min_time).total_seconds()
+            next_time = next_min_time + timedelta(
+                seconds=random.randint(0, int(remaining_time / (n - len(trigger_times) + 1))))
+
+        return sorted(trigger_times)
 
     async def send_msg(self, channel_id, msg):
         max_retries = 3

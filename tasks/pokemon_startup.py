@@ -14,7 +14,7 @@ TARGETHOUR = 00
 BASEREWARD = 100
 
 
-class Pokemonrewards:
+class PokemonStartup:
     def __init__(self, client):
         self.client = client
         self.varmanager = VarManager()
@@ -70,8 +70,11 @@ class Pokemonrewards:
                 return id_data[str(user_id)]
 
     async def rewards(self):
-        mod_string = self.describe_modifier()
-        rewardstring = f"```yaml\n\nWelcome to a new day of Pokémon!{f' Todays modifier is: {mod_string}' if mod_string else ''}\n"
+        mod_string = await self.describe_modifier()
+        rewardstring = f"```yaml\n\n"
+        rewardstring += f"Welcome to a new day of Pokémon!\n"
+        if mod_string:
+            rewardstring += f'Today has a modifier: {mod_string}!\n'
         rewardstring += f'** Daily activity rewards **\nrewards for active players (level based)\n'
         id_list = self.activitytracker.read_activity()
         log(f'[Pokemon][Rewards] - Giving out activity rewards to {id_list}')
@@ -102,6 +105,8 @@ class Pokemonrewards:
             return "Free pull ½ CD"
         if i == "money":
             return "Money X2"
+        if i == "chansey":
+            return "Chansey picks X2"
 
     async def main(self):
         await self.collect_channel_ids()

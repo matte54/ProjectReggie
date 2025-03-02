@@ -9,7 +9,7 @@ class DailyModifier:
     current_modifier = None
 
     def __init__(self):
-        self.modifiers_default_list = ["default", "battles", "xp", "pulls", "money", "chansey", "default"]
+        self.modifiers_default_list = ["default", "battles", "xp", "pulls", "money", "chansey", "battles"]
         self.modifiers_file = './local/pokemon/modifiers.json'
         self.modifiers_data = None
 
