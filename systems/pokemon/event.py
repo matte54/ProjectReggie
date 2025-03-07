@@ -103,6 +103,9 @@ class Eventmanager:
 
         self._write_json(self.statfile_path, statdata)
 
+    async def handout_rewards(self):
+        pass
+
     async def event_summary(self):
         with open(self.statfile_path, "r", encoding="UTF-8") as f:
             event_data = json.load(f)

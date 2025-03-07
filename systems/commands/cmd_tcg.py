@@ -39,6 +39,7 @@ class Tcg:
     signup_underway = False
     event_underway = None
     battlelist = []
+    battletracker = {}
     battle_lock = asyncio.Lock()
     modifier = None
 
@@ -87,7 +88,7 @@ class Tcg:
         self.pokemon_channels = []
         self.eventname = ""
 
-        self.battletracker = {}
+        self.battletracker = Tcg.battletracker
         self.battlelist = Tcg.battlelist
         self.battle_card_subtypes = []
 
@@ -253,6 +254,7 @@ class Tcg:
         if self.client.user.id == 327138137371574282:
             # check if user is allowed any more battles today
             battle_limit = 6 if Tcg.modifier == "battles" else 3
+            battle_limit += self.userprofile["profile"]["battle_upgrade"] # increase limit by battleupgrd(coming soon)
             if self.username in self.battletracker:
                 if self.battletracker[self.username] >= battle_limit:
                     await self.send_msg(self.message.channel.id, f'```yaml\n\nYou are not allowed any more battles today, come back tomorrow...```')
@@ -672,6 +674,18 @@ class Tcg:
                 minutes = remainder // 60
                 remaining = f"{int(hours)}h {int(minutes)}m"
 
+        def sum_card_values(d):
+            total = 0
+            if isinstance(d, dict):
+                for value in d.values():
+                    total += sum_card_values(value)
+            elif isinstance(d, (int, float)):
+                total += d
+            return round(total, 2)
+
+        total_card_values = sum_card_values(self.userprofile["sets"])
+
+
         totalbattles = self.userprofile["profile"]["battles_won"] + self.userprofile["profile"]["battles_lost"]
 
         profilestring = f'```yaml\n\n'
@@ -680,6 +694,7 @@ class Tcg:
         profilestring += f'Lvl: {self.userprofile["profile"]["level"]} Xp: {int(self.userprofile["profile"]["xp"])}/{int(self.userprofile["profile"]["xp_cap"])} Battles: {totalbattles} W:{self.userprofile["profile"]["battles_won"]} L:{self.userprofile["profile"]["battles_lost"]}\n'
         profilestring += f'***** TOP 10 MOST VALUEABLE CARDS OWNED *****\n'
         profilestring += await self.find_best()
+        profilestring += f'Combined value of cards owned: ${total_card_values}\n'
         profilestring += f'```'
         await self.thread_handler.handle_thread(self.message, self.username, profilestring, f' ')
         #await self.send_msg(self.message.channel.id, profilestring)
@@ -1053,6 +1068,9 @@ class Tcg:
 
         iso_str = self.now.strftime("%Y-%m-%d %H:%M")
         await self.thread_handler.handle_thread(self.message, self.username, report, f'Here are the stats')
+
+    async def buy_upgrade(self):
+        pass
 
     async def admin(self, subcommand2, subcommand3=None):
         # reset the free timer

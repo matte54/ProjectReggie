@@ -42,6 +42,7 @@ class Pokemoneventhandler:
         log(f'[Pokemon][Event Handler] - Starting event "{self.eventname}"')
 
         # clear battle que and daily list
+        # this does not work...
         self.tcg.battlelist = []
         self.tcg.battletracker = {}
         log(f'[Pokemon][Event Handler] - clearing battle que/list')

@@ -86,7 +86,10 @@ class Pokehandler:
              "chansey_picks",
              "level",
              "xp",
-             "xp_cap"
+             "xp_cap",
+             "battle_upgrade",
+             "money_cap",
+             "upgrades",
              ]
         default_values = {
             "username": self.username,
@@ -101,6 +104,9 @@ class Pokehandler:
             "level": 1,
             "xp": 0,
             "xp_cap": 20,
+            "upgrades": 0,
+            "battle_upgrade": 0,
+            "money_cap": 10000,
         }
 
         # Find missing keys

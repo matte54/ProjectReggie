@@ -4,6 +4,7 @@ import os
 import pickle
 import random
 import discord
+import math
 
 
 from systems.logger import log
@@ -24,16 +25,48 @@ class Pokemoneconomy:
         self.setdatalist_default = set_data
         self.pokemon_channels = None
 
+        self.balance_set_pricing()
+
         # load setdata pkl file if exists
         if os.path.exists('./local/pokemon/setdata.pkl'):
             with open('./local/pokemon/setdata.pkl', 'rb') as file:
                 self.setdatalist = pickle.load(file)
         else:
-            self.setdatalist = set_data
+            self.setdatalist = self.setdatalist_default
 
     async def collect_channel_ids(self):
         if self.varmanager.read("pokemon_channels"):
             self.pokemon_channels = self.varmanager.read("pokemon_channels")
+
+    def balance_set_pricing(self):
+        # set inflation of set prices depending on money in circulation
+        total = 0
+        directory = './local/pokemon/profiles/'
+        number_of_players = 0
+        for filename in os.listdir(directory):
+            if filename.endswith(".json"):
+                filepath = os.path.join(directory, filename)
+                with open(filepath, "r", encoding="utf-8") as f:
+                    try:
+                        data = json.load(f)
+                        if "profile" in data and "money" in data["profile"] and isinstance(data["profile"]["money"],
+                                                                                           (int, float)):
+                            total += data["profile"]["money"]
+                            number_of_players += 1
+                    except json.JSONDecodeError:
+                        print(f"Error decoding {filename}, skipping...")
+
+        money_in_circulation = int(total)
+        base_money = 1000
+
+        if number_of_players == 0:
+            return
+        for item in self.setdatalist_default:
+            base_price = item[2]
+            new_money_per_player = money_in_circulation / number_of_players
+            new_price = base_price * math.sqrt(new_money_per_player / base_money)
+            item[2] = int(new_price)
+            #print(f'{item[0]} BASE: {base_price}, INFLATED: {item[2]}')
 
     async def send_to_all(self, msg):
         max_retries = 3
