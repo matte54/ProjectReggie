@@ -118,8 +118,11 @@ class Battle:
             if current_mod == "money":
                 pricemoney = int(pricemoney * 2)
 
-            winner_data["profile"]["money"] += pricemoney
-            results_msg += f'{winner} won ${pricemoney} and gained {winner_reward} xp\n'
+            if (winner_data["profile"]["money"] + pricemoney) >= winner_data["profile"]["money_cap"]:
+                results_msg += f'{winner} won ${pricemoney} but EXCEEDS their money cap and only gained {winner_reward} xp\n'
+            else:
+                winner_data["profile"]["money"] += pricemoney
+                results_msg += f'{winner} won ${pricemoney} and gained {winner_reward} xp\n'
         else:
             winner_data["profile"]["price"] = True
             results_msg += f'{winner} won a free random boosterpack(claim it with $tcg free) and gained {winner_reward} xp\n'

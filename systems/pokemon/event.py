@@ -14,6 +14,8 @@ class Eventmanager:
         self.setdatalist = set_data
         self.set_ids = {t[0] for t in self.setdatalist}
 
+        self.pricemoney_pool = 1000
+
     def _write_json(self, filepath, data):
         with open(filepath, "w", encoding="UTF-8") as f:
             json.dump(data, f, indent=4)
@@ -103,8 +105,51 @@ class Eventmanager:
 
         self._write_json(self.statfile_path, statdata)
 
-    async def handout_rewards(self):
-        pass
+    async def handout_rewards(self, users):
+        number_players = len(users)
+        pricepool = self.pricemoney_pool
+        ratio = 0.8  # Adjust if needed
+
+        if number_players == 0:
+            return []  # No users to reward
+
+        # Calculate prizes using geometric series
+        total_ratio = (1 - ratio ** number_players) / (1 - ratio)
+        winner_prize = pricepool / total_ratio  # First prize amount
+
+        prizes = [winner_prize * (ratio ** i) for i in range(number_players)]  # Prize list
+
+        for i, player in enumerate(users):
+            playername = player["username"]
+            player_id = self.get_user_id(playername)
+
+            # Load player's profile
+            profile_path = f"./local/pokemon/profiles/{player_id}.json"
+            with open(profile_path, "r", encoding="UTF-8") as f:
+                player_profile_data = json.load(f)
+
+            # Add winnings
+            winnings = round(prizes[i], 2)  # Round for clean numbers
+            if (player_profile_data["profile"]["money"] + winnings) >= player_profile_data["profile"]["money_cap"]:
+                log(f'[Pokemon] - {player["username"]} is EXCEEDING their money cap')
+                player["winnings"] = 0
+            else:
+                player_profile_data["profile"]["money"] += winnings
+                player["winnings"] = winnings
+
+            # Save updated profile
+            with open(profile_path, "w", encoding="UTF-8") as f:
+                json.dump(player_profile_data, f, indent=4)
+
+        return users
+
+    def get_user_id(self, username):
+        # input username get userid from database file
+        if os.path.exists(f'./data/etc/ids.json'):
+            with open(f'./data/etc/ids.json', "r") as f:
+                id_data = json.load(f)
+            match = [key for key, value in id_data.items() if value == username]
+            return int(match[0])
 
     async def event_summary(self):
         with open(self.statfile_path, "r", encoding="UTF-8") as f:
@@ -146,12 +191,16 @@ class Eventmanager:
             reverse=True
         )
 
+        # handout rewards
+        users = await self.handout_rewards(users)
+
         # Format leaderboard
         leaderboard = "\n".join(
             [
                 f"🥇 {u['username']} - Wins: {u['wins']}, Packs: {u['packs']}, "
                 f"Cards Collected: {u['cards_collected']} "
-                f"({u['collection_percentage']:.2f}% of total)"
+                f"({u['collection_percentage']:.2f}% of total) "
+                f"${u['winnings']}"
                 for u in users
             ]
         ) if users else "No participants this time."

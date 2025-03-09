@@ -101,6 +101,7 @@ class Tcg:
             "q": (self.query, True, False),
             "buy": (self.buy, True, False),
             "sell": (self.sell, True, False),
+            "upgrade": (self.buy_upgrade, False, False),
             "admin": (self.admin, True, True),
             "feedback": (self.feedback, False, False),
         }
@@ -993,9 +994,15 @@ class Tcg:
     async def money_handler(self, value):
         if Tcg.modifier == "money":
             # double money modifier
-            self.userprofile["profile"]["money"] += round(value * 2, 2)
+            if (self.userprofile["profile"]["money"] + round(value * 2, 2)) >= self.userprofile["profile"]["money_cap"]:
+                await self.thread_handler.handle_thread(self.message, self.username, f'Money EXCEEDING current cap (${self.userprofile["profile"]["money_cap"]}) LOST ${value}')
+            else:
+                self.userprofile["profile"]["money"] += round(value * 2, 2)
         else:
-            self.userprofile["profile"]["money"] += round(value, 2)
+            if (self.userprofile["profile"]["money"] + round(value, 2)) >= self.userprofile["profile"]["money_cap"]:
+                await self.thread_handler.handle_thread(self.message, self.username, f'Money EXCEEDING current cap (${self.userprofile["profile"]["money_cap"]}) LOST ${value}')
+            else:
+                self.userprofile["profile"]["money"] += round(value, 2)
 
         self.pokehandler.write_json(self.userprofile_path, self.userprofile)
         #log(f'[Pokemon] - {self.username} now has ${self.userprofile["profile"]["money"]:.2f} - Wrote {self.userprofile_path}!')
@@ -1070,7 +1077,27 @@ class Tcg:
         await self.thread_handler.handle_thread(self.message, self.username, report, f'Here are the stats')
 
     async def buy_upgrade(self):
-        pass
+        if not self.userprofile["profile"]["money"] >= self.userprofile["profile"]["money_cap"]:
+            log(f'[Pokemon] - {self.username} cant afford to upgrade')
+            await self.send_msg(self.message.channel.id, f'```yaml\n\nYou cannot afford to upgrade price is ${self.userprofile["profile"]["money_cap"]}```')
+            return
+
+        upgrd_str = f'```yaml\n\n{self.username} bought a upgrade for ${self.userprofile["profile"]["money_cap"]}\n'
+
+        await self.money_handler(-self.userprofile["profile"]["money_cap"])
+
+        self.userprofile["profile"]["upgrades"] += 1
+        self.userprofile["profile"]["money_cap"] += 500
+        upgrd_str += f'Money cap is now at ${self.userprofile["profile"]["money_cap"]}\n'
+        if self.userprofile["profile"]["upgrades"] % 5 == 0:
+            self.userprofile["profile"]["battle_upgrade"] += 1
+            upgrd_str += f'Battle limit is now +{self.userprofile["profile"]["battle_upgrade"]}\n'
+        upgrd_str += f'```'
+
+        log(f'[Pokemon] - {self.username} bought an upgrade')
+        self.pokehandler.write_json(self.userprofile_path, self.userprofile)
+
+        await self.send_msg(self.message.channel.id, upgrd_str)
 
     async def admin(self, subcommand2, subcommand3=None):
         # reset the free timer

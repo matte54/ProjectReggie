@@ -35,7 +35,7 @@ class Chanseypick:
             self.chansey_img = f'./data/pokemon/chansey.png'
             self.chansey_cards = []
             self.chansey_final = None
-            self.reaction_time = 300
+            self.reaction_time = 600
             self.rare_threshold = 0.3
             self.trigger_times = None
 
@@ -175,8 +175,11 @@ class Chanseypick:
                 if card_id in user_profile_data["sets"][card_data["set"]["id"]]:
                     # User already owns the card - sell or handle as needed
                     user_profile_data["profile"]["money"] += round(sell_price, 2)
-                    income += round(sell_price, 2)
-                    log(f"[Pokemon] - {user}s already has '{name}({card_id})' selling.")
+                    if (user_profile_data["profile"]["money"] + round(sell_price, 2)) >= user_profile_data["profile"]["money_cap"]:
+                        log(f"[Pokemon] - money over cap")
+                    else:
+                        income += round(sell_price, 2)
+                        log(f"[Pokemon] - {user}s already has '{name}({card_id})' selling.")
                 else:
                     # Add card to the user's profile
                     new = True
@@ -185,7 +188,7 @@ class Chanseypick:
                 self.pokehandler.write_json(user_profile_path, user_profile_data)
 
                 username = self.get_user_name(user)
-                summary_message += f"❓ {username} - picked {name} ({card_id}) {'NEW!' if new else 'DUPE!'}{f', sold for {income}' if income else ''}"
+                summary_message += f"❓ {username} - picked {name} ({card_id}) {'NEW!' if new else 'DUPE!'}{f', sold for {income}' if income else ''}\n"
 
             summary_message += f'```'
             await self.send_to_all(summary_message)
