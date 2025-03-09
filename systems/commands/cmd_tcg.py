@@ -691,7 +691,7 @@ class Tcg:
 
         profilestring = f'```yaml\n\n'
         profilestring += f'***** {self.username.upper()}´S TCG PROFILE *****\n'
-        profilestring += f'Money: ${self.userprofile["profile"]["money"]:.2f} Cards: {self.userprofile["profile"]["cards"]} Opened: {self.userprofile["profile"]["boosters_opened"]} Free: {remaining}\n'
+        profilestring += f'Money: ${self.userprofile["profile"]["money"]:.2f}/{self.userprofile["profile"]["money_cap"]:.2f} Cards: {self.userprofile["profile"]["cards"]} Opened: {self.userprofile["profile"]["boosters_opened"]} Free: {remaining}\n'
         profilestring += f'Lvl: {self.userprofile["profile"]["level"]} Xp: {int(self.userprofile["profile"]["xp"])}/{int(self.userprofile["profile"]["xp_cap"])} Battles: {totalbattles} W:{self.userprofile["profile"]["battles_won"]} L:{self.userprofile["profile"]["battles_lost"]}\n'
         profilestring += f'***** TOP 10 MOST VALUEABLE CARDS OWNED *****\n'
         profilestring += await self.find_best()

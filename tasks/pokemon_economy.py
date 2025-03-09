@@ -22,17 +22,10 @@ class Pokemoneconomy:
         self.done_hike = False
         self.iteration = 0
 
-        self.setdatalist_default = set_data
         self.pokemon_channels = None
 
-        self.balance_set_pricing()
-
-        # load setdata pkl file if exists
-        if os.path.exists('./local/pokemon/setdata.pkl'):
-            with open('./local/pokemon/setdata.pkl', 'rb') as file:
-                self.setdatalist = pickle.load(file)
-        else:
-            self.setdatalist = self.setdatalist_default
+        self.setdatalist_default = None
+        self.setdatalist = None
 
     async def collect_channel_ids(self):
         if self.varmanager.read("pokemon_channels"):
@@ -54,19 +47,32 @@ class Pokemoneconomy:
                             total += data["profile"]["money"]
                             number_of_players += 1
                     except json.JSONDecodeError:
-                        print(f"Error decoding {filename}, skipping...")
+                        log(f'[Pokemon][Economy] - f"Error decoding {filename}, skipping...')
 
         money_in_circulation = int(total)
         base_money = 1000
 
+        total_price_before = sum(item[2] for item in set_data)
+
         if number_of_players == 0:
             return
-        for item in self.setdatalist_default:
+        for item in set_data:
             base_price = item[2]
             new_money_per_player = money_in_circulation / number_of_players
             new_price = base_price * math.sqrt(new_money_per_player / base_money)
             item[2] = int(new_price)
             #print(f'{item[0]} BASE: {base_price}, INFLATED: {item[2]}')
+
+        total_price_after = sum(item[2] for item in set_data)
+
+        if total_price_before > 0:
+            inflation_rate = ((total_price_after - total_price_before) / total_price_before) * 100
+        else:
+            inflation_rate = 0
+
+        log(f'[Pokemon][Economy] - setting inflation rate at {inflation_rate:.2f}%')
+
+        return set_data
 
     async def send_to_all(self, msg):
         max_retries = 3
@@ -97,7 +103,7 @@ class Pokemoneconomy:
     async def save_setdata(self):
         with open('./local/pokemon/setdata.pkl', 'wb') as file:
             pickle.dump(self.setdatalist, file)
-        log(f'[Pokemon] - saved setdata.pkl')
+        #log(f'[Pokemon] - saved setdata.pkl')
 
     def write_json(self, filepath, data):
         with open(filepath, "w", encoding="UTF-8") as f:
@@ -135,6 +141,8 @@ class Pokemoneconomy:
         if changeslist:
             await self.save_setdata()
             log(f'[Pokemon][Economy] - adjusted setprices: {changeslist}')
+        else:
+            log(f'[Pokemon][Economy] - no setprices needed adjustments')
 
     async def set_sale(self):
         await self.collect_channel_ids()
@@ -234,6 +242,17 @@ class Pokemoneconomy:
 
         await asyncio.sleep(10)
         log(f'[Pokemon][Economy] - Initilizing')
+
+        # load lists
+        self.setdatalist_default = self.balance_set_pricing()
+
+        # load setdata pkl file if exists
+        if os.path.exists('./local/pokemon/setdata.pkl'):
+            with open('./local/pokemon/setdata.pkl', 'rb') as file:
+                self.setdatalist = pickle.load(file)
+        else:
+            self.setdatalist = self.setdatalist_default
+
         while self.run:
 
             self.iteration += 1  # Increase iteration count
@@ -250,3 +269,4 @@ class Pokemoneconomy:
 
             await asyncio.sleep(3600)
             await self.change_check()
+
