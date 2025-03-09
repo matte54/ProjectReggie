@@ -1084,7 +1084,7 @@ class Tcg:
 
         upgrd_str = f'```yaml\n\n{self.username} bought a upgrade for ${self.userprofile["profile"]["money_cap"]}\n'
 
-        await self.money_handler(-self.userprofile["profile"]["money_cap"])
+        self.userprofile["profile"]["money"] -= self.userprofile["profile"]["money_cap"]
 
         self.userprofile["profile"]["upgrades"] += 1
         self.userprofile["profile"]["money_cap"] += 500
