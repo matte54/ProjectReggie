@@ -6,7 +6,7 @@ import time
 import asyncio
 import pickle
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, time
 from collections import Counter
 
 from systems.logger import debug_on, log
@@ -91,6 +91,10 @@ class Tcg:
         self.battletracker = Tcg.battletracker
         self.battlelist = Tcg.battlelist
         self.battle_card_subtypes = []
+
+        # battle restriction vars
+        self.battle_restriction_start = datetime.strptime("23:55", "%H:%M").time()
+        self.battle_restriction_end = datetime.strptime("00:00", "%H:%M").time()
 
         self.subcommands = {
             "free": (self.free, False, False),
@@ -238,6 +242,11 @@ class Tcg:
                 log(f"[Pokemon] - Error sending matte feedback msg")
 
     async def battle(self):
+        now = datetime.now().time()
+        if self.battle_restriction_start <= now < self.battle_restriction_end:
+            log(f"[Pokemon] - Battle restriction in effect restart soon")
+            await self.send_msg(self.message.channel.id,f'```yaml\n\nBattle restriction in effect, restart soon...```')
+
         if Tcg.signup_underway:
             log(f"[Pokemon] - Signup in progress, ignoring request")
             await self.send_msg(self.message.channel.id, f'```yaml\n\nProcessing, please try again in a few seconds```')
