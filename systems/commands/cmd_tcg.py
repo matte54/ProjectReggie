@@ -242,8 +242,8 @@ class Tcg:
                 log(f"[Pokemon] - Error sending matte feedback msg")
 
     async def battle(self):
-        now = datetime.now().time()
-        if self.battle_restriction_start <= now < self.battle_restriction_end:
+        battle_now = datetime.now().time()
+        if self.battle_restriction_start <= battle_now < self.battle_restriction_end:
             log(f"[Pokemon] - Battle restriction in effect restart soon")
             await self.send_msg(self.message.channel.id,f'```yaml\n\nBattle restriction in effect, restart soon...```')
 
