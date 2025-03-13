@@ -6,7 +6,7 @@ import time
 import asyncio
 import pickle
 
-from datetime import datetime, timedelta, time
+from datetime import datetime, timedelta
 from collections import Counter
 
 from systems.logger import debug_on, log
@@ -664,7 +664,7 @@ class Tcg:
         await self.thread_handler.handle_thread(self.message, self.username, summary_message)
         #await self.send_msg(self.message.channel.id, summary_message)
 
-        time.sleep(3)
+        await asyncio.sleep(3)
         Tcg.picking_underway = False  # set class var between objects
 
     async def profile(self):
@@ -868,7 +868,7 @@ class Tcg:
         #await self.send_msg(self.message.channel.id, summary_message)
         await self.send_to_all(price_msg)
 
-        time.sleep(3)  # extra wait time for disk to spin up for getting images
+        await asyncio.sleep(3)  # extra wait time for disk to spin up for getting images
         Tcg.picking_underway = False  # set class var between objects
 
     async def purchase_records(self, setid):

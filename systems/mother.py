@@ -10,7 +10,7 @@ from systems.logger import log, debug_on
 from systems.commands import (cmd_help, cmd_whoami, cmd_holiday, cmd_remindme, cmd_cast, cmd_blacklist, cmd_seen,
                               cmd_eee, cmd_roll, cmd_event, cmd_define, cmd_fishing, cmd_bucket, cmd_fishbase,
                               cmd_fishoff, cmd_url, cmd_status, cmd_tacklebox, cmd_fishrules, cmd_tcg,
-                              cmd_fishscore, cmd_b, cmd_stats, cmd_guildstats, cmd_fishstats)
+                              cmd_fishscore, cmd_b, cmd_stats, cmd_guildstats, cmd_fishstats, cmd_shutdown)
 
 
 class Mother:
@@ -42,6 +42,7 @@ class Mother:
         self.stats = cmd_stats.Stats()
         self.guildstats = cmd_guildstats.Guildstats()
         self.tcg = cmd_tcg.Tcg(self.client)
+        self.shutdown = cmd_shutdown.Shutdown()
 
         self.cmdlist = {
             "help": self.help,
@@ -67,7 +68,8 @@ class Mother:
             "b": self.b,
             "stats": self.stats,
             "guildstats": self.guildstats,
-            "tcg": self.tcg
+            "tcg": self.tcg,
+            "shutdown": self.shutdown
         }
 
     async def handle(self, message):
