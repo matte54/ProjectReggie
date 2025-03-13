@@ -10,5 +10,17 @@ whitelist = ["Dragon Pulse",
              "Land Crush",
              "Black Lance",
              "G-Max Smite",
-             "Electro Cannon"
+             "Electro Cannon",
+             "Air Slash",
+             "Arm Press",
+             "Armor Cannon",
+             "Baryon Beam",
+             "Best Dash",
+             "Binding Greed",
+             "Bite Off",
+             "Brain Shake",
+             "Brilliant Flare",
+             "Burning Darkness",
+             "Burning Train",
+             "Lord's Valley"
              ]

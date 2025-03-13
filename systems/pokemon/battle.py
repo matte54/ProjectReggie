@@ -30,6 +30,8 @@ class Battle:
         self.varmanager = VarManager()
         self.modifier = daily_modfier.DailyModifier()
 
+        self.susattack_value = 160
+
     def get_profile(self, userid):
         if os.path.isfile(f"{self.profiles_path}{userid}.json"):
             with open(f"{self.profiles_path}{userid}.json", "r") as f:
@@ -308,8 +310,9 @@ class Battle:
             self.player1_data["card_values"] = + int(card_data["dmg"])  # add up dmg to get hand value
 
             # add high damage attack to audit file if not in whitelist and not already handled
-            if card_data["dmg"] > 125 and card_data["attack"]["name"] not in threeforths and card_data["attack"]["name"] not in halfed and card_data["attack"]["name"] not in whitelist:
-                self.write_susattack(f'{card_data["attack"]["name"]} {card_data["dmg"]} dmg - {card["id"]}')
+            if card_data["dmg"] > self.susattack_value and card_data["attack"]["name"] not in threeforths and card_data["attack"]["name"] not in halfed and card_data["attack"]["name"] not in whitelist:
+                if "GX" not in card_data["attack"]["name"]:
+                    self.write_susattack(f'{card_data["attack"]["name"]} {card_data["dmg"]} dmg - {card["id"]}')
 
             # Append card data to the player's list of cards
             self.player1_data["cards"].append(card_data)
@@ -348,8 +351,9 @@ class Battle:
             self.player2_data["card_values"] = + int(card_data["dmg"])  # add up dmg to get hand value
 
             # add high damage attack to audit file if not in whitelist and not already handled
-            if card_data["dmg"] > 125 and card_data["attack"]["name"] not in threeforths and card_data["attack"]["name"] not in halfed and card_data["attack"]["name"] not in whitelist:
-                self.write_susattack(f'{card_data["attack"]["name"]} {card_data["dmg"]} dmg - {card["id"]}')
+            if card_data["dmg"] > self.susattack_value and card_data["attack"]["name"] not in threeforths and card_data["attack"]["name"] not in halfed and card_data["attack"]["name"] not in whitelist:
+                if "GX" not in card_data["attack"]["name"]:
+                    self.write_susattack(f'{card_data["attack"]["name"]} {card_data["dmg"]} dmg - {card["id"]}')
 
             # Append card data to the player's list of cards
             self.player2_data["cards"].append(card_data)

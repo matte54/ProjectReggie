@@ -582,6 +582,8 @@ class Tcg:
     async def free(self):
         if Tcg.picking_underway:
             log(f"[Pokemon] - Picking already underway, ignoring request")
+            await self.send_msg(self.message.channel.id,
+                                f'```yaml\n\nSlow down {self.username} (try again in a sec)```')
             return
         # check time stamp
         if self.userprofile["profile"]["price"]:
@@ -816,6 +818,7 @@ class Tcg:
 
         if Tcg.picking_underway:
             log(f"[Pokemon] - Picking already underway, ignoring request")
+            await self.send_msg(self.message.channel.id, f'```yaml\n\nSlow down {self.username} (try again in a sec)```')
             return
 
         if not any(packs[0] == subcommand2 for packs in self.setdatalist):
