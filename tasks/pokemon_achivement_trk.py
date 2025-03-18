@@ -33,7 +33,7 @@ class AchivementTracker:
             profile_data = json.load(f)
 
         username = profile_data["profile"]["username"]
-        log(f'[Pokemon][Achievements][DEBUG] - Parsing {username}\'s profile')
+        #log(f'[Pokemon][Achievements][DEBUG] - Parsing {username}\'s profile')
 
         milestones = [10, 50, 100, 250, 500, 1000,
                       1500, 2000, 3000, 4000, 5000,
