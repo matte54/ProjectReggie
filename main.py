@@ -39,6 +39,7 @@ from tasks.pokemon_startup import PokemonStartup
 from tasks.pokemon_economy import Pokemoneconomy
 from tasks.pokemon_event import Pokemoneventhandler
 from tasks.pokemon_chansey import Chanseypick
+from tasks.pokemon_achivement_trk import AchivementTracker
 from tasks.msg_retryer import Msgretry
 
 
@@ -70,6 +71,7 @@ class Woodhouse(discord.Client):
         self.pokemonevents = Pokemoneventhandler(self)
         self.msgretryer = Msgretry(self)
         self.chanseypick = Chanseypick(self)
+        self.achivementracker = AchivementTracker(self)
         # testing banditstuff
         #self.areamanger = Areamanager()
 
@@ -108,6 +110,7 @@ class Woodhouse(discord.Client):
         self.loop.create_task(self.pokemoneconomy.main())
         self.loop.create_task(self.pokemonevents.main())
         self.loop.create_task(self.chanseypick.main())
+        self.loop.create_task(self.achivementracker.main())
         self.loop.create_task(self.msgretryer.main())
 
     async def on_ready(self):
